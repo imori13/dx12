@@ -11,13 +11,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\Main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GameCore.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\D3DApp.cpp">
+    <ClCompile Include="..\Source\Utility.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Application.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -25,7 +25,13 @@
     <ClInclude Include="..\Source\GameCore.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\D3DApp.h">
+    <ClInclude Include="..\Source\pch.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Utility.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\d3dx12.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

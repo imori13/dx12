@@ -1,22 +1,28 @@
 #pragma once
 
-#include <stdint.h>
-#include <windows.h>
-#include "D3DApp.h"
+#include "pch.h"
 
-class GameCore
+namespace GameCore
 {
-public:
-	// publicïœêî
+    class IGameApp
+    {
+    public:
+        virtual void Startup(void) = 0;
+        virtual void Cleanup(void) = 0;
+        virtual bool IsDone(void);
+        virtual void Update(float deltaT) = 0;
+        virtual void RenderScene(void) = 0;
+    };
+}
 
-	// publicä÷êî
-	static int Run(D3DApp* app, HINSTANCE hInst, int nCmdShow);
-	static HWND GetHWND() { return m_hWnd; }
-private:
-	// privateïœêî
-	static HWND m_hWnd;
+namespace GameCore
+{
+    int RunApplication(IGameApp& app, const wchar_t* className, HINSTANCE hInst, int nCmdShow);
+}
 
-	// privateä÷êî
-	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-};
-
+#define CREATE_APPLICATION( app_class ) \
+    int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE , _In_ LPWSTR , _In_ int nCmdShow) \
+    { \
+        app_class app = app_class(); \
+        return GameCore::RunApplication( app, L#app_class, hInstance, nCmdShow ); \
+    }
