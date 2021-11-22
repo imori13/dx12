@@ -5,22 +5,29 @@ namespace GameCore
 {
 	void InitializeApplication(IGameApp& game)
 	{
+		Graphics::Initialize();
+		game.Startup();
 	}
 
 	void TerminateApplication(IGameApp& game)
 	{
+		game.Cleanup();
 	}
 
 	bool UpdateApplication(IGameApp& game)
 	{
 
-		return 0;
+		float DeltaTime = Graphics::GetFrameTime();
+
+		game.Update(DeltaTime);
+		game.RenderScene();
+
+		return true;
 	}
 
 	bool IGameApp::IsDone(void)
 	{
-
-		return 0;
+		return GameInput::IsFirstPressed(GameInput::kKey_escape);
 	}
 
 	HWND g_hWnd = nullptr;
