@@ -1,5 +1,5 @@
 #include "GameCore.h"
-
+#include "GraphicsCore.h"
 
 namespace GameCore
 {
@@ -16,8 +16,8 @@ namespace GameCore
 
 	bool UpdateApplication(IGameApp& game)
 	{
-
-		float DeltaTime = Graphics::GetFrameTime();
+		float DeltaTime = 0;
+		//float DeltaTime = Graphics::GetFrameTime();
 
 		game.Update(DeltaTime);
 		game.RenderScene();
@@ -27,7 +27,8 @@ namespace GameCore
 
 	bool IGameApp::IsDone(void)
 	{
-		return GameInput::IsFirstPressed(GameInput::kKey_escape);
+		return false;
+		//return GameInput::IsFirstPressed(GameInput::kKey_escape);
 	}
 
 	HWND g_hWnd = nullptr;
