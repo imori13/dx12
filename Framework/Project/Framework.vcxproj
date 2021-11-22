@@ -24,6 +24,7 @@
     <ProjectGuid>{180d42dd-f156-42a1-90c6-ad40e514c010}</ProjectGuid>
     <RootNamespace>Framework</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <ProjectName>Core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -170,6 +171,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Application.cpp" />
+    <ClCompile Include="..\Source\Display.cpp" />
     <ClCompile Include="..\Source\GameCore.cpp" />
     <ClCompile Include="..\Source\GraphicsCore.cpp" />
     <ClCompile Include="..\Source\pch.cpp">
@@ -186,7 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\d3dx12.h" />
+    <ClInclude Include="..\Source\Display.h" />
     <ClInclude Include="..\Source\GameCore.h" />
+    <ClInclude Include="..\Source\GpuResource.h" />
     <ClInclude Include="..\Source\GraphicsCore.h" />
     <ClInclude Include="..\Source\pch.h" />
     <ClInclude Include="..\Source\Utility.h" />

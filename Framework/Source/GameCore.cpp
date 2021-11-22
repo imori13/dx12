@@ -1,5 +1,6 @@
 #include "GameCore.h"
 #include "GraphicsCore.h"
+#include "Display.h"
 
 namespace GameCore
 {
@@ -87,9 +88,9 @@ namespace GameCore
 	{
 		switch(message)
 		{
-			//case WM_SIZE:
-			//    Display::Resize((UINT)(UINT64)lParam & 0xFFFF, (UINT)(UINT64)lParam >> 16);
-			//    break;
+			case WM_SIZE:
+			    Display::Resize((UINT)(UINT64)lParam & 0xFFFF, (UINT)(UINT64)lParam >> 16);
+			    break;
 
 			case WM_DESTROY:
 				PostQuitMessage(0);
