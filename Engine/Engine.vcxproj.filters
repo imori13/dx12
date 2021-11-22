@@ -22,6 +22,9 @@
     <ClCompile Include="Display.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="HogeApp.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -37,6 +40,9 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="Display.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="HogeApp.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>
