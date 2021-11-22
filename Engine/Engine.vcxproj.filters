@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source File">
+      <UniqueIdentifier>{ee791911-2b90-41fb-8150-a88fc102ddf5}</UniqueIdentifier>
+      <Extensions>h;cpp;</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCore.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="WinApp.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCore.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApp.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
