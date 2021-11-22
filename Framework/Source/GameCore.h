@@ -1,0 +1,22 @@
+#pragma once
+
+#include <stdint.h>
+#include <windows.h>
+#include "D3DApp.h"
+
+class GameCore
+{
+public:
+	// publicïœêî
+
+	// publicä÷êî
+	static int Run(D3DApp* app, HINSTANCE hInst, int nCmdShow);
+	static HWND GetHWND() { return m_hWnd; }
+private:
+	// privateïœêî
+	static HWND m_hWnd;
+
+	// privateä÷êî
+	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+};
+

@@ -143,11 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\D3DApp.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
-    <ClCompile Include="..\Source\WindowApp.cpp" />
+    <ClCompile Include="..\Source\GameCore.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\WindowApp.h" />
+    <ClInclude Include="..\Source\D3DApp.h" />
+    <ClInclude Include="..\Source\GameCore.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

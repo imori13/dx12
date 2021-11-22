@@ -14,12 +14,18 @@
     <ClCompile Include="..\Source\Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\WindowApp.cpp">
+    <ClCompile Include="..\Source\GameCore.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\D3DApp.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\WindowApp.h">
+    <ClInclude Include="..\Source\GameCore.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\D3DApp.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
