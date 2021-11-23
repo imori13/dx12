@@ -5,12 +5,13 @@ namespace Window
 	uint32_t g_Width = 0;
 	uint32_t g_Height = 0;
 	HWND g_hWnd = nullptr;
-	HINSTANCE g_hInst = nullptr;
-	const wchar_t* g_windowName = nullptr;
+
+	static HINSTANCE g_hInst=nullptr;
+	static const wchar_t* g_windowName = nullptr;
 
 	LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-	bool InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
+	bool WinApp::InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
 	{
 		g_hInst = hInstance;
 		g_Width = width;
@@ -53,7 +54,7 @@ namespace Window
 		return true;
 	}
 
-	bool Update()
+	bool WinApp::Update()
 	{
 		MSG msg = {};
 		while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -65,7 +66,7 @@ namespace Window
 		return msg.message == WM_QUIT;
 	}
 
-	void TermWnd()
+	void WinApp::TermWnd()
 	{
 		// ウィンドウの登録を解除
 		if(g_hInst != nullptr)

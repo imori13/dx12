@@ -21,26 +21,33 @@ namespace GameCore
 	void TerminateApplication()
 	{
 		app.TermApp();
-		Window::TermWnd();
 	}
 
 	int RunApplication(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
 	{
-		auto hr = Window::InitWnd(hInstance, nCmdShow, width, height);
+		// ウィンドウ初期化
+		auto hr = Window::WinApp::InitWnd(hInstance, nCmdShow, width, height);
 		if(FAILED(hr))
 		{ return false; }
 
+		// アプリ初期化
 		InitializeApplication();
 
 		do
 		{
-			auto flag = Window::Update();
+			// ウィンドウ更新
+			auto flag = Window::WinApp::Update();
 
 			// ウィンドウがfalseで終了
 			if(flag) { break; }
-		} while(UpdateApplication());	// アプリがfalseで終了
 
+			// アプリの更新
+		} while(UpdateApplication());
+
+		// アプリ終了
 		TerminateApplication();
+		// ウィンドウ終了
+		Window::WinApp::TermWnd();
 
 		return 0;
 	}
