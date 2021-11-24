@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "HogeApp.h"
 #include "WinApp.h"
 #include <cassert>

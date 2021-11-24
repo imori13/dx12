@@ -1,26 +1,30 @@
 #include "GameCore.h"
 #include "WinApp.h"
-#include "HogeApp.h"
+#include "GraphicsCore.h"
+#include "Display.h"
 
 namespace GameCore
 {
-	HogeApp app = HogeApp();
-
 	void InitializeApplication()
 	{
-		app.InitApp();
+		Graphics::Initialize();
+		Display::Initialize();
 	}
 
 	bool UpdateApplication()
 	{
-		app.Render();
+		auto cmdList = Graphics::g_pCmdList;
+		Display::Begin(cmdList);
+
+		Display::End(cmdList);
 
 		return true;
 	}
 
 	void TerminateApplication()
 	{
-		app.TermApp();
+		Display::Terminate();
+		Graphics::Terminate();
 	}
 
 	int RunApplication(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)

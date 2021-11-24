@@ -18,16 +18,19 @@ private:
 
 	ComPtr<ID3D12Device> m_pDevice;					// デバイス
 	ComPtr<ID3D12CommandQueue> m_pQueue;			// コマンドキュー
-	ComPtr<IDXGISwapChain3> m_pSwapChain;			// スワップチェイン
-	ComPtr<ID3D12Resource> m_pColorBuffer[FrameCount];			// カラーバッファ
 	ComPtr<ID3D12CommandAllocator> m_pCmdAllocator[FrameCount];	// コマンドアロケータ
 	ComPtr<ID3D12GraphicsCommandList> m_pCmdList;	// コマンドリスト
+
+	ComPtr<IDXGISwapChain3> m_pSwapChain;			// スワップチェイン
+	ComPtr<ID3D12Resource> m_pColorBuffer[FrameCount];			// カラーバッファ
 	ComPtr<ID3D12DescriptorHeap> m_pHeapRTV;		// RTVヒープ
+	D3D12_CPU_DESCRIPTOR_HANDLE m_HandleRTV[FrameCount];	// RTVハンドル
+
 	ComPtr<ID3D12Fence> m_pFence;	// フェンス
 	HANDLE m_FenceEvent;	// フェンスイベント
+	
 	uint64_t m_FenceCounter[FrameCount];	// フレームカウンター
 	uint32_t m_FrameIndex;	// フレーム番号
-	D3D12_CPU_DESCRIPTOR_HANDLE m_HandleRTV[FrameCount];	// RTVハンドル
 
 	// プライベート関数
 	bool InitD3D();
