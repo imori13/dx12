@@ -98,8 +98,6 @@ namespace Display
 
 	void Terminate(void)
 	{
-		Graphics::IdleGpu();
-
 		// レンダーターゲットビューの破棄
 		s_pHeapRTV.Reset();
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
@@ -153,12 +151,6 @@ namespace Display
 		// リソースバリア
 		cmdList->ResourceBarrier(1, &barrier);
 
-		// コマンドを実行
-		auto nextFrame = Graphics::ExecuteCommandList(cmdList);
-		Graphics::WaitForFence(nextFrame);
-
-		// 画面に表示
-		Present(1);
 	}
 
 	void Present(uint32_t interval)

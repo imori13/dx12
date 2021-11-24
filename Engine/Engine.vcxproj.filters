@@ -10,9 +10,6 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="GameCore.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
@@ -23,6 +20,9 @@
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsCore.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>
