@@ -7,12 +7,12 @@ namespace
 	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
 	ComPtr<ID3D12Resource> s_pColorBuffer[FRAME_COUNT] = { nullptr };
 	ComPtr<ID3D12DescriptorHeap> s_pHeapRTV = nullptr;
-
-	uint32_t s_FrameIndex = 0;
 }
 
 namespace Display
 {
+	uint32_t s_FrameIndex = 0;
+
 	bool Initialize(void)
 	{
 		// スワップチェインの生成
@@ -109,11 +109,9 @@ namespace Display
 		s_pSwapChain.Reset();
 	}
 
-	void Begin(ComPtr<ID3D12GraphicsCommandList> cmdList)
+	void Begin()
 	{
-		// コマンドの記録を開始
-		Graphics::g_pCmdAllocator[s_FrameIndex]->Reset();
-		cmdList->Reset(Graphics::g_pCmdAllocator[s_FrameIndex].Get(), nullptr);
+		auto cmdList = Graphics::g_pCmdList;
 
 		// リソースバリアの設定
 		D3D12_RESOURCE_BARRIER barrier = {};
@@ -139,8 +137,10 @@ namespace Display
 		cmdList->ClearRenderTargetView(handle, clearColor, 0, nullptr);
 	}
 
-	void End(ComPtr<ID3D12GraphicsCommandList> cmdList)
+	void End()
 	{
+		auto cmdList = Graphics::g_pCmdList;
+
 		// リソースバリアの設定
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -155,7 +155,6 @@ namespace Display
 
 		// コマンドを実行
 		auto nextFrame = Graphics::ExecuteCommandList(cmdList);
-
 		Graphics::WaitForFence(nextFrame);
 
 		// 画面に表示

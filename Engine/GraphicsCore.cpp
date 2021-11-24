@@ -1,7 +1,9 @@
 #include "GraphicsCore.h"
+#include "Display.h"
 
 namespace
 {
+	ComPtr<ID3D12CommandAllocator> s_pCmdAllocator[FRAME_COUNT] = { nullptr };
 	ComPtr<ID3D12Fence> s_pFence = nullptr;
 	uint64_t s_NextFenceValue = 0;
 	HANDLE s_FenceEventHandle = nullptr;
@@ -11,7 +13,6 @@ namespace Graphics
 {
 	ComPtr<ID3D12Device> g_pDevice = nullptr;
 	ComPtr<ID3D12CommandQueue> g_pCmdQueue = nullptr;
-	ComPtr<ID3D12CommandAllocator> g_pCmdAllocator[FRAME_COUNT] = { nullptr };
 	ComPtr<ID3D12GraphicsCommandList> g_pCmdList = nullptr;
 
 	bool Initialize()
@@ -59,7 +60,7 @@ namespace Graphics
 			{
 				hr = g_pDevice->CreateCommandAllocator(
 					D3D12_COMMAND_LIST_TYPE_DIRECT,
-					IID_PPV_ARGS(g_pCmdAllocator[i].GetAddressOf()));	// ダブルバッファリング用で2個
+					IID_PPV_ARGS(s_pCmdAllocator[i].GetAddressOf()));	// ダブルバッファリング用で2個
 				if(FAILED(hr))
 				{ return false; }
 			}
@@ -70,7 +71,7 @@ namespace Graphics
 			hr = g_pDevice->CreateCommandList(
 				0,
 				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				g_pCmdAllocator[0].Get(),
+				s_pCmdAllocator[0].Get(),
 				nullptr,	// パイプラインステート(後で設定する)
 				IID_PPV_ARGS(g_pCmdList.GetAddressOf()));
 			if(FAILED(hr))
@@ -98,6 +99,14 @@ namespace Graphics
 		return true;
 	}
 
+	void ClearCommand()
+	{
+		// コマンドの記録を開始
+		auto index = Display::s_FrameIndex;
+		s_pCmdAllocator[index]->Reset();
+		g_pCmdList->Reset(s_pCmdAllocator[index].Get(), nullptr);
+	}
+
 	void Terminate()
 	{
 		// フェンス破棄
@@ -108,7 +117,7 @@ namespace Graphics
 
 		// コマンドアロケータの破棄
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
-		{ g_pCmdAllocator[i].Reset(); }
+		{ s_pCmdAllocator[i].Reset(); }
 
 		// コマンドキューの破棄
 		g_pCmdQueue.Reset();

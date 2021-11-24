@@ -13,10 +13,9 @@ namespace GameCore
 
 	bool UpdateApplication()
 	{
-		auto cmdList = Graphics::g_pCmdList;
-		Display::Begin(cmdList);
-
-		Display::End(cmdList);
+		Graphics::ClearCommand();
+		Display::Begin();
+		Display::End();
 
 		return true;
 	}
