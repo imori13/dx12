@@ -15,6 +15,8 @@
 #include <dxgidebug.h>
 #endif
 
+template<typename T>using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 #include <cstdint>
 #include <vector>
 #include <memory>

@@ -89,7 +89,6 @@
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
-    <ClCompile Include="HogeApp.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -102,7 +101,6 @@
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GraphicsCore.h" />
-    <ClInclude Include="HogeApp.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>

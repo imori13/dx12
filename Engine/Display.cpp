@@ -7,54 +7,14 @@ namespace
 	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
 	ComPtr<ID3D12Resource> s_pColorBuffer[FRAME_COUNT] = { nullptr };
 	ComPtr<ID3D12DescriptorHeap> s_pHeapRTV = nullptr;
-	//D3D12_CPU_DESCRIPTOR_HANDLE s_HandleRTV[FRAME_COUNT] = { 0 };
-
-	ComPtr<ID3D12Fence> s_pFence = nullptr;
-	//HANDLE s_FenceEvent = nullptr;
-
-	ComPtr<ID3D12CommandQueue> s_pQueue = nullptr;	// 一時的にdisplayで記述
 
 	uint32_t s_FrameIndex = 0;
-	uint64_t s_FrameCount = FRAME_COUNT;
 }
-
-#define CURRENT_BUFFER s_FrameCount
-#define PREV_BUFFER s_FrameCount - FRAME_COUNT
 
 namespace Display
 {
-	void WaitForGpu(ComPtr<ID3D12Fence> fence, uint64_t value)
-	{
-
-		// 次のフレームの描画準備がまだであれば待機する
-		if(fence->GetCompletedValue() < value)
-		{
-			HANDLE fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-			if(fenceEvent != nullptr)
-			{
-				fence->SetEventOnCompletion(value, fenceEvent);
-				WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
-			}
-		}
-	}
-
 	bool Initialize(void)
 	{
-		// コマンドキューの生成
-		{
-			// コマンドキューの設定
-			D3D12_COMMAND_QUEUE_DESC desc = {};
-			desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-			desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-			desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-			desc.NodeMask = 0;
-
-			// コマンドキューの生成
-			auto hr = Graphics::g_pDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(s_pQueue.GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
-		}
-
 		// スワップチェインの生成
 		{
 			// DXGIファクトリーの生成
@@ -83,7 +43,7 @@ namespace Display
 
 			// スワップチェインの生成
 			ComPtr<IDXGISwapChain> pSwapChain = nullptr;
-			hr = pFactory->CreateSwapChain(s_pQueue.Get(), &desc, &pSwapChain);
+			hr = pFactory->CreateSwapChain(Graphics::g_pCmdQueue.Get(), &desc, &pSwapChain);
 
 			if(FAILED(hr))
 			{ return false; }
@@ -133,29 +93,12 @@ namespace Display
 			}
 		}
 
-		// フェンスの生成
-		{
-			// フェンスの生成
-			auto hr = Graphics::g_pDevice->CreateFence(
-				static_cast<UINT64>(0),
-				D3D12_FENCE_FLAG_NONE,
-				IID_PPV_ARGS(s_pFence.GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
-		}
-
 		return true;
 	}
 
 	void Terminate(void)
 	{
-		// GPUの処理の完了を待機
-		// シグナル処理
-		s_pQueue->Signal(s_pFence.Get(), CURRENT_BUFFER);
-		WaitForGpu(s_pFence, CURRENT_BUFFER);
-
-		// フェンス破棄
-		s_pFence.Reset();
+		Graphics::IdleGpu();
 
 		// レンダーターゲットビューの破棄
 		s_pHeapRTV.Reset();
@@ -164,9 +107,6 @@ namespace Display
 
 		// スワップチェインの破棄
 		s_pSwapChain.Reset();
-
-		// コマンドキューの破棄
-		s_pQueue.Reset();
 	}
 
 	void Begin(ComPtr<ID3D12GraphicsCommandList> cmdList)
@@ -213,12 +153,10 @@ namespace Display
 		// リソースバリア
 		cmdList->ResourceBarrier(1, &barrier);
 
-		// コマンドの記録を終了
-		cmdList->Close();
-
 		// コマンドを実行
-		ID3D12CommandList* ppCmdLists[] = { cmdList.Get() };
-		s_pQueue->ExecuteCommandLists(1, ppCmdLists);
+		auto nextFrame = Graphics::ExecuteCommandList(cmdList);
+
+		Graphics::WaitForFence(nextFrame);
 
 		// 画面に表示
 		Present(1);
@@ -228,13 +166,6 @@ namespace Display
 	{
 		// 画面に表示
 		s_pSwapChain->Present(interval, 0);
-
-		// シグナル処理
-		s_pQueue->Signal(s_pFence.Get(), s_FrameCount);
-
-		// 次のフレームのバッファがまだ書き込み中であれば待機する(ダブルバッファなのでFRAME_COUNT分前のフレームを指定)
-		s_FrameCount++;
-		WaitForGpu(s_pFence, PREV_BUFFER);
 
 		// バックバッファ番号を更新
 		s_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();

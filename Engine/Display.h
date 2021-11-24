@@ -1,8 +1,6 @@
 #pragma once
 #include "WinApp.h"
 
-using namespace Microsoft::WRL;
-
 namespace Display
 {
 #define FRAME_COUNT 2
