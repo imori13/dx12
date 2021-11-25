@@ -5,6 +5,9 @@
       <UniqueIdentifier>{ee791911-2b90-41fb-8150-a88fc102ddf5}</UniqueIdentifier>
       <Extensions>h;cpp;</Extensions>
     </Filter>
+    <Filter Include="Source File\GpuResources">
+      <UniqueIdentifier>{267e6507-0fea-4957-bac3-9766ccd86e33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -24,6 +27,9 @@
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="UploadBuffer.cpp">
+      <Filter>Source File\GpuResources</Filter>
     </ClCompile>
     <ClCompile Include="RTVHeap.cpp">
       <Filter>Source File</Filter>
@@ -47,6 +53,12 @@
     </ClInclude>
     <ClInclude Include="GraphicsCore.h">
       <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuResource.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>Source File\GpuResources</Filter>
     </ClInclude>
     <ClInclude Include="RTVHeap.h">
       <Filter>Source File</Filter>

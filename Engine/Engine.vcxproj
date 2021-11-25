@@ -95,16 +95,19 @@
     </ClCompile>
     <ClCompile Include="RTVHeap.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />
+    <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="RTVHeap.h" />
+    <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

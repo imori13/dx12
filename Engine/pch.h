@@ -6,6 +6,9 @@
 #define NOGDI
 #define NOBITMAP
 
+#define ADDRESS_NULL      ((D3D12_GPU_VIRTUAL_ADDRESS)0)
+#define ADDRESS_UNKNOWN   ((D3D12_GPU_VIRTUAL_ADDRESS)-1)
+
 #include <windows.h>
 
 #include <d3d12.h>
