@@ -22,12 +22,8 @@ namespace GameCore
 	{
 		Graphics::ClearCommand();
 
-		Display::Begin();
-
 		game.Update(1.f / 60.f);
 		game.RenderScene();
-
-		Display::End();
 
 		auto nextFrame = Graphics::ExecuteCommandList(Graphics::g_pCmdList);
 		Graphics::WaitForFence(nextFrame);

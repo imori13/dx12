@@ -14,6 +14,8 @@ namespace Graphics
 	ComPtr<ID3D12Device> g_pDevice = nullptr;
 	ComPtr<ID3D12CommandQueue> g_pCmdQueue = nullptr;
 	ComPtr<ID3D12GraphicsCommandList> g_pCmdList = nullptr;
+	ComPtr<ID3D12Resource> g_pColorBuffer[FRAME_COUNT] = {nullptr};
+	RTVHeap g_RtvHeap;
 
 	bool Initialize()
 	{
@@ -94,6 +96,11 @@ namespace Graphics
 			{ return false; }
 		}
 
+		// RTVヒープの生成
+		{
+			g_RtvHeap.Create(FRAME_COUNT);
+		}
+
 		g_pCmdList->Close();
 
 		return true;
@@ -102,13 +109,17 @@ namespace Graphics
 	void ClearCommand()
 	{
 		// コマンドの記録を開始
-		auto index = Display::s_FrameIndex;
+		auto index = Display::g_FrameIndex;
 		s_pCmdAllocator[index]->Reset();
 		g_pCmdList->Reset(s_pCmdAllocator[index].Get(), nullptr);
 	}
 
 	void Terminate()
 	{
+		// カラーバッファの破棄
+		for(auto i = 0u; i < FRAME_COUNT; ++i)
+		{ g_pColorBuffer[i].Reset(); }
+
 		// フェンス破棄
 		s_pFence.Reset();
 

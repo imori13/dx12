@@ -25,6 +25,9 @@
     <ClCompile Include="TestScene.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="RTVHeap.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -43,6 +46,12 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsCore.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="RTVHeap.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="TranslationBarrirUtil.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>
