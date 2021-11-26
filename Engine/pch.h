@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(disable:4324)	// 構造体のアラインメントを通知する警告を非表示
+
 #define NOMINMAX
 #define NOHELP
 #define NODRAWTEXT
@@ -28,3 +30,4 @@ template<typename T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 #include <vector>
 #include <memory>
 #include <string>
+#include <DirectXMath.h>

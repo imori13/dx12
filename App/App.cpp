@@ -3,6 +3,7 @@
 #include "GraphicsCore.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
+#include "TestModel.h"
 
 class App : public GameCore::IGameApp
 {
@@ -15,21 +16,26 @@ public:
 	virtual void Update(float deltaT) override;
 	virtual void RenderScene(void) override;
 private:
+	TestModel model;
 };
 
 CREATE_APPLICATION(App, 1280, 720);
 
 void App::Startup(void)
 {
+	model.OnInit();
 }
 
 void App::Cleanup(void)
 {
+	model.OnTerm();
 }
 
 void App::Update(float deltaT)
 {
 	deltaT++;
+
+	model.Update();
 }
 
 void App::RenderScene(void)
@@ -54,6 +60,8 @@ void App::RenderScene(void)
 
 	// レンダーターゲットビューをクリア
 	cmdList->ClearRenderTargetView(Display::g_RtvBuffer[Display::g_FrameIndex].m_CpuHandle, clearColor, 0, nullptr);
+
+	model.Render(cmdList.Get());
 
 	// リソースバリアの設定
 	barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

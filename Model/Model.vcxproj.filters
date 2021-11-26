@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
+    <ClInclude Include="TestModel.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SimplePS.hlsl" />
-    <FxCompile Include="SimpleVS.hlsl" />
+    <ClCompile Include="TestModel.cpp" />
   </ItemGroup>
 </Project>

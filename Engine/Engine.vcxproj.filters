@@ -39,9 +39,6 @@
     <ClInclude Include="pch.h">
       <Filter>Source File</Filter>
     </ClInclude>
-    <ClInclude Include="d3dx12.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
     <ClInclude Include="GameCore.h">
       <Filter>Source File</Filter>
     </ClInclude>
@@ -71,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="RTVBuffer.h">
       <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
