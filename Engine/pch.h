@@ -9,6 +9,10 @@
 #define ADDRESS_NULL      ((D3D12_GPU_VIRTUAL_ADDRESS)0)
 #define ADDRESS_UNKNOWN   ((D3D12_GPU_VIRTUAL_ADDRESS)-1)
 
+#pragma comment(lib,"d3D12.lib")
+#pragma comment(lib,"dxgi.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+
 #include <windows.h>
 
 #include <d3d12.h>

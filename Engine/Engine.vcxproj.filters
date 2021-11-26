@@ -25,9 +25,6 @@
     <ClCompile Include="GraphicsCore.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="UploadBuffer.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>

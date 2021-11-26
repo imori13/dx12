@@ -1,13 +1,14 @@
+#include "pch.h"
 #include "GameCore.h"
 #include "GraphicsCore.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
 
-class TestScene : public GameCore::IGameApp
+class App : public GameCore::IGameApp
 {
 public:
-	TestScene() {}
-	~TestScene() {}
+	App() {}
+	~App() {}
 
 	virtual void Startup(void) override;
 	virtual void Cleanup(void) override;
@@ -16,28 +17,31 @@ public:
 private:
 };
 
-CREATE_APPLICATION(TestScene, 1280, 720);
+CREATE_APPLICATION(App, 1280, 720);
 
-void TestScene::Startup(void)
+void App::Startup(void)
 {
 }
 
-void TestScene::Cleanup(void)
+void App::Cleanup(void)
 {
 }
 
-void TestScene::Update(float deltaT)
+void App::Update(float deltaT)
 {
 	deltaT++;
 }
 
-void TestScene::RenderScene(void)
+void App::RenderScene(void)
 {
 	using namespace Graphics;
-	auto cmdList = g_pCmdList;
+	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
 	// リソースバリアの設定
 	auto barrier = GetTranslationBarrier(g_pColorBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+	//gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
+	//gfxContext.ClearColor(g_SceneColorBuffer);
 
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);
@@ -58,4 +62,6 @@ void TestScene::RenderScene(void)
 
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);
+
+	g_Command.Finish();
 }
