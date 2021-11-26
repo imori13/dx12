@@ -5,7 +5,6 @@ namespace Graphics
 {
 	ComPtr<ID3D12Device> g_pDevice = nullptr;
 	ComPtr<ID3D12Resource> g_pColorBuffer[FRAME_COUNT] = { nullptr };
-	RTVHeap g_RtvHeap;
 	Command g_Command;
 
 	bool Initialize()
@@ -34,19 +33,11 @@ namespace Graphics
 
 		g_Command.Create(FRAME_COUNT);
 
-		// RTVヒープの生成
-		{
-			g_RtvHeap.Create(FRAME_COUNT);
-		}
-
 		return true;
 	}
 
 	void Terminate()
 	{
-		// RTVヒープの破棄
-		g_RtvHeap.Destroy();
-
 		// カラーバッファの破棄
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{ g_pColorBuffer[i].Reset(); }

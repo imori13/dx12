@@ -5,11 +5,13 @@
 namespace
 {
 	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
+	RTVHeap s_RtvHeap;
 }
 
 namespace Display
 {
 	uint32_t g_FrameIndex = 0;
+	RTVBuffer g_RtvBuffer[FRAME_COUNT];
 
 	bool Initialize(void)
 	{
@@ -57,10 +59,11 @@ namespace Display
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		}
 
-		auto handle = Graphics::g_RtvHeap.GetCpuHandle();
+		s_RtvHeap.Create(FRAME_COUNT);
+		auto handle = s_RtvHeap.GetCpuHandle();
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{
-			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(Graphics::g_pColorBuffer[i].GetAddressOf()));
+			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RtvBuffer[i].GetAddressOf()));
 			if(FAILED(hr))
 			{ return false; }
 
@@ -71,8 +74,9 @@ namespace Display
 			viewDesc.Texture2D.PlaneSlice = 0;
 
 			// レンダーターゲットビューの生成
-			Graphics::g_pDevice->CreateRenderTargetView(Graphics::g_pColorBuffer[i].Get(), &viewDesc, handle);
-			handle.ptr += Graphics::g_RtvHeap.GetIncrementSize();
+			Graphics::g_pDevice->CreateRenderTargetView(g_RtvBuffer[i].Get(), &viewDesc, handle);
+			g_RtvBuffer[i].m_CpuHandle = handle;
+			handle.ptr += s_RtvHeap.GetIncrementSize();
 		}
 
 		return true;

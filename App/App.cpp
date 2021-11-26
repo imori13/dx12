@@ -38,7 +38,7 @@ void App::RenderScene(void)
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
 	// リソースバリアの設定
-	auto barrier = GetTranslationBarrier(g_pColorBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	auto barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	//gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
 	//gfxContext.ClearColor(g_SceneColorBuffer);
@@ -47,18 +47,16 @@ void App::RenderScene(void)
 	cmdList->ResourceBarrier(1, &barrier);
 
 	// レンダーターゲットの設定
-	auto handle = g_RtvHeap.GetCpuHandle();
-	handle.ptr += (static_cast<uint64_t>(Display::g_FrameIndex)) * g_RtvHeap.GetIncrementSize();
-	cmdList->OMSetRenderTargets(1, &handle, FALSE, nullptr);
+	cmdList->OMSetRenderTargets(1, &Display::g_RtvBuffer[Display::g_FrameIndex].m_CpuHandle, FALSE, nullptr);
 
 	// クリアカラー
 	float clearColor[] = { 0.0f,0.0f,1.0f,1.0f };
 
 	// レンダーターゲットビューをクリア
-	cmdList->ClearRenderTargetView(handle, clearColor, 0, nullptr);
+	cmdList->ClearRenderTargetView(Display::g_RtvBuffer[Display::g_FrameIndex].m_CpuHandle, clearColor, 0, nullptr);
 
 	// リソースバリアの設定
-	barrier = GetTranslationBarrier(g_pColorBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);

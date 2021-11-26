@@ -69,5 +69,8 @@
     <ClInclude Include="Command.h">
       <Filter>Source File</Filter>
     </ClInclude>
+    <ClInclude Include="RTVBuffer.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

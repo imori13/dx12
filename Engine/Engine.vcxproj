@@ -112,6 +112,7 @@
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RTVBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="RTVHeap.h" />
     <ClInclude Include="UploadBuffer.h" />
