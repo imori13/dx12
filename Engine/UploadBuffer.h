@@ -4,9 +4,16 @@
 class UploadBuffer : public GpuResource
 {
 public:
-	virtual ~UploadBuffer() { Destroy(); }
+	UploadBuffer()
+		:m_BufferSize(0)
+	{
+	}
+	~UploadBuffer()
+	{
+		Destroy();
+	}
 
-	virtual void Create(size_t bufferSize);
+	void Create(size_t bufferSize);
 
 	HRESULT Map(void** ptr);
 	void UnMap();

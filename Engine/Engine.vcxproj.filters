@@ -8,6 +8,9 @@
     <Filter Include="Source File\GpuResources">
       <UniqueIdentifier>{267e6507-0fea-4957-bac3-9766ccd86e33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source File\GpuHeaps">
+      <UniqueIdentifier>{59c55f4f-429a-49ca-9cc7-c0171c19ace5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -28,11 +31,11 @@
     <ClCompile Include="UploadBuffer.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
-    <ClCompile Include="RTVHeap.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="Command.cpp">
       <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="RTVHeap.cpp">
+      <Filter>Source File\GpuHeaps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +60,6 @@
     <ClInclude Include="UploadBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="RTVHeap.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
     <ClInclude Include="TranslationBarrirUtil.h">
       <Filter>Source File</Filter>
     </ClInclude>
@@ -77,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="RTVHeap.h">
+      <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

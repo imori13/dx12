@@ -5,6 +5,18 @@
 
 bool TestModel::OnInit()
 {
+	// 頂点の定義
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT4 Color;
+	};
+	Vertex vertices[3] = {
+		{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
+		{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
+		{ DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
+	};
+
 	// 頂点バッファの作成
 	{
 		m_pVertexBuffer.Create(sizeof(vertices), static_cast<uint32_t>(sizeof(vertices)), static_cast<uint32_t>(sizeof(Vertex)));
@@ -40,17 +52,6 @@ bool TestModel::OnInit()
 			m_pConstantBuffer[i].Create(sizeof(Transform));
 
 			m_pConstantBuffer[i].Map(reinterpret_cast<void**>(&m_pConstantBuffer[i].m_pBuffer));
-
-			auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
-			auto targetPos = DirectX::XMVectorZero();
-			auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-			constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-			auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
-
-			// 変換行列
-			m_pConstantBuffer[i].m_pBuffer->World = DirectX::XMMatrixIdentity();
-			m_pConstantBuffer[i].m_pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-			m_pConstantBuffer[i].m_pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
 
 			handleCPU.ptr += incrementSize * static_cast<uint64_t>(i);
 
@@ -207,11 +208,27 @@ bool TestModel::OnInit()
 		}
 	}
 
+	// Transformの初期化
+	for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
+	{
+		auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
+		auto targetPos = DirectX::XMVectorZero();
+		auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
+		auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
+
+		// 変換行列
+		m_pConstantBuffer[i].m_pBuffer->World = DirectX::XMMatrixIdentity();
+		m_pConstantBuffer[i].m_pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
+		m_pConstantBuffer[i].m_pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
+	}
+
 	return true;
 }
 
 void TestModel::Update()
 {
+	// Transformの更新
 	m_RotateAngle += 0.025f;
 	m_pConstantBuffer[Display::g_FrameIndex].m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
@@ -232,15 +249,7 @@ void TestModel::Render(ID3D12GraphicsCommandList* cmdList)
 
 void TestModel::OnTerm()
 {
-	//for(auto i = 0; i < FRAME_COUNT; ++i)
-	//{
-	//	if(m_pCB[i].Get() != nullptr)
-	//	{
-	//		m_pCB[i]->Unmap(0, nullptr);
-	//		memset(&m_CBV[i], 0, sizeof(m_CBV[i]));
-	//	}
-	//	m_pCB[i].Reset();
-	//}
+
 
 	m_pVertexBuffer.Destroy();
 	m_pPSO.Reset();

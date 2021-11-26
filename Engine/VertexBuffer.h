@@ -4,6 +4,10 @@
 class VertexBuffer : public UploadBuffer
 {
 public:
+	VertexBuffer()
+		:m_BufferView{}
+	{
+	}
 	void Create(size_t bufferSize, uint32_t sizeInByte, uint32_t strideInBytes)
 	{
 		UploadBuffer::Create(bufferSize);
