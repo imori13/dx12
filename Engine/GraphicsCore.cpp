@@ -120,6 +120,8 @@ namespace Graphics
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{ g_pColorBuffer[i].Reset(); }
 
+		g_RtvHeap.Destroy();
+
 		// ƒtƒFƒ“ƒX”jŠü
 		s_pFence.Reset();
 

@@ -22,7 +22,7 @@ namespace GameCore
 	{
 		Graphics::ClearCommand();
 
-		game.Update(1.f / 60.f);
+		game.Update(0);
 		game.RenderScene();
 
 		auto nextFrame = Graphics::ExecuteCommandList(Graphics::g_pCmdList);

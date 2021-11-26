@@ -44,7 +44,7 @@ void TestScene::RenderScene(void)
 
 	// レンダーターゲットの設定
 	auto handle = g_RtvHeap.GetCpuHandle();
-	handle.ptr += (static_cast<uint64_t>(Display::g_FrameIndex)) * g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	handle.ptr += (static_cast<uint64_t>(Display::g_FrameIndex)) * g_RtvHeap.GetIncrementSize();
 	cmdList->OMSetRenderTargets(1, &handle, FALSE, nullptr);
 
 	// クリアカラー
