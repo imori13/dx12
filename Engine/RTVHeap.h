@@ -12,8 +12,11 @@ public:
 	{
 
 	}
-	~RTVHeap()
+	~RTVHeap() { Destroy(); }
+
+	void Destroy()
 	{
+		m_pHeap.Reset();
 	}
 
 	void Create(uint32_t DescriptorSize);

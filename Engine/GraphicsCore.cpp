@@ -44,9 +44,15 @@ namespace Graphics
 
 	void Terminate()
 	{
+		// RTVヒープの破棄
+		g_RtvHeap.Destroy();
+
 		// カラーバッファの破棄
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{ g_pColorBuffer[i].Reset(); }
+
+		// コマンドの破棄
+		g_Command.Destroy();
 
 		// デバイスの破棄
 		g_pDevice.Reset();

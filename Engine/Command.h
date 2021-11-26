@@ -20,6 +20,22 @@ public:
 	// ¶¬ˆ—
 	void Create(uint32_t swapCount);
 
+	// ”jŠü
+	void Destroy()
+	{
+		m_pFence.Reset();
+
+		for(int i = 0; i < m_pCmdAllocators.size(); ++i)
+		{
+			m_pCmdAllocators[i].Reset();
+		}
+		std::vector<ComPtr<ID3D12CommandAllocator>>().swap(m_pCmdAllocators);
+
+		m_pCmdList.Reset();
+
+		m_pCmdQueue.Reset();
+	}
+
 	// •`‰æŠJn
 	const ComPtr<ID3D12GraphicsCommandList>& Begin(uint32_t SwapIndex);
 	// •`‰æI—¹
