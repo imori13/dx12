@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Command.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />

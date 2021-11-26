@@ -43,7 +43,7 @@ namespace Display
 
 			// スワップチェインの生成
 			ComPtr<IDXGISwapChain> pSwapChain = nullptr;
-			hr = pFactory->CreateSwapChain(Graphics::g_pCmdQueue.Get(), &desc, &pSwapChain);
+			hr = pFactory->CreateSwapChain(Graphics::g_Command.GetCmdQueue(), &desc, &pSwapChain);
 
 			if(FAILED(hr))
 			{ return false; }

@@ -12,15 +12,8 @@ public:
 	{
 
 	}
-	~RTVHeap() { Destroy(); }
-
-	void Destroy()
+	~RTVHeap()
 	{
-		if(m_pHeap != nullptr)
-		{
-			m_pHeap->Release();
-			m_pHeap = nullptr;
-		}
 	}
 
 	void Create(uint32_t DescriptorSize);

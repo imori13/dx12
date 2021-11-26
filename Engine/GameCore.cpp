@@ -20,13 +20,8 @@ namespace GameCore
 
 	bool UpdateApplication(IGameApp& game)
 	{
-		Graphics::ClearCommand();
-
 		game.Update(0);
 		game.RenderScene();
-
-		auto nextFrame = Graphics::ExecuteCommandList(Graphics::g_pCmdList);
-		Graphics::WaitForFence(nextFrame);
 
 		Display::Present(1);
 
@@ -35,7 +30,7 @@ namespace GameCore
 
 	void TerminateApplication(IGameApp& game)
 	{
-		Graphics::IdleGpu();
+		Graphics::g_Command.WaitForGpu();
 
 		game.Cleanup();
 		Display::Terminate();
