@@ -13,13 +13,16 @@ public:
 		Destroy();
 	}
 
+	// 生成
 	void Create(size_t bufferSize);
-
+	// マップ
 	HRESULT Map(void** ptr);
+	// アンマップ
 	void UnMap();
 
-	size_t GetBufferSize() const { return m_BufferSize; }
+	// バッファサイズを取得
+	size_t GetBufferSize() const;
+
 protected:
 	size_t m_BufferSize;
 };
-

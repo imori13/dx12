@@ -50,13 +50,14 @@ void App::RenderScene(void)
 	cmdList->ResourceBarrier(1, &barrier);
 
 	// レンダーターゲットの設定
-	cmdList->OMSetRenderTargets(1, &Display::g_RtvBuffer[Display::g_FrameIndex].m_CpuHandle, FALSE, nullptr);
+	auto handle = Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle();
+	cmdList->OMSetRenderTargets(1, &handle, FALSE, nullptr);
 
 	// クリアカラー
 	float clearColor[] = { 0.0f,0.0f,1.0f,1.0f };
 
 	// レンダーターゲットビューをクリア
-	cmdList->ClearRenderTargetView(Display::g_RtvBuffer[Display::g_FrameIndex].m_CpuHandle, clearColor, 0, nullptr);
+	cmdList->ClearRenderTargetView(Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle(), clearColor, 0, nullptr);
 
 	model.Render(cmdList.Get());
 

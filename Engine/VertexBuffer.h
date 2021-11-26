@@ -8,6 +8,8 @@ public:
 		:m_BufferView{}
 	{
 	}
+
+	// ê∂ê¨
 	void Create(size_t bufferSize, uint32_t sizeInByte, uint32_t strideInBytes)
 	{
 		UploadBuffer::Create(bufferSize);

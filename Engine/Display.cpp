@@ -75,7 +75,7 @@ namespace Display
 
 			// レンダーターゲットビューの生成
 			Graphics::g_pDevice->CreateRenderTargetView(g_RtvBuffer[i].Get(), &viewDesc, handle);
-			g_RtvBuffer[i].m_CpuHandle = handle;
+			g_RtvBuffer[i].SetCpuHandle(handle);
 			handle.ptr += s_RtvHeap.GetIncrementSize();
 		}
 

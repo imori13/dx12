@@ -23,7 +23,9 @@ bool TestModel::OnInit()
 
 		void* ptr = nullptr;
 		m_pVertexBuffer.Map(&ptr);
+
 		memcpy(ptr, vertices, sizeof(vertices));
+
 		m_pVertexBuffer.UnMap();
 	}
 

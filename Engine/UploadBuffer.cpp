@@ -1,6 +1,7 @@
 #include "UploadBuffer.h"
 #include "GraphicsCore.h"
 
+
 void UploadBuffer::Create(size_t bufferSize)
 {
 	Destroy();
@@ -32,11 +33,12 @@ void UploadBuffer::Create(size_t bufferSize)
 	Graphics::g_pDevice->CreateCommittedResource(
 		&HeapProps,
 		D3D12_HEAP_FLAG_NONE,
-		&ResourceDesc, 
-		D3D12_RESOURCE_STATE_GENERIC_READ, 
-		nullptr, 
+		&ResourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
 		IID_PPV_ARGS(&m_pResource));
 
+	// ƒAƒhƒŒƒX‚ðŽæ“¾
 	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();
 }
 
@@ -47,5 +49,10 @@ HRESULT UploadBuffer::Map(void** ptr)
 
 void UploadBuffer::UnMap()
 {
-	m_pResource->Unmap(0,nullptr);
+	m_pResource->Unmap(0, nullptr);
+}
+
+size_t UploadBuffer::GetBufferSize() const
+{
+	return m_BufferSize;
 }
