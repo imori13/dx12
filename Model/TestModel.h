@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Display.h"
+#include <UploadBuffer.h>
 
 struct alignas(256) Transform
 {
@@ -12,9 +13,8 @@ struct alignas(256) Transform
 template<typename T>
 struct ConstantBufferView
 {
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
 	D3D12_CONSTANT_BUFFER_VIEW_DESC Desc;	// 定数バッファの構成設定
-	D3D12_CPU_DESCRIPTOR_HANDLE HandleCPU;	// CPUディスクリプタハンドル
-	D3D12_GPU_DESCRIPTOR_HANDLE HandleGPU;	// GPUディスクリプタハンドル
 	T* pBuffer;	// バッファ先頭へのポインタ
 };
 
@@ -23,14 +23,17 @@ class TestModel
 public:
 	TestModel()
 		: m_pHeapCBV(nullptr)
-		, m_pVB(nullptr)
 		, m_pPSO(nullptr)
 		, m_pRootSignature(nullptr)
+		, m_CBV{}
+		, m_VBV{}
+		, m_Viewport{}
+		, m_Scissor{}
 	{
-		for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
-		{
-			m_pCB[i] = nullptr;
-		}
+		//for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
+		//{
+		//	m_pCB[i] = nullptr;
+		//}
 	}
 	~TestModel()
 	{}
@@ -41,15 +44,29 @@ public:
 	void OnTerm();
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;		// CBVディスクリプタヒープ
-	ComPtr<ID3D12Resource> m_pVB;	// 頂点バッファ
-	ComPtr<ID3D12Resource> m_pCB[FRAME_COUNT];		// 定数バッファ
+	UploadBuffer m_pVertexBuffer;
+	UploadBuffer m_pCB[FRAME_COUNT];
+	//ComPtr<ID3D12Resource> m_pCB[FRAME_COUNT];		// 定数バッファ
 	ComPtr<ID3D12PipelineState> m_pPSO;	// パイプラインステート
 	ComPtr<ID3D12RootSignature> m_pRootSignature;	// ルートシグニチャ
 
 
-	D3D12_VERTEX_BUFFER_VIEW m_VBV;	// 頂点バッファビュー
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 Position;	// 位置座標
+		DirectX::XMFLOAT4 Color;	// 頂点カラー
+	};
+
+	// 頂点データ
+	Vertex vertices[3] = {
+		{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
+		{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
+		{ DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
+	};
+
 	D3D12_VIEWPORT m_Viewport;		// ビューポート
 	D3D12_RECT m_Scissor;			// シザー矩形
+	D3D12_VERTEX_BUFFER_VIEW m_VBV;
 	ConstantBufferView<Transform> m_CBV[FRAME_COUNT];	// 定数バッファビュー
 	float m_RotateAngle;	// 回転角
 };

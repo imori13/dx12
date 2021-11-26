@@ -40,10 +40,12 @@ void UploadBuffer::Create(size_t bufferSize)
 	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();
 }
 
-void UploadBuffer::Map()
+HRESULT UploadBuffer::Map(void** ptr)
 {
+	return m_pResource->Map(0, nullptr, ptr);
 }
 
 void UploadBuffer::UnMap()
 {
+	m_pResource->Unmap(0,nullptr);
 }
