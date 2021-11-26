@@ -1,7 +1,8 @@
 #pragma once
 #include "pch.h"
 #include "Display.h"
-#include <UploadBuffer.h>
+#include <VertexBuffer.h>
+#include <ConstantBuffer.h>
 
 struct alignas(256) Transform
 {
@@ -25,8 +26,6 @@ public:
 		: m_pHeapCBV(nullptr)
 		, m_pPSO(nullptr)
 		, m_pRootSignature(nullptr)
-		, m_CBV{}
-		, m_VBV{}
 		, m_Viewport{}
 		, m_Scissor{}
 	{
@@ -44,8 +43,8 @@ public:
 	void OnTerm();
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;		// CBVディスクリプタヒープ
-	UploadBuffer m_pVertexBuffer;
-	UploadBuffer m_pCB[FRAME_COUNT];
+	VertexBuffer m_pVertexBuffer;
+	ConstantBuffer<Transform> m_pConstantBuffer[FRAME_COUNT];
 	//ComPtr<ID3D12Resource> m_pCB[FRAME_COUNT];		// 定数バッファ
 	ComPtr<ID3D12PipelineState> m_pPSO;	// パイプラインステート
 	ComPtr<ID3D12RootSignature> m_pRootSignature;	// ルートシグニチャ
@@ -66,8 +65,7 @@ private:
 
 	D3D12_VIEWPORT m_Viewport;		// ビューポート
 	D3D12_RECT m_Scissor;			// シザー矩形
-	D3D12_VERTEX_BUFFER_VIEW m_VBV;
-	ConstantBufferView<Transform> m_CBV[FRAME_COUNT];	// 定数バッファビュー
+	//ConstantBufferView<Transform> m_CBV[FRAME_COUNT];	// 定数バッファビュー
 	float m_RotateAngle;	// 回転角
 };
 

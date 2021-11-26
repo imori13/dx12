@@ -46,9 +46,6 @@ void App::RenderScene(void)
 	// リソースバリアの設定
 	auto barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	//gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
-	//gfxContext.ClearColor(g_SceneColorBuffer);
-
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);
 

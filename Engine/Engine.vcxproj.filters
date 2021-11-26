@@ -72,5 +72,11 @@
     <ClInclude Include="d3dx12.h">
       <Filter>Source File</Filter>
     </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

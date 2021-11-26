@@ -7,16 +7,12 @@ bool TestModel::OnInit()
 {
 	// 頂点バッファの作成
 	{
-		m_pVertexBuffer.Create(sizeof(vertices));
+		m_pVertexBuffer.Create(sizeof(vertices), static_cast<uint32_t>(sizeof(vertices)), static_cast<uint32_t>(sizeof(Vertex)));
 
 		void* ptr = nullptr;
 		m_pVertexBuffer.Map(&ptr);
 		memcpy(ptr, vertices, sizeof(vertices));
 		m_pVertexBuffer.UnMap();
-
-		m_VBV.BufferLocation = m_pVertexBuffer.GetGpuVirtualAddress();
-		m_VBV.SizeInBytes = static_cast<uint32_t>(sizeof(vertices));
-		m_VBV.StrideInBytes = static_cast<uint32_t>(sizeof(Vertex));
 	}
 
 	// ■ 定数バッファ用ディスクリプタヒープの生成
@@ -41,13 +37,9 @@ bool TestModel::OnInit()
 		auto incrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
 		{
-			m_pCB[i].Create(sizeof(Transform));
+			m_pConstantBuffer[i].Create(sizeof(Transform));
 
-			// 定数バッファビューの設定
-			m_CBV[i].Desc.BufferLocation = m_pCB[i].GetGpuVirtualAddress();
-			m_CBV[i].Desc.SizeInBytes = sizeof(Transform);
-
-			m_pCB[i].Map(reinterpret_cast<void**>(&m_CBV[i].pBuffer));
+			m_pConstantBuffer[i].Map(reinterpret_cast<void**>(&m_pConstantBuffer[i].m_pBuffer));
 
 			auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 			auto targetPos = DirectX::XMVectorZero();
@@ -56,87 +48,15 @@ bool TestModel::OnInit()
 			auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
 
 			// 変換行列
-			m_CBV[i].pBuffer->World = DirectX::XMMatrixIdentity();
-			m_CBV[i].pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-			m_CBV[i].pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
+			m_pConstantBuffer[i].m_pBuffer->World = DirectX::XMMatrixIdentity();
+			m_pConstantBuffer[i].m_pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
+			m_pConstantBuffer[i].m_pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
 
 			handleCPU.ptr += incrementSize * static_cast<uint64_t>(i);
 
-			Graphics::g_pDevice->CreateConstantBufferView(&m_CBV[i].Desc, handleCPU);
-			m_CBV[i].cpuHandle = handleCPU;
+			auto bufferView = m_pConstantBuffer[i].GetView();
+			Graphics::g_pDevice->CreateConstantBufferView(&bufferView, handleCPU);
 		}
-
-		//// ヒーププロパティ
-		//D3D12_HEAP_PROPERTIES prop = {};
-		//prop.Type = D3D12_HEAP_TYPE_UPLOAD;	// 頂点シェーダで使用するのでUPLOAD
-		//prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-		//prop.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-		//prop.CreationNodeMask = 1;
-		//prop.VisibleNodeMask = 1;
-
-		//// リソースの設定
-		//D3D12_RESOURCE_DESC desc = {};
-		//desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		//desc.Alignment = 0;
-		//desc.Width = sizeof(Transform);
-		//desc.Height = 1;
-		//desc.DepthOrArraySize = 1;
-		//desc.MipLevels = 1;
-		//desc.Format = DXGI_FORMAT_UNKNOWN;
-		//desc.SampleDesc.Count = 1;
-		//desc.SampleDesc.Quality = 0;
-		//desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		//desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-		//auto incrementSize
-		//	= Graphics::g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-		//for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
-		//{
-		//	//// リソース生成
-		//	//auto hr = Graphics::g_pDevice->CreateCommittedResource(
-		//	//	&prop,
-		//	//	D3D12_HEAP_FLAG_NONE,
-		//	//	&desc,
-		//	//	D3D12_RESOURCE_STATE_GENERIC_READ,
-		//	//	nullptr,
-		//	//	IID_PPV_ARGS(m_pCB[i].GetAddressOf()));
-		//	//if(FAILED(hr))
-		//	//{ return false; }
-
-		//	auto address = m_pCB[i]->GetGPUVirtualAddress();
-		//	auto handleCPU = m_pHeapCBV->GetCPUDescriptorHandleForHeapStart();
-		//	auto handleGPU = m_pHeapCBV->GetGPUDescriptorHandleForHeapStart();
-
-		//	handleCPU.ptr += incrementSize * static_cast<uint64_t>(i);
-		//	handleGPU.ptr += incrementSize * static_cast<uint64_t>(i);
-
-		//	// 定数バッファビューの設定
-		//	m_CBV[i].HandleCPU = handleCPU;
-		//	m_CBV[i].HandleGPU = handleGPU;
-		//	m_CBV[i].Desc.BufferLocation = address;
-		//	m_CBV[i].Desc.SizeInBytes = sizeof(Transform);
-
-		//	// 定数バッファビューを生成
-		//	Graphics::g_pDevice->CreateConstantBufferView(&m_CBV[i].Desc, handleCPU);
-
-		//	// マッピング
-		//	// MAPメソッドは、ポインタを取得する?
-		//	hr = m_pCB[i]->Map(0, nullptr, reinterpret_cast<void**>(&m_CBV[i].pBuffer));
-		//	if(FAILED(hr))
-		//	{ return false; }
-
-		//	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
-		//	auto targetPos = DirectX::XMVectorZero();
-		//	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		//	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-		//	auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
-
-		//	// 変換行列
-		//	m_CBV[i].pBuffer->World = DirectX::XMMatrixIdentity();
-		//	m_CBV[i].pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-		//	m_CBV[i].pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
-		//}
 
 		// ■ ルートシグニチャの生成
 		{
@@ -293,17 +213,18 @@ bool TestModel::OnInit()
 void TestModel::Update()
 {
 	m_RotateAngle += 0.025f;
-	m_CBV[Display::g_FrameIndex].pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
+	m_pConstantBuffer[Display::g_FrameIndex].m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
 
 void TestModel::Render(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
 	cmdList->SetDescriptorHeaps(1, m_pHeapCBV.GetAddressOf());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_CBV[Display::g_FrameIndex].Desc.BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[Display::g_FrameIndex].GetView().BufferLocation);
 	cmdList->SetPipelineState(m_pPSO.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	cmdList->IASetVertexBuffers(0, 1, &m_VBV);
+	auto vertexView = m_pVertexBuffer.GetView();
+	cmdList->IASetVertexBuffers(0, 1, &vertexView);
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
 	cmdList->DrawInstanced(3, 1, 0, 0);

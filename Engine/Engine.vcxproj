@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Command.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="RTVHeap.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
