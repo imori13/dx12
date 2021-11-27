@@ -1,18 +1,19 @@
 #include "Display.h"
 #include "GraphicsCore.h"
-#include "RTVHeap.h"
+#include "PixelHeap.h"
 
 namespace
 {
 	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
-	RTVHeap s_RtvHeap;
+	PixelHeap s_RenderTargetHeap;
+	PixelHeap s_DepthStencilHeap;
 }
 
 namespace Display
 {
 	uint32_t g_FrameIndex = 0;
 	RTVBuffer g_RtvBuffer[FRAME_COUNT];
-	DSVHeap g_DSVHeap;
+	DepthStencilBuffer g_DepthStencilBuffer[FRAME_COUNT];
 
 	bool Initialize(void)
 	{
@@ -60,34 +61,44 @@ namespace Display
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		}
 
-		s_RtvHeap.Create(FRAME_COUNT);
-		auto handle = s_RtvHeap.GetCpuHandle();
-		for(auto i = 0u; i < FRAME_COUNT; ++i)
+		// レンダーターゲットビューの生成
+		const uint32_t BUFFER_COUNT = FRAME_COUNT;
+		s_RenderTargetHeap.Create(BUFFER_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		for(auto i = 0u; i < BUFFER_COUNT; ++i)
 		{
 			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RtvBuffer[i].GetAddressOf()));
 			if(FAILED(hr))
 			{ return false; }
 
-			D3D12_RENDER_TARGET_VIEW_DESC viewDesc = {};
-			viewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;	// sRGBで描画表示
-			viewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// バッファにTex2Dとしてアクセス
-			viewDesc.Texture2D.MipSlice = 0;
-			viewDesc.Texture2D.PlaneSlice = 0;
-
 			// レンダーターゲットビューの生成
-			Graphics::g_pDevice->CreateRenderTargetView(g_RtvBuffer[i].Get(), &viewDesc, handle);
+			const auto& rtvView = g_RtvBuffer[i].GetView();
+			auto handle = s_RenderTargetHeap.GetHandle(i);
+			Graphics::g_pDevice->CreateRenderTargetView(g_RtvBuffer[i].Get(), &rtvView, handle);
 			g_RtvBuffer[i].SetCpuHandle(handle);
-			handle.ptr += s_RtvHeap.GetIncrementSize();
 		}
 
-		g_DSVHeap.Create();
+		// デフスステンシルビューの生成
+		s_DepthStencilHeap.Create(BUFFER_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+		for(auto i = 0u; i < BUFFER_COUNT; ++i)
+		{
+			g_DepthStencilBuffer[i].Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
+
+			const auto& dsvView = g_DepthStencilBuffer->GetView();
+			auto handle = s_DepthStencilHeap.GetHandle();
+			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer[i].Get(), &dsvView, handle);
+			g_DepthStencilBuffer[i].SetCpuHandle(handle);
+		}
 
 		return true;
 	}
 
 	void Terminate(void)
 	{
-		g_DSVHeap.Destroy();
+		s_RenderTargetHeap.Destroy();
+		s_DepthStencilHeap.Destroy();
+
+		g_RtvBuffer->Destroy();
+		g_DepthStencilBuffer->Destroy();
 
 		// スワップチェインの破棄
 		s_pSwapChain.Reset();

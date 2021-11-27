@@ -1,9 +1,7 @@
 #pragma once
 #include "Display.h"
-#include "RTVHeap.h"
 #include "Command.h"
 
-class RTVHeap;
 class Command;
 
 namespace Graphics

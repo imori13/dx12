@@ -55,7 +55,7 @@ void App::RenderScene(void)
 
 	// レンダーターゲットの設定
 	auto rtvHandle = Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle();
-	auto dsvHandle = Display::g_DSVHeap.GetCpuHandle();
+	auto dsvHandle = Display::g_DepthStencilBuffer[Display::g_FrameIndex].GetCpuHandle();
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 	// クリアカラー

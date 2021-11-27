@@ -100,14 +100,12 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="DepthStencilBuffer.cpp" />
     <ClCompile Include="Display.cpp" />
-    <ClCompile Include="DSVHeap.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RTVHeap.cpp" />
     <ClCompile Include="PixelHeap.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="WinApp.cpp" />
@@ -118,7 +116,6 @@
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DepthStencilBuffer.h" />
     <ClInclude Include="Display.h" />
-    <ClInclude Include="DSVHeap.h" />
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
@@ -127,7 +124,6 @@
     <ClInclude Include="PixelHeap.h" />
     <ClInclude Include="RTVBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
-    <ClInclude Include="RTVHeap.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="WinApp.h" />
