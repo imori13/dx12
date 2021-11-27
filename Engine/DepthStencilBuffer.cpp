@@ -42,10 +42,4 @@ void DepthStencilBuffer::Create(DXGI_FORMAT format, float depthValue, uint8_t st
 		IID_PPV_ARGS(m_pBuffer.GetAddressOf()));
 	if(FAILED(hr))
 	{ return; }
-
-	// パイプライン用ステート設定
-	m_State.DepthEnable = TRUE;
-	m_State.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	m_State.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
-	m_State.StencilEnable = FALSE;
 }
