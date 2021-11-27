@@ -6,7 +6,7 @@
     <IntDir>$(SolutionDir)\Build\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\iMoriEngineRuleset.ruleset</CodeAnalysisRuleSet>
-    <IncludePath>$(ProjectDir)..\Engine;$(ProjectDir)..\Model;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\Engine;$(ProjectDir)..\Model;C:\GSL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -19,7 +19,6 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

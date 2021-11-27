@@ -106,7 +106,6 @@
   <ItemGroup>
     <ClInclude Include="Command.h" />
     <ClInclude Include="ConstantBuffer.h" />
-    <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DepthStencilBuffer.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />
