@@ -81,5 +81,8 @@
     <ClInclude Include="RTVHeap.h">
       <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,11 +10,11 @@ public:
 	}
 
 	// ê∂ê¨
-	void Create(size_t bufferSize, uint32_t sizeInByte, uint32_t strideInBytes)
+	void Create(uint32_t bufferSize, uint32_t strideInBytes)
 	{
 		UploadBuffer::Create(bufferSize);
 
-		m_BufferView = D3D12_VERTEX_BUFFER_VIEW{ m_GpuVirtualAddress, sizeInByte, strideInBytes };
+		m_BufferView = D3D12_VERTEX_BUFFER_VIEW{ m_GpuVirtualAddress, bufferSize, strideInBytes };
 	}
 
 	D3D12_VERTEX_BUFFER_VIEW GetView() { return m_BufferView; }

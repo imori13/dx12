@@ -5,21 +5,21 @@
 
 bool TestModel::OnInit()
 {
-	// 頂点の定義
-	struct Vertex
+	// 頂点バッファの生成
 	{
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT4 Color;
-	};
-	Vertex vertices[3] = {
-		{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
-		{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
-		{ DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
-	};
+		struct Vertex
+		{
+			DirectX::XMFLOAT3 Position;
+			DirectX::XMFLOAT4 Color;
+		};
+		Vertex vertices[4] = {
+				{ DirectX::XMFLOAT3{-1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
+				{ DirectX::XMFLOAT3{ 1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
+				{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
+				{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 1.0f, 1.0f}},
+		};
 
-	// 頂点バッファの作成
-	{
-		m_pVertexBuffer.Create(sizeof(vertices), static_cast<uint32_t>(sizeof(vertices)), static_cast<uint32_t>(sizeof(Vertex)));
+		m_pVertexBuffer.Create(static_cast<uint32_t>(sizeof(vertices)), static_cast<uint32_t>(sizeof(Vertex)));
 
 		void* ptr = nullptr;
 		m_pVertexBuffer.Map(&ptr);
@@ -27,6 +27,20 @@ bool TestModel::OnInit()
 		memcpy(ptr, vertices, sizeof(vertices));
 
 		m_pVertexBuffer.UnMap();
+	}
+
+	// インデックスバッファの生成
+	{
+		uint32_t indices[] = { 0,1,2,0,2,3 };
+
+		m_pIndexBuffer.Create(static_cast<uint32_t>(sizeof(indices)), DXGI_FORMAT_R32_UINT);
+
+		void* ptr = nullptr;
+		m_pIndexBuffer.Map(&ptr);
+
+		memcpy(ptr, indices, sizeof(indices));
+
+		m_pIndexBuffer.UnMap();
 	}
 
 	// ■ 定数バッファ用ディスクリプタヒープの生成
@@ -244,15 +258,20 @@ void TestModel::Render(ID3D12GraphicsCommandList* cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	auto vertexView = m_pVertexBuffer.GetView();
 	cmdList->IASetVertexBuffers(0, 1, &vertexView);
+	auto indexView = m_pIndexBuffer.GetView();
+	cmdList->IASetIndexBuffer(&indexView);
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
-	cmdList->DrawInstanced(3, 1, 0, 0);
+	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 void TestModel::OnTerm()
 {
-
-
+	for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
+	{
+		m_pConstantBuffer[i].Destroy();
+	}
+	m_pIndexBuffer.Destroy();
 	m_pVertexBuffer.Destroy();
 	m_pPSO.Reset();
 }

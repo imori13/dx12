@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Display.h"
 #include <VertexBuffer.h>
+#include <IndexBuffer.h>
 #include <ConstantBuffer.h>
 
 struct alignas(256) Transform
@@ -33,6 +34,7 @@ public:
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;
 	VertexBuffer m_pVertexBuffer;
+	IndexBuffer m_pIndexBuffer;
 	ConstantBuffer<Transform> m_pConstantBuffer[FRAME_COUNT];
 	ComPtr<ID3D12PipelineState> m_pPSO;
 	ComPtr<ID3D12RootSignature> m_pRootSignature;

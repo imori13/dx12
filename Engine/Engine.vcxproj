@@ -117,6 +117,7 @@
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RTVBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
