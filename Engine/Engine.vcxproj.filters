@@ -37,6 +37,9 @@
     <ClCompile Include="RTVHeap.cpp">
       <Filter>Source File\GpuHeaps</Filter>
     </ClCompile>
+    <ClCompile Include="DSVHeap.cpp">
+      <Filter>Source File\GpuHeaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -83,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="DSVHeap.h">
+      <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Display.cpp" />
+    <ClCompile Include="DSVHeap.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="pch.cpp">
@@ -114,6 +115,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Display.h" />
+    <ClInclude Include="DSVHeap.h" />
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />

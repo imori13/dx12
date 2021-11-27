@@ -12,6 +12,7 @@ namespace Display
 {
 	uint32_t g_FrameIndex = 0;
 	RTVBuffer g_RtvBuffer[FRAME_COUNT];
+	DSVHeap g_DSVHeap;
 
 	bool Initialize(void)
 	{
@@ -79,11 +80,15 @@ namespace Display
 			handle.ptr += s_RtvHeap.GetIncrementSize();
 		}
 
+		g_DSVHeap.Create();
+
 		return true;
 	}
 
 	void Terminate(void)
 	{
+		g_DSVHeap.Destroy();
+
 		// スワップチェインの破棄
 		s_pSwapChain.Reset();
 	}

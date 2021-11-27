@@ -17,6 +17,7 @@ public:
 	virtual void RenderScene(void) override;
 private:
 	TestModel model;
+	TestModel model2;
 };
 
 CREATE_APPLICATION(App, 1280, 720);
@@ -24,11 +25,13 @@ CREATE_APPLICATION(App, 1280, 720);
 void App::Startup(void)
 {
 	model.OnInit();
+	model2.OnInit();
 }
 
 void App::Cleanup(void)
 {
 	model.OnTerm();
+	model2.OnTerm();
 }
 
 void App::Update(float deltaT)
@@ -36,6 +39,7 @@ void App::Update(float deltaT)
 	deltaT++;
 
 	model.Update();
+	model2.Update();
 }
 
 void App::RenderScene(void)
@@ -50,16 +54,20 @@ void App::RenderScene(void)
 	cmdList->ResourceBarrier(1, &barrier);
 
 	// レンダーターゲットの設定
-	auto handle = Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle();
-	cmdList->OMSetRenderTargets(1, &handle, FALSE, nullptr);
+	auto rtvHandle = Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle();
+	auto dsvHandle = Display::g_DSVHeap.GetCpuHandle();
+	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 	// クリアカラー
 	float clearColor[] = { 0.0f,0.0f,1.0f,1.0f };
 
-	// レンダーターゲットビューをクリア
-	cmdList->ClearRenderTargetView(Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle(), clearColor, 0, nullptr);
+	// RTVをクリア
+	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	// DSVをクリア
+	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	model.Render(cmdList.Get());
+	model2.Render(cmdList.Get());
 
 	// リソースバリアの設定
 	barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

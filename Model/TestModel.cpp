@@ -5,6 +5,8 @@
 
 bool TestModel::OnInit()
 {
+	m_RotateAngle = static_cast<float>(rand());
+
 	// 頂点バッファの生成
 	{
 		struct Vertex
@@ -170,6 +172,13 @@ bool TestModel::OnInit()
 			for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
 			{ descBS.RenderTarget[i] = descRTBS; }
 
+			// 深度ステンシルステートの設定
+			D3D12_DEPTH_STENCIL_DESC descDSS = {};
+			descDSS.DepthEnable = TRUE;
+			descDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+			descDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
+			descDSS.StencilEnable = FALSE;
+
 			ComPtr<ID3DBlob> pVSBlob;
 			ComPtr<ID3DBlob> pPSBlob;
 
@@ -191,13 +200,12 @@ bool TestModel::OnInit()
 			pipelineState.PS = { pPSBlob->GetBufferPointer(),pPSBlob->GetBufferSize() };
 			pipelineState.RasterizerState = descRS;
 			pipelineState.BlendState = descBS;
-			pipelineState.DepthStencilState.DepthEnable = FALSE;
-			pipelineState.DepthStencilState.StencilEnable = FALSE;
+			pipelineState.DepthStencilState = descDSS;
 			pipelineState.SampleMask = UINT_MAX;
 			pipelineState.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			pipelineState.NumRenderTargets = 1;
 			pipelineState.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-			pipelineState.DSVFormat = DXGI_FORMAT_UNKNOWN;
+			pipelineState.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 			pipelineState.SampleDesc.Count = 1;
 			pipelineState.SampleDesc.Quality = 0;
 
@@ -271,7 +279,9 @@ void TestModel::OnTerm()
 	{
 		m_pConstantBuffer[i].Destroy();
 	}
+	m_pHeapCBV.Reset();
 	m_pIndexBuffer.Destroy();
 	m_pVertexBuffer.Destroy();
 	m_pPSO.Reset();
+	m_pRootSignature.Reset();
 }
