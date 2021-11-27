@@ -48,13 +48,13 @@ void App::RenderScene(void)
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
 	// リソースバリアの設定
-	auto barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);
 
 	// レンダーターゲットの設定
-	auto rtvHandle = Display::g_RtvBuffer[Display::g_FrameIndex].GetCpuHandle();
+	auto rtvHandle = Display::g_RenderTargetBuffer[Display::g_FrameIndex].GetCpuHandle();
 	auto dsvHandle = Display::g_DepthStencilBuffer[Display::g_FrameIndex].GetCpuHandle();
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
@@ -70,7 +70,7 @@ void App::RenderScene(void)
 	model2.Render(cmdList.Get());
 
 	// リソースバリアの設定
-	barrier = GetTranslationBarrier(Display::g_RtvBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	// リソースバリア
 	cmdList->ResourceBarrier(1, &barrier);

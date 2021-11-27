@@ -69,7 +69,7 @@
     <ClInclude Include="Command.h">
       <Filter>Source File</Filter>
     </ClInclude>
-    <ClInclude Include="RTVBuffer.h">
+    <ClInclude Include="RenderTargetBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
     <ClInclude Include="d3dx12.h">

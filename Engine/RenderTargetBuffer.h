@@ -2,10 +2,10 @@
 #include "GpuResource.h"
 #include "GraphicsCore.h"
 
-class RTVBuffer : GpuResource
+class RenderTargetBuffer : GpuResource
 {
 public:
-	virtual ~RTVBuffer() { Destroy(); }
+	virtual ~RenderTargetBuffer() { Destroy(); }
 
 	void Destroy()
 	{

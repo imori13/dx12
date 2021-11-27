@@ -122,7 +122,7 @@
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PixelHeap.h" />
-    <ClInclude Include="RTVBuffer.h" />
+    <ClInclude Include="RenderTargetBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="VertexBuffer.h" />

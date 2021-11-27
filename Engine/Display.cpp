@@ -12,7 +12,7 @@ namespace
 namespace Display
 {
 	uint32_t g_FrameIndex = 0;
-	RTVBuffer g_RtvBuffer[FRAME_COUNT];
+	RenderTargetBuffer g_RenderTargetBuffer[FRAME_COUNT];
 	DepthStencilBuffer g_DepthStencilBuffer[FRAME_COUNT];
 
 	bool Initialize(void)
@@ -66,15 +66,15 @@ namespace Display
 		s_RenderTargetHeap.Create(BUFFER_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		for(auto i = 0u; i < BUFFER_COUNT; ++i)
 		{
-			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RtvBuffer[i].GetAddressOf()));
+			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer[i].GetAddressOf()));
 			if(FAILED(hr))
 			{ return false; }
 
 			// レンダーターゲットビューの生成
-			const auto& rtvView = g_RtvBuffer[i].GetView();
+			const auto& rtvView = g_RenderTargetBuffer[i].GetView();
 			auto handle = s_RenderTargetHeap.GetHandle(i);
-			Graphics::g_pDevice->CreateRenderTargetView(g_RtvBuffer[i].Get(), &rtvView, handle);
-			g_RtvBuffer[i].SetCpuHandle(handle);
+			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer[i].Get(), &rtvView, handle);
+			g_RenderTargetBuffer[i].SetCpuHandle(handle);
 		}
 
 		// デフスステンシルビューの生成
@@ -97,7 +97,7 @@ namespace Display
 		s_RenderTargetHeap.Destroy();
 		s_DepthStencilHeap.Destroy();
 
-		g_RtvBuffer->Destroy();
+		g_RenderTargetBuffer->Destroy();
 		g_DepthStencilBuffer->Destroy();
 
 		// スワップチェインの破棄
