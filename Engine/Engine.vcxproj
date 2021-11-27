@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="DepthStencilBuffer.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="DSVHeap.cpp" />
     <ClCompile Include="GameCore.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="DepthStencilBuffer.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="DSVHeap.h" />
     <ClInclude Include="GameCore.h" />
