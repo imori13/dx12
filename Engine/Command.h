@@ -3,7 +3,7 @@
 class Command
 {
 public:
-	Command()
+	Command() noexcept
 		: m_pCmdQueue(nullptr)
 		, m_pCmdList(nullptr)
 		, m_pFence(nullptr)
@@ -14,27 +14,16 @@ public:
 	}
 	~Command()
 	{
-
+		std::vector<ComPtr<ID3D12CommandAllocator>>().swap(m_pCmdAllocators);
 	}
+	// コピーコンストラクタ,代入演算子などは定義しない
+	Command(const Command&) = delete;
+	Command(Command&&) = delete;
+	Command& operator=(const Command&) = delete;
+	Command& operator=(Command&&) = delete;
 
 	// 生成処理
 	void Create(uint32_t swapCount);
-
-	// 破棄
-	void Destroy()
-	{
-		m_pFence.Reset();
-
-		for(int i = 0; i < m_pCmdAllocators.size(); ++i)
-		{
-			m_pCmdAllocators[i].Reset();
-		}
-		std::vector<ComPtr<ID3D12CommandAllocator>>().swap(m_pCmdAllocators);
-
-		m_pCmdList.Reset();
-
-		m_pCmdQueue.Reset();
-	}
 
 	// 描画開始
 	const ComPtr<ID3D12GraphicsCommandList>& Begin(uint32_t SwapIndex);
@@ -44,7 +33,7 @@ public:
 	// GPU待機
 	void WaitForGpu();
 
-	ID3D12CommandQueue* GetCmdQueue() { return m_pCmdQueue.Get(); }
+	ID3D12CommandQueue* GetCmdQueue() noexcept { return m_pCmdQueue.Get(); }
 private:
 	ComPtr<ID3D12CommandQueue> m_pCmdQueue;
 	ComPtr<ID3D12GraphicsCommandList> m_pCmdList;

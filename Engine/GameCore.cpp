@@ -37,7 +37,7 @@ namespace GameCore
 		Graphics::Terminate();
 	}
 
-	bool IGameApp::IsDone(void)
+	bool IGameApp::IsDone(void) noexcept
 	{
 		return false;
 	}
@@ -51,8 +51,8 @@ namespace GameCore
 #endif
 
 		// ウィンドウ初期化
-		auto hr = Window::WinApp::InitWnd(hInstance, nCmdShow, width, height);
-		if(FAILED(hr))
+		const auto success = Window::WinApp::InitWnd(hInstance, nCmdShow, width, height);
+		if(!success)
 		{ return false; }
 
 		// アプリ初期化
@@ -61,7 +61,7 @@ namespace GameCore
 		do
 		{
 			// ウィンドウ更新
-			auto flag = Window::WinApp::Update();
+			const auto flag = Window::WinApp::Update();
 
 			// ウィンドウがfalseで終了
 			if(flag) { break; }

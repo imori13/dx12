@@ -1,6 +1,6 @@
 #pragma once
 
-D3D12_RESOURCE_BARRIER GetTranslationBarrier(ID3D12Resource* resource, D3D12_RESOURCE_STATES oldState,D3D12_RESOURCE_STATES newState)
+constexpr D3D12_RESOURCE_BARRIER GetTranslationBarrier(gsl::not_null<ID3D12Resource*> resource, D3D12_RESOURCE_STATES oldState, D3D12_RESOURCE_STATES newState) noexcept
 {
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

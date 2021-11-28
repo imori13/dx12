@@ -36,16 +36,8 @@ namespace Graphics
 		return true;
 	}
 
-	void Terminate()
+	void Terminate() noexcept
 	{
-		// カラーバッファの破棄
-		for(auto i = 0u; i < FRAME_COUNT; ++i)
-		{ g_pColorBuffer[i].Reset(); }
 
-		// コマンドの破棄
-		g_Command.Destroy();
-
-		// デバイスの破棄
-		g_pDevice.Reset();
 	}
 }

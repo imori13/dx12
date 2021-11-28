@@ -10,5 +10,5 @@ namespace Graphics
 	extern Command g_Command;
 
 	bool Initialize();
-	void Terminate();
+	void Terminate() noexcept;
 }

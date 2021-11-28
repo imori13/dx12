@@ -4,8 +4,6 @@
 
 void UploadBuffer::Create(size_t bufferSize)
 {
-	Destroy();
-
 	m_BufferSize = bufferSize;
 
 	// ƒq[ƒvÝ’è
@@ -52,7 +50,7 @@ void UploadBuffer::UnMap()
 	m_pResource->Unmap(0, nullptr);
 }
 
-size_t UploadBuffer::GetBufferSize() const
+size_t UploadBuffer::GetBufferSize() const noexcept
 {
 	return m_BufferSize;
 }

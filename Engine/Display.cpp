@@ -12,8 +12,8 @@ namespace
 namespace Display
 {
 	uint32_t g_FrameIndex = 0;
-	RenderTargetBuffer g_RenderTargetBuffer[FRAME_COUNT];
-	DepthStencilBuffer g_DepthStencilBuffer[FRAME_COUNT];
+	std::array<RenderTargetBuffer, FRAME_COUNT> g_RenderTargetBuffer;
+	std::array<DepthStencilBuffer, FRAME_COUNT> g_DepthStencilBuffer;
 
 	bool Initialize(void)
 	{
@@ -62,46 +62,37 @@ namespace Display
 		}
 
 		// レンダーターゲットビューの生成
-		const uint32_t BUFFER_COUNT = FRAME_COUNT;
-		s_RenderTargetHeap.Create(BUFFER_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		for(auto i = 0u; i < BUFFER_COUNT; ++i)
+		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		for(auto i = 0u; i < g_RenderTargetBuffer.size(); ++i)
 		{
-			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer[i].GetAddressOf()));
+			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
 			if(FAILED(hr))
 			{ return false; }
 
 			// レンダーターゲットビューの生成
-			const auto& rtvView = g_RenderTargetBuffer[i].GetView();
-			auto handle = s_RenderTargetHeap.GetHandle(i);
-			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer[i].Get(), &rtvView, handle);
-			g_RenderTargetBuffer[i].SetCpuHandle(handle);
+			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
+			const auto handle = s_RenderTargetHeap.GetHandle(i);
+			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle);
+			g_RenderTargetBuffer.at(i).SetCpuHandle(handle);
 		}
 
 		// デフスステンシルビューの生成
-		s_DepthStencilHeap.Create(BUFFER_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-		for(auto i = 0u; i < BUFFER_COUNT; ++i)
+		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+		for(auto& itr : g_DepthStencilBuffer)
 		{
-			g_DepthStencilBuffer[i].Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
+			itr.Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
 
-			const auto& dsvView = g_DepthStencilBuffer->GetView();
-			auto handle = s_DepthStencilHeap.GetHandle();
-			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer[i].Get(), &dsvView, handle);
-			g_DepthStencilBuffer[i].SetCpuHandle(handle);
+			const auto& dsvView = itr.GetView();
+			const auto handle = s_DepthStencilHeap.GetHandle();
+			Graphics::g_pDevice->CreateDepthStencilView(itr.Get(), &dsvView, handle);
+			itr.SetCpuHandle(handle);
 		}
 
 		return true;
 	}
 
-	void Terminate(void)
+	void Terminate(void) noexcept
 	{
-		s_RenderTargetHeap.Destroy();
-		s_DepthStencilHeap.Destroy();
-
-		g_RenderTargetBuffer->Destroy();
-		g_DepthStencilBuffer->Destroy();
-
-		// スワップチェインの破棄
-		s_pSwapChain.Reset();
 	}
 
 	void Present(uint32_t interval)

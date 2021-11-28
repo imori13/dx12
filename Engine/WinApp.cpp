@@ -9,7 +9,7 @@ namespace Window
 	static HINSTANCE g_hInst=nullptr;
 	static const wchar_t* g_windowName = nullptr;
 
-	LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+	LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM) noexcept;
 
 	bool WinApp::InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
 	{
@@ -24,7 +24,7 @@ namespace Window
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
 		windowClass.lpfnWndProc = WndProc;
 		windowClass.hInstance = hInstance;
-		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		windowClass.lpszClassName = g_windowName;
 
 		// ウィンドウの登録
@@ -32,7 +32,7 @@ namespace Window
 		{ return false; }
 
 		// ウィンドウサイズを調整
-		RECT rc = { 0, 0, static_cast<LONG>(g_Width), static_cast<LONG>(g_Height) };
+		RECT rc = { 0, 0, gsl::narrow<LONG>(g_Width), gsl::narrow<LONG>(g_Height) };
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
 		// ウィンドウを生成
@@ -54,7 +54,7 @@ namespace Window
 		return true;
 	}
 
-	bool WinApp::Update()
+	bool WinApp::Update() noexcept
 	{
 		MSG msg = {};
 		while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -66,7 +66,7 @@ namespace Window
 		return msg.message == WM_QUIT;
 	}
 
-	void WinApp::TermWnd()
+	void WinApp::TermWnd() noexcept
 	{
 		// ウィンドウの登録を解除
 		if(g_hInst != nullptr)
@@ -76,7 +76,7 @@ namespace Window
 		g_hWnd = nullptr;
 	}
 
-	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 	{
 		switch(message)
 		{

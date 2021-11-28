@@ -9,39 +9,41 @@ bool TestModel::OnInit()
 
 	// 頂点バッファの生成
 	{
-		struct Vertex
-		{
-			DirectX::XMFLOAT3 Position;
-			DirectX::XMFLOAT4 Color;
-		};
-		Vertex vertices[4] = {
+		// 頂点データ
+		const Vertex _[4] = {
 				{ DirectX::XMFLOAT3{-1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
 				{ DirectX::XMFLOAT3{ 1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
 				{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
 				{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 1.0f, 1.0f}},
 		};
 
-		m_pVertexBuffer.Create(static_cast<uint32_t>(sizeof(vertices)), static_cast<uint32_t>(sizeof(Vertex)));
+		// コンテナビューを指定
+		const auto span = gsl::make_span(_);
 
+		// バッファを生成
+		m_pVertexBuffer.CreateVertex(span.size_bytes(), sizeof(Vertex));
+
+		// バッファに頂点情報を書き込む
 		void* ptr = nullptr;
 		m_pVertexBuffer.Map(&ptr);
-
-		memcpy(ptr, vertices, sizeof(vertices));
-
+		memcpy(ptr, span.data(), span.size_bytes());
 		m_pVertexBuffer.UnMap();
 	}
 
 	// インデックスバッファの生成
 	{
-		uint32_t indices[] = { 0,1,2,0,2,3 };
+		// インデックスデータ
+		const uint32_t _[] = { 0, 1, 2, 0, 2, 3 };
+		// コンテナビューを指定
+		const auto span = gsl::make_span(_);
 
-		m_pIndexBuffer.Create(static_cast<uint32_t>(sizeof(indices)), DXGI_FORMAT_R32_UINT);
+		// インデックスバッファを生成
+		m_pIndexBuffer.CreateIndex(span.size_bytes(), DXGI_FORMAT_R32_UINT);
 
+		// バッファに頂点情報を化書き込む
 		void* ptr = nullptr;
 		m_pIndexBuffer.Map(&ptr);
-
-		memcpy(ptr, indices, sizeof(indices));
-
+		memcpy(ptr, span.data(), span.size_bytes());
 		m_pIndexBuffer.UnMap();
 	}
 
@@ -53,7 +55,7 @@ bool TestModel::OnInit()
 		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		desc.NodeMask = 0;
 
-		auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
+		const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
 			&desc,
 			IID_PPV_ARGS(m_pHeapCBV.GetAddressOf()));
 		if(FAILED(hr))
@@ -64,17 +66,18 @@ bool TestModel::OnInit()
 	{
 		// 定数バッファビューを生成
 		auto handleCPU = m_pHeapCBV->GetCPUDescriptorHandleForHeapStart();
-		auto incrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
+		const auto incrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+		for(auto& buffer : m_pConstantBuffer)
 		{
-			m_pConstantBuffer[i].Create(sizeof(Transform));
+			buffer.CreateConstant(sizeof(Transform));
 
-			m_pConstantBuffer[i].Map(reinterpret_cast<void**>(&m_pConstantBuffer[i].m_pBuffer));
+			buffer.Map(reinterpret_cast<void**>(&buffer.m_pBuffer));
 
-			handleCPU.ptr += incrementSize * static_cast<uint64_t>(i);
-
-			auto bufferView = m_pConstantBuffer[i].GetView();
+			const auto bufferView = buffer.GetView();
 			Graphics::g_pDevice->CreateConstantBufferView(&bufferView, handleCPU);
+
+			handleCPU.ptr += incrementSize;
 		}
 
 		// ■ ルートシグニチャの生成
@@ -170,7 +173,7 @@ bool TestModel::OnInit()
 			descBS.AlphaToCoverageEnable = FALSE;
 			descBS.IndependentBlendEnable = FALSE;
 			for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-			{ descBS.RenderTarget[i] = descRTBS; }
+			{ gsl::at(descBS.RenderTarget, i) = descRTBS; }
 
 			// 深度ステンシルステートの設定
 			D3D12_DEPTH_STENCIL_DESC descDSS = {};
@@ -194,7 +197,8 @@ bool TestModel::OnInit()
 
 			// パイプラインステートの設定
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineState = {};
-			pipelineState.InputLayout = { elements, _countof(elements) };
+			//pipelineState.InputLayout = { elements, _countof(elements) };
+			pipelineState.InputLayout = { static_cast<D3D12_INPUT_ELEMENT_DESC*>(elements), _countof(elements) };
 			pipelineState.pRootSignature = m_pRootSignature.Get();
 			pipelineState.VS = { pVSBlob->GetBufferPointer(),pVSBlob->GetBufferSize() };
 			pipelineState.PS = { pPSBlob->GetBufferPointer(),pPSBlob->GetBufferSize() };
@@ -233,18 +237,18 @@ bool TestModel::OnInit()
 	}
 
 	// Transformの初期化
-	for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
+	for(auto& buffer : m_pConstantBuffer)
 	{
 		auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 		auto targetPos = DirectX::XMVectorZero();
 		auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 		constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-		auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
+		const auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
 
 		// 変換行列
-		m_pConstantBuffer[i].m_pBuffer->World = DirectX::XMMatrixIdentity();
-		m_pConstantBuffer[i].m_pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-		m_pConstantBuffer[i].m_pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
+		buffer.m_pBuffer->World = DirectX::XMMatrixIdentity();
+		buffer.m_pBuffer->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
+		buffer.m_pBuffer->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
 	}
 
 	return true;
@@ -254,34 +258,28 @@ void TestModel::Update()
 {
 	// Transformの更新
 	m_RotateAngle += 0.025f;
-	m_pConstantBuffer[Display::g_FrameIndex].m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
+	m_pConstantBuffer.at(Display::g_FrameIndex).m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
 
 void TestModel::Render(ID3D12GraphicsCommandList* cmdList)
 {
+	Expects(cmdList != nullptr);
+
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
 	cmdList->SetDescriptorHeaps(1, m_pHeapCBV.GetAddressOf());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[Display::g_FrameIndex].GetView().BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer.at(Display::g_FrameIndex).GetView().BufferLocation);
 	cmdList->SetPipelineState(m_pPSO.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	auto vertexView = m_pVertexBuffer.GetView();
+	const auto vertexView = m_pVertexBuffer.GetView();
 	cmdList->IASetVertexBuffers(0, 1, &vertexView);
-	auto indexView = m_pIndexBuffer.GetView();
+	const auto indexView = m_pIndexBuffer.GetView();
 	cmdList->IASetIndexBuffer(&indexView);
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
 	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
-void TestModel::OnTerm()
+void TestModel::OnTerm() noexcept
 {
-	for(uint32_t i = 0u; i < FRAME_COUNT; ++i)
-	{
-		m_pConstantBuffer[i].Destroy();
-	}
-	m_pHeapCBV.Reset();
-	m_pIndexBuffer.Destroy();
-	m_pVertexBuffer.Destroy();
-	m_pPSO.Reset();
-	m_pRootSignature.Reset();
+
 }

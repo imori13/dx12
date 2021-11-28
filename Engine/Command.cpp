@@ -3,7 +3,7 @@
 
 void Command::Create(uint32_t swapCount)
 {
-	HRESULT hr;
+	HRESULT hr{};
 
 	// コマンドキューの生成
 	{
@@ -27,10 +27,9 @@ void Command::Create(uint32_t swapCount)
 
 		for(auto i = 0u; i < swapCount; ++i)
 		{
-
 			hr = Graphics::g_pDevice->CreateCommandAllocator(
 				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				IID_PPV_ARGS(m_pCmdAllocators[i].GetAddressOf()));	// ダブルバッファリング用で2個
+				IID_PPV_ARGS(m_pCmdAllocators.at(i).GetAddressOf()));	// ダブルバッファリング用で2個
 			if(FAILED(hr))
 			{ return; }
 		}
@@ -41,7 +40,7 @@ void Command::Create(uint32_t swapCount)
 		hr = Graphics::g_pDevice->CreateCommandList(
 			0,
 			D3D12_COMMAND_LIST_TYPE_DIRECT,
-			m_pCmdAllocators[0].Get(),
+			m_pCmdAllocators.at(0).Get(),
 			nullptr,	// パイプラインステート(後で設定する)
 			IID_PPV_ARGS(m_pCmdList.GetAddressOf()));
 		if(FAILED(hr))
@@ -76,7 +75,7 @@ const ComPtr<ID3D12GraphicsCommandList>& Command::Begin(uint32_t SwapIndex)
 
 void Command::Finish()
 {
-	auto fenceValue = ExecuteCommandList();
+	const auto fenceValue = ExecuteCommandList();
 	WaitForFence(fenceValue);
 }
 
@@ -85,8 +84,8 @@ void Command::Finish()
 void Command::ClearCommand(uint32_t SwapIndex)
 {
 	// コマンドの記録を開始
-	m_pCmdAllocators[SwapIndex]->Reset();
-	m_pCmdList->Reset(m_pCmdAllocators[SwapIndex].Get(), nullptr);
+	m_pCmdAllocators.at(SwapIndex)->Reset();
+	m_pCmdList->Reset(m_pCmdAllocators.at(SwapIndex).Get(), nullptr);
 }
 
 // TODO : マルチバッファに対応する(書き込み直後のバッファは待たず、書き込み予定のバッファだけ待てばいい)
@@ -100,15 +99,17 @@ uint64_t Command::ExecuteCommandList()
 {
 	m_pCmdList->Close();
 
-	ID3D12CommandList* ppCmdLists[] = { m_pCmdList.Get() };
-	m_pCmdQueue->ExecuteCommandLists(1, ppCmdLists);
-	
+	std::array<ID3D12CommandList*, 1> ppCmdLists = { m_pCmdList.Get() };
+	const auto span = gsl::make_span(ppCmdLists);
+
+	m_pCmdQueue->ExecuteCommandLists(1, span.data());
+
 	return SignalQueue();
 }
 
 void Command::WaitForGpu()
 {
-	auto fenceValue = SignalQueue();
+	const auto fenceValue = SignalQueue();
 
 	WaitForFence(fenceValue);
 }

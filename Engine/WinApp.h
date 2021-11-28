@@ -12,8 +12,8 @@ namespace Window
 	{
 	public:
 		static bool InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height);
-		static bool Update();
-		static void TermWnd();
+		static bool Update() noexcept;
+		static void TermWnd() noexcept;
 
 	private:
 		static HINSTANCE m_hInst;

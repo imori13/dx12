@@ -4,15 +4,10 @@
 class UploadBuffer : public GpuResource
 {
 public:
-	UploadBuffer()
+	UploadBuffer() noexcept
 		:m_BufferSize(0)
 	{
 	}
-	~UploadBuffer()
-	{
-		Destroy();
-	}
-
 	// 生成
 	void Create(size_t bufferSize);
 	// マップ
@@ -21,7 +16,7 @@ public:
 	void UnMap();
 
 	// バッファサイズを取得
-	size_t GetBufferSize() const;
+	size_t GetBufferSize() const noexcept;
 
 protected:
 	size_t m_BufferSize;

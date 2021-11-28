@@ -3,21 +3,10 @@
 class GpuResource
 {
 public:
-	GpuResource()
+	GpuResource() noexcept
 		: m_pResource(nullptr)
 		, m_GpuVirtualAddress(ADDRESS_NULL)
 	{
-	}
-
-	~GpuResource()
-	{
-		Destroy();
-	}
-
-	void Destroy()
-	{
-		m_pResource = nullptr;
-		m_GpuVirtualAddress = ADDRESS_NULL;
 	}
 
 protected:

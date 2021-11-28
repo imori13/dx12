@@ -5,6 +5,12 @@
 #include <IndexBuffer.h>
 #include <ConstantBuffer.h>
 
+struct Vertex
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT4 Color;
+};
+
 struct alignas(256) Transform
 {
 	DirectX::XMMATRIX World;	// ÉèÅ[ÉãÉhçsóÒ
@@ -15,7 +21,7 @@ struct alignas(256) Transform
 class TestModel
 {
 public:
-	TestModel()
+	TestModel() noexcept
 		: m_pHeapCBV(nullptr)
 		, m_pPSO(nullptr)
 		, m_pRootSignature(nullptr)
@@ -24,18 +30,16 @@ public:
 	{
 
 	}
-	~TestModel()
-	{}
 
 	bool OnInit();
 	void Update();
 	void Render(ID3D12GraphicsCommandList* cmdList);
-	void OnTerm();
+	void OnTerm() noexcept;
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;
 	VertexBuffer m_pVertexBuffer;
 	IndexBuffer m_pIndexBuffer;
-	ConstantBuffer<Transform> m_pConstantBuffer[FRAME_COUNT];
+	std::array<ConstantBuffer<Transform>, FRAME_COUNT> m_pConstantBuffer;
 	ComPtr<ID3D12PipelineState> m_pPSO;
 	ComPtr<ID3D12RootSignature> m_pRootSignature;
 

@@ -33,7 +33,7 @@ void DepthStencilBuffer::Create(DXGI_FORMAT format, float depthValue, uint8_t st
 	clearValue.DepthStencil.Stencil = stencilValue;
 
 	// 深度バッファの生成
-	auto hr = Graphics::g_pDevice->CreateCommittedResource(
+	const auto hr = Graphics::g_pDevice->CreateCommittedResource(
 		&prop,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,

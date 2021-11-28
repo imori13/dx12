@@ -5,22 +5,24 @@ template<typename T>
 class ConstantBuffer : public UploadBuffer
 {
 public:
-	ConstantBuffer() 
+	ConstantBuffer() noexcept
+		: m_BufferView{}
 	{
+		
 	}
 
 	// publicïœêî
 	T* m_pBuffer;
 
 	// ê∂ê¨
-	void Create(size_t bufferSize)
+	void CreateConstant(size_t bufferSize)
 	{
 		UploadBuffer::Create(bufferSize);
-		m_BufferView = D3D12_CONSTANT_BUFFER_VIEW_DESC{ m_GpuVirtualAddress, static_cast<uint32_t>(bufferSize) };
+		m_BufferView = D3D12_CONSTANT_BUFFER_VIEW_DESC{ m_GpuVirtualAddress, gsl::narrow<uint32_t>(bufferSize) };
 	}
 
 	// ÉrÉÖÅ[ÇìnÇ∑
-	D3D12_CONSTANT_BUFFER_VIEW_DESC GetView() { return m_BufferView; }
+	D3D12_CONSTANT_BUFFER_VIEW_DESC GetView() noexcept { return m_BufferView; }
 	
 private:
 	D3D12_CONSTANT_BUFFER_VIEW_DESC m_BufferView;

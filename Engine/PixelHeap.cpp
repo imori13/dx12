@@ -14,7 +14,7 @@ void PixelHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE flag
 	heapDesc.NodeMask = 0;
 
 	// ƒq[ƒv¶¬
-	auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
+	const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(m_pHeap.GetAddressOf()));
 	if(FAILED(hr))

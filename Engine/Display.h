@@ -7,14 +7,14 @@ namespace Display
 {
 #define FRAME_COUNT 2
 
-	extern RenderTargetBuffer g_RenderTargetBuffer[FRAME_COUNT];
-	extern DepthStencilBuffer g_DepthStencilBuffer[FRAME_COUNT];
+	extern std::array<RenderTargetBuffer, FRAME_COUNT> g_RenderTargetBuffer;
+	extern std::array<DepthStencilBuffer, FRAME_COUNT> g_DepthStencilBuffer;
 	extern uint32_t g_FrameIndex;
 
 	// ‰Šú‰»
 	bool Initialize(void);
 	// I—¹
-	void Terminate(void);
+	void Terminate(void) noexcept;
 	// •\¦ˆ—
 	void Present(uint32_t interval);
 }

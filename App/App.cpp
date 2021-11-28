@@ -8,13 +8,12 @@
 class App : public GameCore::IGameApp
 {
 public:
-	App() {}
-	~App() {}
+	App() noexcept {};
 
-	virtual void Startup(void) override;
-	virtual void Cleanup(void) override;
-	virtual void Update(float deltaT) override;
-	virtual void RenderScene(void) override;
+	void Startup(void) override;
+	void Cleanup(void) noexcept override;
+	void Update(float deltaT) override;
+	void RenderScene(void) override;
 private:
 	TestModel model;
 	TestModel model2;
@@ -28,7 +27,7 @@ void App::Startup(void)
 	model2.OnInit();
 }
 
-void App::Cleanup(void)
+void App::Cleanup(void) noexcept
 {
 	model.OnTerm();
 	model2.OnTerm();
@@ -47,33 +46,35 @@ void App::RenderScene(void)
 	using namespace Graphics;
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
-	// リソースバリアの設定
-	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	Expects(cmdList != nullptr);
 
-	// リソースバリア
-	cmdList->ResourceBarrier(1, &barrier);
+	{
+		// リソースバリア
+		auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		cmdList->ResourceBarrier(1, &barrier);
+	}
 
 	// レンダーターゲットの設定
-	auto rtvHandle = Display::g_RenderTargetBuffer[Display::g_FrameIndex].GetCpuHandle();
-	auto dsvHandle = Display::g_DepthStencilBuffer[Display::g_FrameIndex].GetCpuHandle();
+	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 	// クリアカラー
-	float clearColor[] = { 0.0f,0.0f,1.0f,1.0f };
+	const float clearColor[4] = { 0.0f,0.0f,1.0f,1.0f };
 
 	// RTVをクリア
-	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
 	// DSVをクリア
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	model.Render(cmdList.Get());
 	model2.Render(cmdList.Get());
 
-	// リソースバリアの設定
-	barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer[Display::g_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-
-	// リソースバリア
-	cmdList->ResourceBarrier(1, &barrier);
+	{
+		// リソースバリア
+		auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		cmdList->ResourceBarrier(1, &barrier);
+	}
 
 	g_Command.Finish();
 }

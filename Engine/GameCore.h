@@ -5,9 +5,16 @@ namespace GameCore
 	class IGameApp
 	{
 	public:
+		IGameApp() = default;
+		virtual ~IGameApp() = default;
+		IGameApp(const IGameApp&) = default;
+		IGameApp(IGameApp&&) = default;
+		IGameApp& operator=(const IGameApp&) = default;
+		IGameApp& operator=(IGameApp&&) = default;
+
 		virtual void Startup(void) = 0;
 		virtual void Cleanup(void) = 0;
-		virtual bool IsDone(void);
+		virtual bool IsDone(void) noexcept;
 		virtual void Update(float deltaT) = 0;
 		virtual void RenderScene(void) = 0;
 	};
