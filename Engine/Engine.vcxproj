@@ -117,6 +117,7 @@
     <ClInclude Include="RenderTargetBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>

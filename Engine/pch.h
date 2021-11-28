@@ -4,6 +4,7 @@
 #pragma warning (disable : 26486)	// TODO : gsl C26486 警告を解決できない
 #pragma warning (disable : 26487)	// D3D12_RESOURCE_BARRIRのunion内ポインタが原因の警告を無視する 解決できない
 #pragma warning (disable : 26490)	// TODO : gsl C26490 リソースMap時に reinterpret_castを使用
+//#pragma warning (disable : 26481)
 
 #define NOMINMAX
 #define NOHELP
@@ -30,9 +31,10 @@
 
 template<typename T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-
 #include <cstdint>
 #include <vector>
 #include <memory>
 #include <string>
 #include <DirectXMath.h>
+
+#include "Debug.h"

@@ -87,5 +87,8 @@
     <ClInclude Include="DepthStencilBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
