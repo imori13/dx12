@@ -37,9 +37,10 @@ public:
 	void OnTerm() noexcept;
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;
-	VertexBuffer m_pVertexBuffer;
-	IndexBuffer m_pIndexBuffer;
-	std::array<ConstantBuffer<Transform>, FRAME_COUNT> m_pConstantBuffer;
+	UploadBuffer m_UploadBuffer;
+	//VertexBuffer m_pVertexBuffer;
+	//IndexBuffer m_pIndexBuffer;
+	//std::array<ConstantBuffer<Transform>, FRAME_COUNT> m_pConstantBuffer;
 	ComPtr<ID3D12PipelineState> m_pPSO;
 	ComPtr<ID3D12RootSignature> m_pRootSignature;
 

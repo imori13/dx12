@@ -35,23 +35,20 @@ void UploadBuffer::Create(size_t bufferSize)
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&m_pResource));
-	ENSURES(hr, "バッファの生成");
+	ENSURES(hr, "Bufferの生成");
 
 	// アドレスを取得
 	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();
 }
 
-HRESULT UploadBuffer::Map(void** ptr)
+void* UploadBuffer::Map()
 {
-	return m_pResource->Map(0, nullptr, ptr);
+	void* ptr = nullptr;
+	m_pResource->Map(0, nullptr, &ptr);
+	return ptr;
 }
 
 void UploadBuffer::UnMap()
 {
 	m_pResource->Unmap(0, nullptr);
-}
-
-size_t UploadBuffer::GetBufferSize() const noexcept
-{
-	return m_BufferSize;
 }
