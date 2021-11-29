@@ -17,7 +17,7 @@ public:
 		m_BufferView = D3D12_VERTEX_BUFFER_VIEW{ m_GpuVirtualAddress, gsl::narrow<uint32_t>(bufferSize), gsl::narrow<uint32_t>(strideInBytes) };
 	}
 
-	D3D12_VERTEX_BUFFER_VIEW GetView() noexcept { return m_BufferView; }
+	const D3D12_VERTEX_BUFFER_VIEW& GetView() noexcept { return m_BufferView; }
 private:
 	D3D12_VERTEX_BUFFER_VIEW m_BufferView;
 };

@@ -1,8 +1,9 @@
 #include "Command.h"
-#include "GraphicsCore.h"
 
 void Command::Create(uint32_t swapCount)
 {
+	EXPECTS(0 <= swapCount && swapCount < 10);
+
 	HRESULT hr{};
 
 	// コマンドキューの生成
@@ -16,22 +17,19 @@ void Command::Create(uint32_t swapCount)
 
 		// コマンドキューの生成
 		hr = Graphics::g_pDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(m_pCmdQueue.GetAddressOf()));
-		if(FAILED(hr))
-		{ return; }
+		ENSURES(hr, "CommandQueue生成");
 	}
 
 	// コマンドアロケータの生成
 	{
-		m_pCmdAllocators = std::vector<ComPtr<ID3D12CommandAllocator>>(swapCount);
-		m_pCmdAllocators.reserve(swapCount);
-
-		for(auto i = 0u; i < swapCount; ++i)
+		m_pCmdAllocators = std::vector<ComPtr<ID3D12CommandAllocator>>(FRAME_COUNT);
+		m_pCmdAllocators.reserve(FRAME_COUNT);
+		for(auto& itr : m_pCmdAllocators)
 		{
 			hr = Graphics::g_pDevice->CreateCommandAllocator(
 				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				IID_PPV_ARGS(m_pCmdAllocators.at(i).GetAddressOf()));	// ダブルバッファリング用で2個
-			if(FAILED(hr))
-			{ return; }
+				IID_PPV_ARGS(itr.GetAddressOf()));	// ダブルバッファリング用で2個
+			ENSURES(hr, "CommandAllocator生成");
 		}
 	}
 
@@ -43,24 +41,21 @@ void Command::Create(uint32_t swapCount)
 			m_pCmdAllocators.at(0).Get(),
 			nullptr,	// パイプラインステート(後で設定する)
 			IID_PPV_ARGS(m_pCmdList.GetAddressOf()));
-		if(FAILED(hr))
-		{ return; }
+		ENSURES(hr, "CommandList生成");
 	}
 
 	// フェンスの生成
 	{
 		// フェンスの生成
 		hr = Graphics::g_pDevice->CreateFence(
-			static_cast<UINT64>(0),
+			static_cast<uint64_t>(0),
 			D3D12_FENCE_FLAG_NONE,
 			IID_PPV_ARGS(m_pFence.GetAddressOf()));
-		if(FAILED(hr))
-		{ return; }
+		ENSURES(hr, "Fence生成");
 
 		// フェンスイベントの生成
 		m_FenceEventHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-		if(m_FenceEventHandle == nullptr)
-		{ return; }
+		ENSURES(m_FenceEventHandle != nullptr, "FenceEvent生成");
 	}
 
 	m_pCmdList->Close();
@@ -99,7 +94,7 @@ uint64_t Command::ExecuteCommandList()
 {
 	m_pCmdList->Close();
 
-	std::array<ID3D12CommandList*, 1> ppCmdLists = { m_pCmdList.Get() };
+	ID3D12CommandList* ppCmdLists[] = { m_pCmdList.Get() };
 	const auto span = gsl::make_span(ppCmdLists);
 
 	m_pCmdQueue->ExecuteCommandLists(1, span.data());

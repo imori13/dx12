@@ -40,6 +40,6 @@ void DepthStencilBuffer::Create(DXGI_FORMAT format, float depthValue, uint8_t st
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&clearValue,
 		IID_PPV_ARGS(m_pBuffer.GetAddressOf()));
-	if(FAILED(hr))
-	{ return; }
+
+	ENSURES(hr, "DepthBufferê∂ê¨");
 }

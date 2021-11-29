@@ -46,7 +46,7 @@ void App::RenderScene(void)
 	using namespace Graphics;
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
-	Expects(cmdList != nullptr);
+	EXPECTS(cmdList != nullptr);
 
 	{
 		// リソースバリア

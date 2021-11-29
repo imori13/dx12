@@ -1,4 +1,5 @@
 #pragma once
+#include "Display.h"
 
 class Command
 {
@@ -12,15 +13,6 @@ public:
 	{
 
 	}
-	~Command()
-	{
-		std::vector<ComPtr<ID3D12CommandAllocator>>().swap(m_pCmdAllocators);
-	}
-	// コピーコンストラクタ,代入演算子などは定義しない
-	Command(const Command&) = delete;
-	Command(Command&&) = delete;
-	Command& operator=(const Command&) = delete;
-	Command& operator=(Command&&) = delete;
 
 	// 生成処理
 	void Create(uint32_t swapCount);

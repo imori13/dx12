@@ -1,22 +1,27 @@
 #include "WinApp.h"
 
+namespace
+{
+	HINSTANCE g_hInst = nullptr;
+	const wchar_t* g_windowName = nullptr;
+}
+
 namespace Window
 {
 	uint32_t g_Width = 0;
 	uint32_t g_Height = 0;
 	HWND g_hWnd = nullptr;
 
-	static HINSTANCE g_hInst=nullptr;
-	static const wchar_t* g_windowName = nullptr;
-
 	LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM) noexcept;
 
-	bool WinApp::InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
+	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
+		EXPECTS(hInstance != nullptr, "HINSTANCEの取得");
+
 		g_hInst = hInstance;
 		g_Width = width;
 		g_Height = height;
-		g_windowName = L"タイトル";
+		g_windowName = L"iMoriEngine";
 
 		// ウィンドウの設定
 		WNDCLASSEX windowClass = { 0 };
@@ -28,33 +33,33 @@ namespace Window
 		windowClass.lpszClassName = g_windowName;
 
 		// ウィンドウの登録
-		if(!RegisterClassEx(&windowClass))
-		{ return false; }
+		bool flag = RegisterClassEx(&windowClass);
+		ENSURES(flag, "Window登録");
 
 		// ウィンドウサイズを調整
 		RECT rc = { 0, 0, gsl::narrow<LONG>(g_Width), gsl::narrow<LONG>(g_Height) };
-		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+		flag = AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+		ENSURES(flag, "WindowRect調整");
 
 		// ウィンドウを生成
-		g_hWnd = CreateWindow(g_windowName, g_windowName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-							  rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
-
-		if(!g_hWnd)
-		{ return false; }
+		g_hWnd = CreateWindowW(g_windowName, g_windowName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+							   rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+		ENSURES(g_hWnd != nullptr, "Window生成");
 
 		// ウィンドウを表示
-		ShowWindow(g_hWnd, nCmdShow);
+		constexpr int shorParam = SW_SHOW;
+		flag = ShowWindow(gsl::make_not_null(g_hWnd), shorParam);
+		ENSURES(flag == false, "Window表示");
 
 		// ウィンドウを更新
-		UpdateWindow(g_hWnd);
+		flag = UpdateWindow(gsl::make_not_null(g_hWnd));
+		ENSURES(flag, "Window更新");
 
 		// ウィンドウにフォーカスを設定
 		SetFocus(g_hWnd);
-
-		return true;
 	}
 
-	bool WinApp::Update() noexcept
+	bool Update() noexcept
 	{
 		MSG msg = {};
 		while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -66,7 +71,7 @@ namespace Window
 		return msg.message == WM_QUIT;
 	}
 
-	void WinApp::TermWnd() noexcept
+	void TermWnd() noexcept
 	{
 		// ウィンドウの登録を解除
 		if(g_hInst != nullptr)

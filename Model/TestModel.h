@@ -33,7 +33,7 @@ public:
 
 	bool OnInit();
 	void Update();
-	void Render(ID3D12GraphicsCommandList* cmdList);
+	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;

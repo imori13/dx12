@@ -28,13 +28,14 @@ void UploadBuffer::Create(size_t bufferSize)
 	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 	// 生成
-	Graphics::g_pDevice->CreateCommittedResource(
+	const auto hr = Graphics::g_pDevice->CreateCommittedResource(
 		&HeapProps,
 		D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&m_pResource));
+	ENSURES(hr, "バッファの生成");
 
 	// アドレスを取得
 	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();

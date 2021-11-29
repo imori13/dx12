@@ -51,9 +51,6 @@
     <ClInclude Include="WinApp.h">
       <Filter>Source File</Filter>
     </ClInclude>
-    <ClInclude Include="Display.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsCore.h">
       <Filter>Source File</Filter>
     </ClInclude>
@@ -88,6 +85,9 @@
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
     <ClInclude Include="Debug.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>

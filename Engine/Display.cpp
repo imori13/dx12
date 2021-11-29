@@ -1,6 +1,7 @@
 #include "Display.h"
 #include "GraphicsCore.h"
 #include "PixelHeap.h"
+#include "WinApp.h"
 
 namespace
 {
@@ -15,17 +16,16 @@ namespace Display
 	std::array<RenderTargetBuffer, FRAME_COUNT> g_RenderTargetBuffer;
 	std::array<DepthStencilBuffer, FRAME_COUNT> g_DepthStencilBuffer;
 
-	bool Initialize(void)
+	void Initialize(void)
 	{
-		HRESULT hr = 0;
+		HRESULT hr{};
 
 		// スワップチェインの生成
 		{
 			// DXGIファクトリーの生成
 			ComPtr<IDXGIFactory4> pFactory = nullptr;
 			hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "DXGIFactory生成");
 
 			// スワップチェインの設定
 			DXGI_SWAP_CHAIN_DESC desc = {};
@@ -48,14 +48,11 @@ namespace Display
 			// スワップチェインの生成
 			ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 			hr = pFactory->CreateSwapChain(Graphics::g_Command.GetCmdQueue(), &desc, &pSwapChain);
-
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "SwapChain生成");
 
 			// IDXGISwapChain3を取得
 			hr = pSwapChain->QueryInterface(IID_PPV_ARGS(s_pSwapChain.GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "SwapChain取得");
 
 			// バックバッファ番号を取得
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
@@ -66,8 +63,7 @@ namespace Display
 		for(auto i = 0u; i < g_RenderTargetBuffer.size(); ++i)
 		{
 			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "SwapChainのBuffer取得");
 
 			// レンダーターゲットビューの生成
 			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
@@ -78,17 +74,15 @@ namespace Display
 
 		// デフスステンシルビューの生成
 		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-		for(auto& itr : g_DepthStencilBuffer)
+		for(auto i = 0u; i < g_DepthStencilBuffer.size(); ++i)
 		{
-			itr.Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
+			g_DepthStencilBuffer.at(i).Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
 
-			const auto& dsvView = itr.GetView();
-			const auto handle = s_DepthStencilHeap.GetHandle();
-			Graphics::g_pDevice->CreateDepthStencilView(itr.Get(), &dsvView, handle);
-			itr.SetCpuHandle(handle);
+			const auto& dsvView = g_DepthStencilBuffer.at(i).GetView();
+			const auto handle = s_DepthStencilHeap.GetHandle(i);
+			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer.at(i).Get(), &dsvView, handle);
+			g_DepthStencilBuffer.at(i).SetCpuHandle(handle);
 		}
-
-		return true;
 	}
 
 	void Terminate(void) noexcept

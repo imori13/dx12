@@ -12,9 +12,9 @@ public:
 	// ¶¬
 	void Create(uint32_t bufferCount, D3D12_DESCRIPTOR_HEAP_TYPE flag);
 	// Žw’è‚Ìƒnƒ“ƒhƒ‹Žæ“¾
-	D3D12_CPU_DESCRIPTOR_HANDLE GetHandle(uint32_t index = 0) noexcept
+	D3D12_CPU_DESCRIPTOR_HANDLE GetHandle(uint32_t index) noexcept
 	{
-		assert(index >= 0 && index < m_DescriptorCount);
+		EXPECTS(index >= 0 && index < m_DescriptorCount);
 
 		auto copyHandle = m_CpuHandle;
 		copyHandle.ptr += static_cast<uint64_t>(index) * static_cast<uint64_t>(m_IncrementSize);

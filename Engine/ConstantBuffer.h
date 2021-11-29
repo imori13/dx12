@@ -18,11 +18,12 @@ public:
 	void CreateConstant(size_t bufferSize)
 	{
 		UploadBuffer::Create(bufferSize);
+
 		m_BufferView = D3D12_CONSTANT_BUFFER_VIEW_DESC{ m_GpuVirtualAddress, gsl::narrow<uint32_t>(bufferSize) };
 	}
 
 	// ÉrÉÖÅ[ÇìnÇ∑
-	D3D12_CONSTANT_BUFFER_VIEW_DESC GetView() noexcept { return m_BufferView; }
+	const D3D12_CONSTANT_BUFFER_VIEW_DESC& GetView() noexcept { return m_BufferView; }
 	
 private:
 	D3D12_CONSTANT_BUFFER_VIEW_DESC m_BufferView;

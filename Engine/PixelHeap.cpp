@@ -17,8 +17,7 @@ void PixelHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE flag
 	const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(m_pHeap.GetAddressOf()));
-	if(FAILED(hr))
-	{ return; }
+	ENSURES(hr, "PixelHeap¶¬");
 
 	// ƒnƒ“ƒhƒ‹Ý’è
 	m_CpuHandle = m_pHeap->GetCPUDescriptorHandleForHeapStart();

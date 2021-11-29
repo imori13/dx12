@@ -8,15 +8,7 @@ namespace Window
 	extern uint32_t g_Height;
 	extern HWND g_hWnd;
 
-	class WinApp
-	{
-	public:
-		static bool InitWnd(HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height);
-		static bool Update() noexcept;
-		static void TermWnd() noexcept;
-
-	private:
-		static HINSTANCE m_hInst;
-		static const wchar_t* m_windowName;
-	};
+	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height);
+	bool Update() noexcept;
+	void TermWnd() noexcept;
 }

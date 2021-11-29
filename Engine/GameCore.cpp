@@ -42,26 +42,25 @@ namespace GameCore
 		return false;
 	}
 
-	int RunApplication(IGameApp& game, HINSTANCE hInstance, int nCmdShow, uint32_t width, uint32_t height)
+	int RunApplication(IGameApp& game, HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
 		// メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		//_CrtSetBreakAlloc(n);
 #endif
-
 		// ウィンドウ初期化
-		const auto success = Window::WinApp::InitWnd(hInstance, nCmdShow, width, height);
-		if(!success)
-		{ return false; }
+		Window::InitWnd(hInstance, width, height);
 
 		// アプリ初期化
 		InitializeApplication(game);
 
+		LOGLINE("■■■ 初期化完了 ■■■");
+
 		do
 		{
 			// ウィンドウ更新
-			const auto flag = Window::WinApp::Update();
+			const auto flag = Window::Update();
 
 			// ウィンドウがfalseで終了
 			if(flag) { break; }
@@ -72,7 +71,9 @@ namespace GameCore
 		// アプリ終了
 		TerminateApplication(game);
 		// ウィンドウ終了
-		Window::WinApp::TermWnd();
+		Window::TermWnd();
+
+		LOGLINE("■■■ 終了処理 ■■■");
 
 		return 0;
 	}

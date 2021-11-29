@@ -6,6 +6,7 @@
 bool TestModel::OnInit()
 {
 	m_RotateAngle = static_cast<float>(rand());
+	HRESULT hr{};
 
 	// 頂点バッファの生成
 	{
@@ -25,7 +26,8 @@ bool TestModel::OnInit()
 
 		// バッファに頂点情報を書き込む
 		void* ptr = nullptr;
-		m_pVertexBuffer.Map(&ptr);
+		hr = m_pVertexBuffer.Map(&ptr);
+		EXPECTS(hr, "VertexMap");
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_pVertexBuffer.UnMap();
 	}
@@ -42,7 +44,8 @@ bool TestModel::OnInit()
 
 		// バッファに頂点情報を化書き込む
 		void* ptr = nullptr;
-		m_pIndexBuffer.Map(&ptr);
+		hr = m_pIndexBuffer.Map(&ptr);
+		EXPECTS(hr, "IndexMap");
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_pIndexBuffer.UnMap();
 	}
@@ -55,11 +58,10 @@ bool TestModel::OnInit()
 		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		desc.NodeMask = 0;
 
-		const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
+		hr = Graphics::g_pDevice->CreateDescriptorHeap(
 			&desc,
 			IID_PPV_ARGS(m_pHeapCBV.GetAddressOf()));
-		if(FAILED(hr))
-		{ return false; }
+		ENSURES(hr, "ConstantBufferHeap生成")
 	}
 
 	// ■ 定数バッファの生成
@@ -72,7 +74,8 @@ bool TestModel::OnInit()
 		{
 			buffer.CreateConstant(sizeof(Transform));
 
-			buffer.Map(reinterpret_cast<void**>(&buffer.m_pBuffer));
+			hr = buffer.Map(reinterpret_cast<void**>(&buffer.m_pBuffer));
+			ENSURES(hr, "ConstantMap");
 
 			const auto bufferView = buffer.GetView();
 			Graphics::g_pDevice->CreateConstantBufferView(&bufferView, handleCPU);
@@ -107,22 +110,20 @@ bool TestModel::OnInit()
 			ComPtr<ID3DBlob> pErrorBlob;
 
 			// シリアライズ (直列化)
-			auto hr = D3D12SerializeRootSignature(
+			hr = D3D12SerializeRootSignature(
 				&rootdesc,
 				D3D_ROOT_SIGNATURE_VERSION_1_0,
 				pBlob.GetAddressOf(),
 				pErrorBlob.GetAddressOf());
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "RootSignature直列化")
 
-			// ルートシグニチャ
-			hr = Graphics::g_pDevice->CreateRootSignature(
-				0,
-				pBlob->GetBufferPointer(),
-				pBlob->GetBufferSize(),
-				IID_PPV_ARGS(m_pRootSignature.GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
+				// ルートシグニチャ
+				hr = Graphics::g_pDevice->CreateRootSignature(
+					0,
+					pBlob->GetBufferPointer(),
+					pBlob->GetBufferSize(),
+					IID_PPV_ARGS(m_pRootSignature.GetAddressOf()));
+			ENSURES(hr, "RootSignature生成")
 		}
 
 		// ■ パイプラインステートの生成
@@ -186,19 +187,17 @@ bool TestModel::OnInit()
 			ComPtr<ID3DBlob> pPSBlob;
 
 			// 頂点シェーダ読み込み
-			auto hr = D3DReadFileToBlob(L"SimpleVS.cso", pVSBlob.GetAddressOf());
-			if(FAILED(hr))
-			{ return false; }
+			hr = D3DReadFileToBlob(L"SimpleVS.cso", pVSBlob.GetAddressOf());
+			ENSURES(hr, "VertexShader読み込み");
 
 			// ピクセルシェーダ読み込み
 			hr = D3DReadFileToBlob(L"SimplePS.cso", pPSBlob.GetAddressOf());
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "PixelShader読み込み");
 
 			// パイプラインステートの設定
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineState = {};
-			//pipelineState.InputLayout = { elements, _countof(elements) };
-			pipelineState.InputLayout = { static_cast<D3D12_INPUT_ELEMENT_DESC*>(elements), _countof(elements) };
+			const auto span = gsl::make_span(elements);
+			pipelineState.InputLayout = { span.data(), gsl::narrow<uint32_t>(span.size()) };
 			pipelineState.pRootSignature = m_pRootSignature.Get();
 			pipelineState.VS = { pVSBlob->GetBufferPointer(),pVSBlob->GetBufferSize() };
 			pipelineState.PS = { pPSBlob->GetBufferPointer(),pPSBlob->GetBufferSize() };
@@ -217,8 +216,7 @@ bool TestModel::OnInit()
 			hr = Graphics::g_pDevice->CreateGraphicsPipelineState(
 				&pipelineState,
 				IID_PPV_ARGS(m_pPSO.GetAddressOf()));
-			if(FAILED(hr))
-			{ return false; }
+			ENSURES(hr, "PipelineStateObject生成")
 		}
 
 		// ■ ビューポートとシザー矩形の設定
@@ -261,19 +259,15 @@ void TestModel::Update()
 	m_pConstantBuffer.at(Display::g_FrameIndex).m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
 
-void TestModel::Render(ID3D12GraphicsCommandList* cmdList)
+void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
-	Expects(cmdList != nullptr);
-
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
 	cmdList->SetDescriptorHeaps(1, m_pHeapCBV.GetAddressOf());
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer.at(Display::g_FrameIndex).GetView().BufferLocation);
 	cmdList->SetPipelineState(m_pPSO.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	const auto vertexView = m_pVertexBuffer.GetView();
-	cmdList->IASetVertexBuffers(0, 1, &vertexView);
-	const auto indexView = m_pIndexBuffer.GetView();
-	cmdList->IASetIndexBuffer(&indexView);
+	cmdList->IASetVertexBuffers(0, 1, &m_pVertexBuffer.GetView());
+	cmdList->IASetIndexBuffer(&m_pIndexBuffer.GetView());
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
 	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
