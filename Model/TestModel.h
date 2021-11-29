@@ -44,6 +44,8 @@ private:
 	ComPtr<ID3D12PipelineState> m_pPSO;
 	ComPtr<ID3D12RootSignature> m_pRootSignature;
 
+	Transform* m_pTransform;
+
 	D3D12_VIEWPORT m_Viewport;
 	D3D12_RECT m_Scissor;
 	float m_RotateAngle;

@@ -34,7 +34,7 @@ bool TestModel::OnInit()
 	const uint32_t vertexSize = vertexSpan.size_bytes();
 	const uint32_t indexSize = indexSpan.size_bytes();
 
-	const auto bufferSize = vertexSize + indexSize + (sizeof(Transform) * FRAME_COUNT * 2);
+	const auto bufferSize = vertexSize + indexSize + (sizeof(Transform) * FRAME_COUNT);
 
 	// バッファを生成
 	m_UploadBuffer.Create(bufferSize);
@@ -257,10 +257,8 @@ void TestModel::Update()
 	m_RotateAngle += 0.025f;
 	uint8_t* ptr = static_cast<uint8_t*>(m_UploadBuffer.Map());
 	ptr += Display::g_FrameIndex * sizeof(Transform);
-	auto transform = static_cast<Transform*>(static_cast<void*>(ptr));
+	Transform* transform = reinterpret_cast<Transform*>(ptr);
 	transform->World = DirectX::XMMatrixRotationY(m_RotateAngle);
-	m_UploadBuffer.UnMap();
-	//m_pConstantBuffer.at(Display::g_FrameIndex).m_pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
 
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

@@ -30,7 +30,6 @@ namespace Debug
 		Print(bufferSpan.data());
 	}
 	inline void Printf(void) noexcept {}
-#endif
 
 #define LOG_HRESULT(hr) \
 	LPTSTR error_text = nullptr; \
@@ -58,8 +57,15 @@ namespace Debug
 	constexpr inline bool HAVESTRING(std::wstring_view format, ...) noexcept { return format.size() > 0; }
 	constexpr inline bool HAVESTRING(void) noexcept { return false; }
 
+	// ログ(改行なし)
+#define LOG( msg, ... ) \
+    Debug::Printf( msg , ##__VA_ARGS__ );
+	// ログ(改行あり)
+#define LOGLINE( msg, ... ) \
+    Debug::Printf( msg "\n", ##__VA_ARGS__ );
+
 #define ASSERT( FLAG, ... ) \
-	    if (Debug::Check(FLAG)) \
+	if (Debug::Check(FLAG)) \
 		{ \
 			if(Debug::HAVESTRING(__VA_ARGS__)) \
 			{ \
@@ -73,16 +79,15 @@ namespace Debug
 			__debugbreak(); \
 			std::terminate(); \
 		}
+#else _RELEASE
+#define ASSERT( FLAG, ... )
+#define LOG( msg, ... )
+#define LOGLINE( msg, ... )
+#endif
 
 	// 事前確認
 #define EXPECTS( FLAG, ... ) ASSERT(FLAG, __VA_ARGS__)
 	// 事後確認
 #define ENSURES( FLAG, ... ) ASSERT(FLAG, __VA_ARGS__)
 
-	// ログ(改行なし)
-#define LOG( msg, ... ) \
-    Debug::Printf( msg , ##__VA_ARGS__ );
-	// ログ(改行あり)
-#define LOGLINE( msg, ... ) \
-    Debug::Printf( msg "\n", ##__VA_ARGS__ );
 };
