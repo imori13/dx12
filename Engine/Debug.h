@@ -3,7 +3,13 @@
 
 namespace Debug
 {
-#ifdef _DEBUG
+#ifdef RELEASE
+
+#define ASSERT( FLAG, ... ) {}
+#define LOG( msg, ... ) {}
+#define LOGLINE( msg, ... ) {}
+
+#else
 	inline void Print(std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
 	inline void Print(std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
 	inline void Print(void) noexcept {}
@@ -79,10 +85,7 @@ namespace Debug
 			__debugbreak(); \
 			std::terminate(); \
 		}
-#else _RELEASE
-#define ASSERT( FLAG, ... )
-#define LOG( msg, ... )
-#define LOGLINE( msg, ... )
+
 #endif
 
 	// Ž–‘OŠm”F

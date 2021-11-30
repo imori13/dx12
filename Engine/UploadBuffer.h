@@ -33,9 +33,10 @@ public:
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexView() noexcept { return m_VertexView; }
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexView() noexcept { return m_IndexView; }
 	const D3D12_CONSTANT_BUFFER_VIEW_DESC& GetConstantView(uint32_t index) { return m_ConstantView.at(index); }
-protected:
-	size_t m_BufferSize;
+
 	D3D12_VERTEX_BUFFER_VIEW m_VertexView;
 	D3D12_INDEX_BUFFER_VIEW m_IndexView;
 	std::array<D3D12_CONSTANT_BUFFER_VIEW_DESC, FRAME_COUNT> m_ConstantView;
+protected:
+	size_t m_BufferSize;
 };

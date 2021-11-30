@@ -32,39 +32,30 @@ bool TestModel::OnInit()
 	const auto vertexSpan = gsl::make_span(vertex);
 	const auto indexSpan = gsl::make_span(index);
 
-	const size_t vertexSize = vertexSpan.size_bytes();
-	const size_t indexSize = indexSpan.size_bytes();
+	const auto vertexSize = vertexSpan.size_bytes();
+	const auto indexSize = indexSpan.size_bytes();
+	constexpr auto constSize = sizeof(Transform);
 
-	constexpr auto bufferSize = vertexSize + indexSize + sizeof(Transform);
+	constexpr auto bufferSize = vertexSize + indexSize + constSize;
 
 	// バッファを生成
 	m_UploadBuffer.Create(bufferSize);
-	const gsl::span<uint8_t> buffer = gsl::make_span(static_cast<uint8_t*>(m_UploadBuffer.Map()), bufferSize);
 
-	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
-	auto targetPos = DirectX::XMVectorZero();
-	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-	const auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
+	uint8_t* ptr = static_cast<uint8_t*>(m_UploadBuffer.Map());
+	const gsl::span<uint8_t> ptrSpan = gsl::make_span(ptr, bufferSize);
+	m_pTransform = reinterpret_cast<Transform*>(ptr);
 
-	m_pTransform = reinterpret_cast<Transform*>(buffer.data());
-	m_pTransform->World = DirectX::XMMatrixIdentity();
-	m_pTransform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
+	memcpy(ptrSpan.data(), m_pTransform, constSize);
+	*ptrSpan.data() += constSize;
+	memcpy(ptrSpan.data(), vertexSpan.data(), vertexSize);
+	*ptrSpan.data() += vertexSize;
+	memcpy(ptrSpan.data(), indexSpan.data(), indexSize);
+	*ptrSpan.data() += indexSize;
 
-	const gsl::span<uint8_t> constBuffer = buffer;
-	m_UploadBuffer.CreateConstantView(0, 0, sizeof(Transform));
-	m_UploadBuffer.CreateConstantView(1, 0, sizeof(Transform));
-	memcpy(constBuffer.data(), m_pTransform, sizeof(Transform));
-
-	const auto vertexBuffer = buffer.subspan(sizeof(Transform));
-	buffer.subspan(sizeof(Transform));
-	m_UploadBuffer.CreateVertexView(sizeof(Transform), vertexSize, sizeof(Vertex));
-	memcpy(vertexBuffer.data(), vertexSpan.data(), vertexSize);
-
-	const auto indexBuffer = vertexBuffer.subspan(vertexSize);
-	m_UploadBuffer.CreateIndexView(sizeof(Transform)+vertexSize, indexSize, DXGI_FORMAT_R32_UINT);
-	memcpy(indexBuffer.data(), indexSpan.data(), indexSize);
+	m_UploadBuffer.CreateConstantView(0, 0, constSize);
+	m_UploadBuffer.CreateConstantView(1, 0, constSize);
+	m_UploadBuffer.CreateVertexView(constSize, vertexSize, sizeof(Vertex));
+	m_UploadBuffer.CreateIndexView(constSize + vertexSize, indexSize, DXGI_FORMAT_R32_UINT);
 
 	// 定数バッファ用ヒープの生成
 	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
@@ -233,6 +224,16 @@ bool TestModel::OnInit()
 		m_Scissor.top = 0;
 		m_Scissor.bottom = Window::g_Height;
 	}
+
+	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
+	auto targetPos = DirectX::XMVectorZero();
+	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
+	const auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
+
+	m_pTransform->World = DirectX::XMMatrixIdentity();
+	m_pTransform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
+	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
 
 	return true;
 }
