@@ -41,15 +41,16 @@ bool TestModel::OnInit()
 	// バッファを生成
 	m_UploadBuffer.Create(bufferSize);
 
-	uint8_t* ptr = static_cast<uint8_t*>(m_UploadBuffer.Map());
-	m_pTransform = reinterpret_cast<Transform*>(ptr);
+	auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_UploadBuffer.Map());
+	m_pTransform = reinterpret_cast<Transform*>(gpuVirtualAddress);
 
-	memcpy(ptr, m_pTransform, constSize);
-	ptr += constSize;
-	memcpy(ptr, vertexSpan.data(), vertexSize);
-	ptr += vertexSize;
-	memcpy(ptr, indexSpan.data(), indexSize);
-	ptr += indexSize;
+	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), m_pTransform, constSize);
+	gpuVirtualAddress += constSize;
+	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), vertexSpan.data(), vertexSize);
+	gpuVirtualAddress += vertexSize;
+	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), indexSpan.data(), indexSize);
+	gpuVirtualAddress += indexSize;
+
 
 	m_UploadBuffer.CreateConstantView(0, 0, constSize);
 	m_UploadBuffer.CreateConstantView(1, 0, constSize);
