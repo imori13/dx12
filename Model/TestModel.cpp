@@ -1,8 +1,6 @@
 #include "TestModel.h"
 #include "GraphicsCore.h"
 #include "WinApp.h"
-#include <d3dcompiler.h>
-#include <memory>
 
 template <typename T> __forceinline T AlignUpWithMask(T value, size_t mask)
 {
@@ -89,8 +87,8 @@ bool TestModel::OnInit()
 		rootdesc.pStaticSamplers = nullptr;
 		rootdesc.Flags = flag;
 
-		ComPtr<ID3DBlob> pBlob;
-		ComPtr<ID3DBlob> pErrorBlob;
+		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+		Microsoft::WRL::ComPtr<ID3DBlob> pErrorBlob;
 
 		// シリアライズ (直列化)
 		hr = D3D12SerializeRootSignature(
@@ -166,8 +164,8 @@ bool TestModel::OnInit()
 		descDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
 		descDSS.StencilEnable = FALSE;
 
-		ComPtr<ID3DBlob> pVSBlob;
-		ComPtr<ID3DBlob> pPSBlob;
+		Microsoft::WRL::ComPtr<ID3DBlob> pVSBlob;
+		Microsoft::WRL::ComPtr<ID3DBlob> pPSBlob;
 
 		// 頂点シェーダ読み込み
 		hr = D3DReadFileToBlob(L"SimpleVS.cso", pVSBlob.GetAddressOf());

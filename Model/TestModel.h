@@ -1,10 +1,10 @@
 #pragma once
 #include "pch.h"
 #include "Display.h"
-#include <VertexBuffer.h>
-#include <IndexBuffer.h>
-#include <ConstantBuffer.h>
-#include <DescriptorHeap.h>
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "ConstantBuffer.h"
+#include "DescriptorHeap.h"
 
 struct Vertex
 {
@@ -38,8 +38,8 @@ public:
 private:
 	DescriptorHeap m_CbvHeap;
 	UploadBuffer m_UploadBuffer;
-	ComPtr<ID3D12PipelineState> m_pPSO;
-	ComPtr<ID3D12RootSignature> m_pRootSignature;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPSO;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 
 	Transform* m_pTransform;
 

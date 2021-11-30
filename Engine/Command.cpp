@@ -22,7 +22,7 @@ void Command::Create(uint32_t swapCount)
 
 	// コマンドアロケータの生成
 	{
-		m_pCmdAllocators = std::vector<ComPtr<ID3D12CommandAllocator>>(FRAME_COUNT);
+		m_pCmdAllocators = std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>>(FRAME_COUNT);
 		m_pCmdAllocators.reserve(FRAME_COUNT);
 		for(auto& itr : m_pCmdAllocators)
 		{
@@ -61,7 +61,7 @@ void Command::Create(uint32_t swapCount)
 	m_pCmdList->Close();
 }
 
-const ComPtr<ID3D12GraphicsCommandList>& Command::Begin(uint32_t SwapIndex)
+const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& Command::Begin(uint32_t SwapIndex)
 {
 	ClearCommand(SwapIndex);
 

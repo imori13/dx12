@@ -5,7 +5,7 @@
 
 namespace
 {
-	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
 	DescriptorHeap s_RenderTargetHeap;
 	DescriptorHeap s_DepthStencilHeap;
 }
@@ -23,7 +23,7 @@ namespace Display
 		// スワップチェインの生成
 		{
 			// DXGIファクトリーの生成
-			ComPtr<IDXGIFactory4> pFactory = nullptr;
+			Microsoft::WRL::ComPtr<IDXGIFactory4> pFactory = nullptr;
 			hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
 			ENSURES(hr, "DXGIFactory生成");
 
@@ -46,7 +46,7 @@ namespace Display
 			desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 			// スワップチェインの生成
-			ComPtr<IDXGISwapChain> pSwapChain = nullptr;
+			Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 			hr = pFactory->CreateSwapChain(Graphics::g_Command.GetCmdQueue(), &desc, &pSwapChain);
 			ENSURES(hr, "SwapChain生成");
 

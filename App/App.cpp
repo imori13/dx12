@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "GameCore.h"
 #include "GraphicsCore.h"
 #include "Display.h"

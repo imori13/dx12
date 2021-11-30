@@ -5,7 +5,7 @@ class Command;
 
 namespace Graphics
 {
-	extern ComPtr<ID3D12Device> g_pDevice;
+	extern Microsoft::WRL::ComPtr<ID3D12Device> g_pDevice;
 	extern Command g_Command;
 
 	void Initialize();

@@ -2,6 +2,7 @@
 
 class DepthStencilBuffer
 {
+	template<typename T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
 	DepthStencilBuffer() noexcept
 		: m_pBuffer(nullptr)

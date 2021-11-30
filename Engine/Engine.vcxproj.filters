@@ -13,9 +13,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="GameCore.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
@@ -40,11 +37,11 @@
     <ClCompile Include="DepthStencilBuffer.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
     <ClInclude Include="GameCore.h">
       <Filter>Source File</Filter>
     </ClInclude>
@@ -88,6 +85,9 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="Display.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>

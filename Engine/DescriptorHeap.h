@@ -23,7 +23,7 @@ public:
 	// ヒープのアドレス取得
 	ID3D12DescriptorHeap** GetHeapAddress() noexcept { return m_pHeap.GetAddressOf(); }
 private:
-	ComPtr<ID3D12DescriptorHeap> m_pHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pHeap;
 	uint32_t m_IncrementSize;
 	uint32_t m_DescriptorCount;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_CpuHandle;

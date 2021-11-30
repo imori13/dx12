@@ -20,7 +20,7 @@ public:
 	const D3D12_RENDER_TARGET_VIEW_DESC GetView() const noexcept { return D3D12_RENDER_TARGET_VIEW_DESC{ DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, D3D12_RTV_DIMENSION_TEXTURE2D }; }
 
 private:
-	ComPtr<ID3D12Resource> m_ColorBuffer;
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_ColorBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_CpuHandle;
 };
 
