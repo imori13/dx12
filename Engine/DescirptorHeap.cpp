@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "PixelHeap.h"
+#include "DescriptorHeap.h"
 #include "GraphicsCore.h"
 
-void PixelHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE flag)
+void DescriptorHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag)
 {
 	m_DescriptorCount = descriptorCount;
 
 	// ヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 	heapDesc.NumDescriptors = descriptorCount;
-	heapDesc.Type = flag;
-	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	heapDesc.Type = type;
+	heapDesc.Flags = flag;
 	heapDesc.NodeMask = 0;
 
 	// ヒープ生成
@@ -23,5 +23,5 @@ void PixelHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE flag
 	m_CpuHandle = m_pHeap->GetCPUDescriptorHandleForHeapStart();
 
 	// インクリメントサイズ取得
-	m_IncrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(flag);
+	m_IncrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(type);
 }

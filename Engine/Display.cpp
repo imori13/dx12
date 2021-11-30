@@ -1,13 +1,13 @@
 #include "Display.h"
 #include "GraphicsCore.h"
-#include "PixelHeap.h"
+#include "DescriptorHeap.h"
 #include "WinApp.h"
 
 namespace
 {
 	ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
-	PixelHeap s_RenderTargetHeap;
-	PixelHeap s_DepthStencilHeap;
+	DescriptorHeap s_RenderTargetHeap;
+	DescriptorHeap s_DepthStencilHeap;
 }
 
 namespace Display
@@ -59,7 +59,7 @@ namespace Display
 		}
 
 		// レンダーターゲットビューの生成
-		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 		for(auto i = 0u; i < g_RenderTargetBuffer.size(); ++i)
 		{
 			hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
@@ -73,7 +73,7 @@ namespace Display
 		}
 
 		// デフスステンシルビューの生成
-		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 		for(auto i = 0u; i < g_DepthStencilBuffer.size(); ++i)
 		{
 			g_DepthStencilBuffer.at(i).Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);

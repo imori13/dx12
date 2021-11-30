@@ -4,6 +4,7 @@
 #include <VertexBuffer.h>
 #include <IndexBuffer.h>
 #include <ConstantBuffer.h>
+#include <DescriptorHeap.h>
 
 struct Vertex
 {
@@ -22,8 +23,7 @@ class TestModel
 {
 public:
 	TestModel() noexcept
-		: m_pHeapCBV(nullptr)
-		, m_pPSO(nullptr)
+		: m_pPSO(nullptr)
 		, m_pRootSignature(nullptr)
 		, m_Viewport{}
 		, m_Scissor{}
@@ -36,11 +36,8 @@ public:
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
 private:
-	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV;
+	DescriptorHeap m_CbvHeap;
 	UploadBuffer m_UploadBuffer;
-	//VertexBuffer m_pVertexBuffer;
-	//IndexBuffer m_pIndexBuffer;
-	//std::array<ConstantBuffer<Transform>, FRAME_COUNT> m_pConstantBuffer;
 	ComPtr<ID3D12PipelineState> m_pPSO;
 	ComPtr<ID3D12RootSignature> m_pRootSignature;
 

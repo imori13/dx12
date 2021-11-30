@@ -99,7 +99,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PixelHeap.cpp" />
+    <ClCompile Include="DescirptorHeap.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
@@ -113,7 +113,7 @@
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PixelHeap.h" />
+    <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="RenderTargetBuffer.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="UploadBuffer.h" />

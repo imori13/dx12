@@ -42,15 +42,14 @@ bool TestModel::OnInit()
 	m_UploadBuffer.Create(bufferSize);
 
 	uint8_t* ptr = static_cast<uint8_t*>(m_UploadBuffer.Map());
-	const gsl::span<uint8_t> ptrSpan = gsl::make_span(ptr, bufferSize);
 	m_pTransform = reinterpret_cast<Transform*>(ptr);
 
-	memcpy(ptrSpan.data(), m_pTransform, constSize);
-	*ptrSpan.data() += constSize;
-	memcpy(ptrSpan.data(), vertexSpan.data(), vertexSize);
-	*ptrSpan.data() += vertexSize;
-	memcpy(ptrSpan.data(), indexSpan.data(), indexSize);
-	*ptrSpan.data() += indexSize;
+	memcpy(ptr, m_pTransform, constSize);
+	ptr += constSize;
+	memcpy(ptr, vertexSpan.data(), vertexSize);
+	ptr += vertexSize;
+	memcpy(ptr, indexSpan.data(), indexSize);
+	ptr += indexSize;
 
 	m_UploadBuffer.CreateConstantView(0, 0, constSize);
 	m_UploadBuffer.CreateConstantView(1, 0, constSize);
@@ -58,22 +57,13 @@ bool TestModel::OnInit()
 	m_UploadBuffer.CreateIndexView(constSize + vertexSize, indexSize, DXGI_FORMAT_R32_UINT);
 
 	// 定数バッファ用ヒープの生成
-	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	desc.NumDescriptors = 1 * FRAME_COUNT;
-	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	desc.NodeMask = 0;
+	m_CbvHeap.Create(FRAME_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
-	hr = Graphics::g_pDevice->CreateDescriptorHeap(
-		&desc,
-		IID_PPV_ARGS(m_pHeapCBV.GetAddressOf()));
-	ENSURES(hr, "ConstantBufferHeap生成");
-
-	auto handleCPU = m_pHeapCBV->GetCPUDescriptorHandleForHeapStart();
-	const auto incrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(0), handleCPU);
-	handleCPU.ptr += incrementSize;
-	Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(1), handleCPU);
+	for(auto i = 0u; i < FRAME_COUNT; ++i)
+	{
+		const auto handleCPU = m_CbvHeap.GetHandle(i);
+		Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(i), handleCPU);
+	}
 
 	// ■ ルートシグニチャの生成
 	{
@@ -248,7 +238,7 @@ void TestModel::Update()
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
-	cmdList->SetDescriptorHeaps(1, m_pHeapCBV.GetAddressOf());
+	cmdList->SetDescriptorHeaps(1, m_CbvHeap.GetHeapAddress());
 	cmdList->SetPipelineState(m_pPSO.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &m_UploadBuffer.GetVertexView());

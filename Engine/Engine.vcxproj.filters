@@ -34,7 +34,7 @@
     <ClCompile Include="Command.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="PixelHeap.cpp">
+    <ClCompile Include="DescirptorHeap.cpp">
       <Filter>Source File\GpuHeaps</Filter>
     </ClCompile>
     <ClCompile Include="DepthStencilBuffer.cpp">
@@ -78,7 +78,7 @@
     <ClInclude Include="IndexBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="PixelHeap.h">
+    <ClInclude Include="DescriptorHeap.h">
       <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>
     <ClInclude Include="DepthStencilBuffer.h">
