@@ -27,8 +27,8 @@ public:
 	{
 		m_ConstantView.at(index) = D3D12_CONSTANT_BUFFER_VIEW_DESC{ m_GpuVirtualAddress + offset , bufferSize };
 	}
-	void CreateVertexView(size_t offset, uint32_t bufferSize, uint32_t elementSize) { m_VertexView = D3D12_VERTEX_BUFFER_VIEW{ m_ConstantView.at(1).BufferLocation + offset,  bufferSize, elementSize }; }
-	void CreateIndexView(size_t offset, uint32_t bufferSize, uint32_t elementSize) noexcept { m_IndexView = D3D12_INDEX_BUFFER_VIEW{ m_VertexView.BufferLocation + offset, bufferSize, DXGI_FORMAT_R32_UINT }; }
+	void CreateVertexView(size_t offset, uint32_t bufferSize, uint32_t elementSize) noexcept { m_VertexView = D3D12_VERTEX_BUFFER_VIEW{ m_GpuVirtualAddress + offset,  bufferSize, elementSize }; }
+	void CreateIndexView(size_t offset, uint32_t bufferSize, DXGI_FORMAT format) noexcept { m_IndexView = D3D12_INDEX_BUFFER_VIEW{ m_GpuVirtualAddress + offset, bufferSize, format }; }
 
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexView() noexcept { return m_VertexView; }
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexView() noexcept { return m_IndexView; }
