@@ -1,6 +1,8 @@
 #include "TestModel.h"
 #include "GraphicsCore.h"
 #include "WinApp.h"
+#include "FileSearch.h"
+
 
 template <typename T> __forceinline T AlignUpWithMask(T value, size_t mask)
 {
@@ -164,15 +166,24 @@ bool TestModel::OnInit()
 		descDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
 		descDSS.StencilEnable = FALSE;
 
+		std::wstring vsPath;
+		std::wstring psPath;
+
+		if(!SearchFilePath(L"SimpleVS.cso", vsPath))
+			ENSURES(false, "VertexShaderパス検索");
+
+		if(!SearchFilePath(L"SimplePS.cso", psPath))
+			ENSURES(false, "PixelShaderパス検索");
+
 		Microsoft::WRL::ComPtr<ID3DBlob> pVSBlob;
 		Microsoft::WRL::ComPtr<ID3DBlob> pPSBlob;
 
 		// 頂点シェーダ読み込み
-		hr = D3DReadFileToBlob(L"SimpleVS.cso", pVSBlob.GetAddressOf());
+		hr = D3DReadFileToBlob(vsPath.c_str(), pVSBlob.GetAddressOf());
 		ENSURES(hr, "VertexShader読み込み");
 
 		// ピクセルシェーダ読み込み
-		hr = D3DReadFileToBlob(L"SimplePS.cso", pPSBlob.GetAddressOf());
+		hr = D3DReadFileToBlob(psPath.c_str(), pPSBlob.GetAddressOf());
 		ENSURES(hr, "PixelShader読み込み");
 
 		// パイプラインステートの設定

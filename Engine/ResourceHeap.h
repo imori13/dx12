@@ -1,10 +1,11 @@
 #pragma once
 
-class DescriptorHeap
+class ResourceHeap
 {
 public:
-	DescriptorHeap() noexcept
-		: m_CpuHandle{}
+	ResourceHeap() noexcept
+		: m_pHeap(nullptr)
+		, m_CpuHandle{}
 		, m_DescriptorCount(0)
 		, m_IncrementSize(0)
 	{}

@@ -1,13 +1,13 @@
 #include "Display.h"
 #include "GraphicsCore.h"
-#include "DescriptorHeap.h"
+#include "ResourceHeap.h"
 #include "WinApp.h"
 
 namespace
 {
 	Microsoft::WRL::ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
-	DescriptorHeap s_RenderTargetHeap;
-	DescriptorHeap s_DepthStencilHeap;
+	ResourceHeap s_RenderTargetHeap;
+	ResourceHeap s_DepthStencilHeap;
 }
 
 namespace Display

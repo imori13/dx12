@@ -1,10 +1,8 @@
 #pragma once
 #include "pch.h"
 #include "Display.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "ConstantBuffer.h"
-#include "DescriptorHeap.h"
+#include "UploadBuffer.h"
+#include "ResourceHeap.h"
 
 struct Vertex
 {
@@ -36,12 +34,12 @@ public:
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
 private:
-	DescriptorHeap m_CbvHeap;
+	ResourceHeap m_CbvHeap;
 	UploadBuffer m_UploadBuffer;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPSO;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 
-	Transform* m_pTransform;
+	Transform* m_pTransform;	// UploadBufferのメモリを参照しているので、デストラクタで破棄される
 
 	D3D12_VIEWPORT m_Viewport;
 	D3D12_RECT m_Scissor;

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "DescriptorHeap.h"
+#include "ResourceHeap.h"
 #include "GraphicsCore.h"
 
-void DescriptorHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag)
+void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag)
 {
 	m_DescriptorCount = descriptorCount;
 

@@ -31,13 +31,16 @@
     <ClCompile Include="Command.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="DescirptorHeap.cpp">
+    <ClCompile Include="ResourceHeap.cpp">
       <Filter>Source File\GpuHeaps</Filter>
     </ClCompile>
     <ClCompile Include="DepthStencilBuffer.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSearch.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,7 +78,7 @@
     <ClInclude Include="IndexBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="DescriptorHeap.h">
+    <ClInclude Include="ResourceHeap.h">
       <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>
     <ClInclude Include="DepthStencilBuffer.h">
@@ -90,5 +93,11 @@
     <ClInclude Include="pch.h">
       <Filter>Source File</Filter>
     </ClInclude>
+    <ClInclude Include="FileSearch.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

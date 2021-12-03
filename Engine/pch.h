@@ -4,7 +4,7 @@
 #pragma warning (disable : 26486)	// TODO : gsl C26486 警告を解決できない
 #pragma warning (disable : 26487)	// D3D12_RESOURCE_BARRIRのunion内ポインタが原因の警告を無視する 解決できない
 #pragma warning (disable : 26490)	// TODO : gsl C26490 リソースMap時に reinterpret_castを使用
-//#pragma warning (disable : 26481)
+
 
 #define NOMINMAX
 #define NOHELP
@@ -12,13 +12,17 @@
 #define NOGDI
 #define NOBITMAP
 
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dxguid.lib")
+
 #include <gsl/gsl>
 #include <windows.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
-#include <d3dcompiler.h>
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #endif
