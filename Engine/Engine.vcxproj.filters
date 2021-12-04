@@ -43,6 +43,9 @@
     <ClCompile Include="FileSearch.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source File\GpuResources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCore.h">
@@ -96,8 +99,8 @@
     <ClInclude Include="FileSearch.h">
       <Filter>Source File</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="Texture.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

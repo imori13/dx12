@@ -83,7 +83,7 @@ namespace Debug
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \
-			std::terminate(); \
+			std::abort(); \
 		}
 
 #endif

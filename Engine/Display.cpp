@@ -67,7 +67,7 @@ namespace Display
 
 			// レンダーターゲットビューの生成
 			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
-			const auto handle = s_RenderTargetHeap.GetHandle(i);
+			const auto handle = s_RenderTargetHeap.GetCPUHandle(i);
 			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle);
 			g_RenderTargetBuffer.at(i).SetCpuHandle(handle);
 		}
@@ -79,7 +79,7 @@ namespace Display
 			g_DepthStencilBuffer.at(i).Create(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
 
 			const auto& dsvView = g_DepthStencilBuffer.at(i).GetView();
-			const auto handle = s_DepthStencilHeap.GetHandle(i);
+			const auto handle = s_DepthStencilHeap.GetCPUHandle(i);
 			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer.at(i).Get(), &dsvView, handle);
 			g_DepthStencilBuffer.at(i).SetCpuHandle(handle);
 		}

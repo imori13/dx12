@@ -6,5 +6,7 @@
   <ItemGroup>
     <FxCompile Include="SimplePS.hlsl" />
     <FxCompile Include="SimpleVS.hlsl" />
+    <FxCompile Include="SimpleTexVS.hlsl" />
+    <FxCompile Include="SimpleTexPS.hlsl" />
   </ItemGroup>
 </Project>

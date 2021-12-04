@@ -5,28 +5,25 @@ class ResourceHeap
 public:
 	ResourceHeap() noexcept
 		: m_pHeap(nullptr)
-		, m_CpuHandle{}
+		, m_HeapHandle_CPU{}
+		, m_HeapHandle_GPU{}
 		, m_DescriptorCount(0)
 		, m_IncrementSize(0)
 	{}
 
 	// 生成
 	void Create(uint32_t bufferCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag);
-	// 指定のハンドル取得
-	D3D12_CPU_DESCRIPTOR_HANDLE GetHandle(uint32_t index) noexcept
-	{
-		EXPECTS(index >= 0 && index < m_DescriptorCount);
 
-		auto copyHandle = m_CpuHandle;
-		copyHandle.ptr += static_cast<uint64_t>(index) * static_cast<uint64_t>(m_IncrementSize);
-		return copyHandle;
-	}
+	// 指定のハンドル取得
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index) noexcept;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index) noexcept;
 	// ヒープのアドレス取得
 	ID3D12DescriptorHeap** GetHeapAddress() noexcept { return m_pHeap.GetAddressOf(); }
 private:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pHeap;
 	uint32_t m_IncrementSize;
 	uint32_t m_DescriptorCount;
-	D3D12_CPU_DESCRIPTOR_HANDLE m_CpuHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE m_HeapHandle_CPU;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_HeapHandle_GPU;
 };
 

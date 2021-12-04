@@ -3,11 +3,12 @@
 #include "Display.h"
 #include "UploadBuffer.h"
 #include "ResourceHeap.h"
+#include "Texture.h"
 
 struct Vertex
 {
 	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT4 Color;
+	DirectX::XMFLOAT2 Texcoord;
 };
 
 struct alignas(256) Transform
@@ -36,6 +37,7 @@ public:
 private:
 	ResourceHeap m_CbvHeap;
 	UploadBuffer m_UploadBuffer;
+	Texture m_Texture;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPSO;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 

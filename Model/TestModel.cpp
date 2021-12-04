@@ -3,16 +3,7 @@
 #include "WinApp.h"
 #include "FileSearch.h"
 
-
-template <typename T> __forceinline T AlignUpWithMask(T value, size_t mask)
-{
-	return (T)(((size_t)value + mask) & ~mask);
-}
-
-template <typename T> __forceinline T AlignUp(T value, size_t alignment)
-{
-	return AlignUpWithMask(value, alignment - 1);
-}
+#include <d3dcompiler.h>
 
 bool TestModel::OnInit()
 {
@@ -20,16 +11,16 @@ bool TestModel::OnInit()
 	HRESULT hr{};
 
 	// 頂点データ
-	const Vertex vertex[] = {
-			{ DirectX::XMFLOAT3{-1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f}},
-			{ DirectX::XMFLOAT3{ 1.0f, 1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f}},
-			{ DirectX::XMFLOAT3{ 1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 0.0f, 0.0f, 1.0f, 1.0f}},
-			{ DirectX::XMFLOAT3{-1.0f,-1.0f, 0.0f}, DirectX::XMFLOAT4{ 1.0f, 0.0f, 1.0f, 1.0f}},
+	const Vertex vertices[] = {
+			Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f)),
+			Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)),
+			Vertex(DirectX::XMFLOAT3(1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f)),
+			Vertex(DirectX::XMFLOAT3(-1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f)),
 	};
 	// インデックスデータ
 	const uint32_t index[] = { 0, 1, 2, 0, 2, 3 };
 
-	const auto vertexSpan = gsl::make_span(vertex);
+	const auto vertexSpan = gsl::make_span(vertices);
 	const auto indexSpan = gsl::make_span(index);
 
 	const auto vertexSize = vertexSpan.size_bytes();
@@ -42,7 +33,7 @@ bool TestModel::OnInit()
 	m_UploadBuffer.Create(bufferSize);
 
 	auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_UploadBuffer.Map());
-	m_pTransform = reinterpret_cast<Transform*>(gpuVirtualAddress);
+	m_pTransform = gsl::not_null(reinterpret_cast<Transform*>(gpuVirtualAddress));
 
 	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), m_pTransform, constSize);
 	gpuVirtualAddress += constSize;
@@ -52,19 +43,17 @@ bool TestModel::OnInit()
 	gpuVirtualAddress += indexSize;
 
 
-	m_UploadBuffer.CreateConstantView(0, 0, constSize);
-	m_UploadBuffer.CreateConstantView(1, 0, constSize);
+	m_UploadBuffer.CreateConstantView(0, constSize);
 	m_UploadBuffer.CreateVertexView(constSize, vertexSize, sizeof(Vertex));
 	m_UploadBuffer.CreateIndexView(constSize + vertexSize, indexSize, DXGI_FORMAT_R32_UINT);
+	m_Texture.Create(L"Resource/Texture/neko.dds");
 
 	// 定数バッファ用ヒープの生成
-	m_CbvHeap.Create(FRAME_COUNT, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+	m_CbvHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
-	for(auto i = 0u; i < FRAME_COUNT; ++i)
-	{
-		const auto handleCPU = m_CbvHeap.GetHandle(i);
-		Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(i), handleCPU);
-	}
+	Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(), m_CbvHeap.GetCPUHandle(0));
+	m_Texture.SetHeap(m_CbvHeap, 1);
+
 
 	// ■ ルートシグニチャの生成
 	{
@@ -74,19 +63,48 @@ bool TestModel::OnInit()
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
+		// SRV用
+		D3D12_DESCRIPTOR_RANGE range = {};
+		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		range.NumDescriptors = 1;
+		range.BaseShaderRegister = 0;
+		range.RegisterSpace = 0;
+		range.OffsetInDescriptorsFromTableStart = 0;
+
 		// ルートパラメータの設定
-		D3D12_ROOT_PARAMETER rootparam = {};
-		rootparam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootparam.Descriptor.ShaderRegister = 0;
-		rootparam.Descriptor.RegisterSpace = 0;
-		rootparam.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+		D3D12_ROOT_PARAMETER rootparam[2] = {};
+		rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootparam[0].Descriptor.ShaderRegister = 0;
+		rootparam[0].Descriptor.RegisterSpace = 0;
+		rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+		rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
+		rootparam[1].DescriptorTable.pDescriptorRanges = &range;
+		rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// スタティックサンプラーの設定
+		D3D12_STATIC_SAMPLER_DESC sampler = {};
+		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		sampler.MipLODBias = D3D12_DEFAULT_MIP_LOD_BIAS;
+		sampler.MaxAnisotropy = 1;
+		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+		sampler.MinLOD = -D3D12_FLOAT32_MAX;
+		sampler.MaxLOD = +D3D12_FLOAT32_MAX;
+		sampler.ShaderRegister = 0;
+		sampler.RegisterSpace = 0;
+		sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		// ルートシグネチャの設定
 		D3D12_ROOT_SIGNATURE_DESC rootdesc = {};
-		rootdesc.NumParameters = 1;
-		rootdesc.NumStaticSamplers = 0;
-		rootdesc.pParameters = &rootparam;
-		rootdesc.pStaticSamplers = nullptr;
+		rootdesc.NumParameters = 2;
+		rootdesc.NumStaticSamplers = 1;
+		rootdesc.pParameters = static_cast<D3D12_ROOT_PARAMETER*>(rootparam);
+		rootdesc.pStaticSamplers = &sampler;
 		rootdesc.Flags = flag;
 
 		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
@@ -121,9 +139,9 @@ bool TestModel::OnInit()
 		elements[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;	// 頂点ごとの入力データ
 		elements[0].InstanceDataStepRate = 0;
 
-		elements[1].SemanticName = "COLOR";
+		elements[1].SemanticName = "TEXCOORD";
 		elements[1].SemanticIndex = 0;
-		elements[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		elements[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 		elements[1].InputSlot = 0;
 		elements[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 		elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
@@ -169,10 +187,10 @@ bool TestModel::OnInit()
 		std::wstring vsPath;
 		std::wstring psPath;
 
-		if(!SearchFilePath(L"SimpleVS.cso", vsPath))
+		if(!SearchFilePath(L"SimpleTexVS.cso", vsPath))
 			ENSURES(false, "VertexShaderパス検索");
 
-		if(!SearchFilePath(L"SimplePS.cso", psPath))
+		if(!SearchFilePath(L"SimpleTexPS.cso", psPath))
 			ENSURES(false, "PixelShaderパス検索");
 
 		Microsoft::WRL::ComPtr<ID3DBlob> pVSBlob;
@@ -253,7 +271,8 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &m_UploadBuffer.GetVertexView());
 	cmdList->IASetIndexBuffer(&m_UploadBuffer.GetIndexView());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_UploadBuffer.GetConstantView(Display::g_FrameIndex).BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_UploadBuffer.GetConstantView().BufferLocation);
+	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.GetGpuHandle());
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
 	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
