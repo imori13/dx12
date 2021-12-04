@@ -360,4 +360,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # ユーザー定義
-!DirectX12_Study2/DirectX12_Study2/Resources/Models/*
+!Library/*[Dd]ebug
+!Library/*[Rr]elease
