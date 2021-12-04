@@ -36,7 +36,9 @@ public:
 	void OnTerm() noexcept;
 private:
 	ResourceHeap m_CbvHeap;
-	UploadBuffer m_UploadBuffer;
+	UploadBuffer m_VertexData;
+	UploadBuffer m_IndexData;
+	UploadBuffer m_ConstantData;
 	Texture m_Texture;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPSO;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;

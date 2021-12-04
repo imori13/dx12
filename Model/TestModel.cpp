@@ -10,48 +10,48 @@ bool TestModel::OnInit()
 	m_RotateAngle = static_cast<float>(rand());
 	HRESULT hr{};
 
-	// 頂点データ
-	const Vertex vertices[] = {
-			Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f)),
-			Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)),
-			Vertex(DirectX::XMFLOAT3(1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f)),
-			Vertex(DirectX::XMFLOAT3(-1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f)),
-	};
-	// インデックスデータ
-	const uint32_t index[] = { 0, 1, 2, 0, 2, 3 };
+	// 頂点データ生成
+	{
+		const Vertex data[] = {
+				Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f)),
+				Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)),
+				Vertex(DirectX::XMFLOAT3(1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f)),
+				Vertex(DirectX::XMFLOAT3(-1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f)),
+		};
+		const auto span = gsl::make_span(data);
 
-	const auto vertexSpan = gsl::make_span(vertices);
-	const auto indexSpan = gsl::make_span(index);
+		m_VertexData.Create(sizeof(data), sizeof(Vertex));
+		void* ptr = m_VertexData.Map();
+		memcpy(ptr, span.data(), span.size_bytes());
+		m_VertexData.UnMap();
+	}
 
-	const auto vertexSize = vertexSpan.size_bytes();
-	const auto indexSize = indexSpan.size_bytes();
-	constexpr auto constSize = sizeof(Transform);
+	// インデックスデータ生成
+	{
+		const uint32_t data[] = { 0, 1, 2, 0, 2, 3 };
+		const auto span = gsl::make_span(data);
 
-	constexpr auto bufferSize = vertexSize + indexSize + constSize;
+		m_IndexData.Create(sizeof(data), sizeof(uint32_t));
+		void* ptr = m_IndexData.Map();
+		memcpy(ptr, span.data(), span.size_bytes());
+		m_IndexData.UnMap();
+	}
 
-	// バッファを生成
-	m_UploadBuffer.Create(bufferSize);
+	// 定数バッファ生成
+	{
+		m_ConstantData.Create(sizeof(Transform), sizeof(Transform));
+		m_pTransform = static_cast<Transform*>(m_ConstantData.Map());
+	}
 
-	auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_UploadBuffer.Map());
-	m_pTransform = gsl::not_null(reinterpret_cast<Transform*>(gpuVirtualAddress));
-
-	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), m_pTransform, constSize);
-	gpuVirtualAddress += constSize;
-	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), vertexSpan.data(), vertexSize);
-	gpuVirtualAddress += vertexSize;
-	memcpy(reinterpret_cast<void*>(gpuVirtualAddress), indexSpan.data(), indexSize);
-	gpuVirtualAddress += indexSize;
-
-
-	m_UploadBuffer.CreateConstantView(0, constSize);
-	m_UploadBuffer.CreateVertexView(constSize, vertexSize, sizeof(Vertex));
-	m_UploadBuffer.CreateIndexView(constSize + vertexSize, indexSize, DXGI_FORMAT_R32_UINT);
+	// テクスチャバッファを生成
 	m_Texture.Create(L"Resource/Texture/neko.dds");
+
 
 	// 定数バッファ用ヒープの生成
 	m_CbvHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
-	Graphics::g_pDevice->CreateConstantBufferView(&m_UploadBuffer.GetConstantView(), m_CbvHeap.GetCPUHandle(0));
+	const auto constView = m_ConstantData.GetConstantView();
+	Graphics::g_pDevice->CreateConstantBufferView(&constView, m_CbvHeap.GetCPUHandle(0));
 	m_Texture.SetHeap(m_CbvHeap, 1);
 
 
@@ -269,9 +269,11 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->SetDescriptorHeaps(1, m_CbvHeap.GetHeapAddress());
 	cmdList->SetPipelineState(m_pPSO.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	cmdList->IASetVertexBuffers(0, 1, &m_UploadBuffer.GetVertexView());
-	cmdList->IASetIndexBuffer(&m_UploadBuffer.GetIndexView());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_UploadBuffer.GetConstantView().BufferLocation);
+	const auto vertexView = m_VertexData.GetVertexView();
+	cmdList->IASetVertexBuffers(0, 1, &vertexView);
+	const auto indexView = m_IndexData.GetIndexView();
+	cmdList->IASetIndexBuffer(&indexView);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.GetGpuHandle());
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);

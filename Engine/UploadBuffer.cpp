@@ -2,9 +2,10 @@
 #include "GraphicsCore.h"
 
 
-void UploadBuffer::Create(size_t bufferSize)
+void UploadBuffer::Create(size_t bufferSize, size_t strideSize)
 {
 	m_BufferSize = bufferSize;
+	m_StrideSize = strideSize;
 
 	// ヒープ設定
 	D3D12_HEAP_PROPERTIES HeapProps;
@@ -35,7 +36,7 @@ void UploadBuffer::Create(size_t bufferSize)
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&m_pResource));
-	ENSURES(hr, "Bufferの生成");
+	ENSURES(hr, "Buffer生成");
 
 	// アドレスを取得
 	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();
