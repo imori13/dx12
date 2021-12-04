@@ -1,4 +1,5 @@
 #include "Command.h"
+#include "Display.h"
 
 void Command::Create(uint32_t swapCount)
 {

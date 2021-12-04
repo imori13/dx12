@@ -46,6 +46,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineStateObject.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCore.h">
@@ -101,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineStateObject.h">
+      <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

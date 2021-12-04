@@ -3,9 +3,8 @@
 #include "WinApp.h"
 #include "FileSearch.h"
 
-#include <d3dcompiler.h>
 
-bool TestModel::OnInit()
+bool TestModel::OnInit(const std::wstring& texturePath)
 {
 	m_RotateAngle = static_cast<float>(rand());
 	HRESULT hr{};
@@ -44,8 +43,7 @@ bool TestModel::OnInit()
 	}
 
 	// テクスチャバッファを生成
-	m_Texture.Create(L"Resource/Texture/neko.dds");
-
+	m_Texture.Create(texturePath);
 
 	// 定数バッファ用ヒープの生成
 	m_CbvHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
@@ -116,15 +114,15 @@ bool TestModel::OnInit()
 			D3D_ROOT_SIGNATURE_VERSION_1_0,
 			pBlob.GetAddressOf(),
 			pErrorBlob.GetAddressOf());
-		ENSURES(hr, "RootSignature直列化")
+		ENSURES(hr, "RootSignature直列化");
 
-			// ルートシグニチャ
-			hr = Graphics::g_pDevice->CreateRootSignature(
-				0,
-				pBlob->GetBufferPointer(),
-				pBlob->GetBufferSize(),
-				IID_PPV_ARGS(m_pRootSignature.GetAddressOf()));
-		ENSURES(hr, "RootSignature生成")
+		// ルートシグニチャ
+		hr = Graphics::g_pDevice->CreateRootSignature(
+			0,
+			pBlob->GetBufferPointer(),
+			pBlob->GetBufferSize(),
+			IID_PPV_ARGS(m_pRootSignature.GetAddressOf()));
+		ENSURES(hr, "RootSignature生成");
 	}
 
 	// ■ パイプラインステートの生成
@@ -147,43 +145,6 @@ bool TestModel::OnInit()
 		elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
 		elements[1].InstanceDataStepRate = 0;
 
-		// ラスタライザーステートの設定
-		D3D12_RASTERIZER_DESC descRS;
-		descRS.FillMode = D3D12_FILL_MODE_SOLID;		// ワイヤーフレームor塗りつぶし
-		descRS.CullMode = D3D12_CULL_MODE_NONE;			// 裏面カリングon/off
-		descRS.FrontCounterClockwise = FALSE;			// 時計回り頂点を前面とする
-		descRS.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;	// ピクセル深度調整。多分Zソート用
-		descRS.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-		descRS.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-		descRS.DepthClipEnable = FALSE;			// 距離に基づくクリッピング
-		descRS.MultisampleEnable = FALSE;		// マルチサンプリングon/off
-		descRS.AntialiasedLineEnable = FALSE;	// アンチエイリアシングon/off
-		descRS.ForcedSampleCount = 0;
-		descRS.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;	// ラスタライザの塗範囲広げる
-
-		// レンダーターゲットのブレンド設定(半透明などが可能)
-		D3D12_RENDER_TARGET_BLEND_DESC descRTBS = {
-			FALSE, FALSE,
-			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
-			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
-			D3D12_LOGIC_OP_NOOP,
-			D3D12_COLOR_WRITE_ENABLE_ALL
-		};
-
-		// ブレンドステートの設定
-		D3D12_BLEND_DESC descBS;
-		descBS.AlphaToCoverageEnable = FALSE;
-		descBS.IndependentBlendEnable = FALSE;
-		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-		{ gsl::at(descBS.RenderTarget, i) = descRTBS; }
-
-		// 深度ステンシルステートの設定
-		D3D12_DEPTH_STENCIL_DESC descDSS = {};
-		descDSS.DepthEnable = TRUE;
-		descDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		descDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
-		descDSS.StencilEnable = FALSE;
-
 		std::wstring vsPath;
 		std::wstring psPath;
 
@@ -204,29 +165,16 @@ bool TestModel::OnInit()
 		hr = D3DReadFileToBlob(psPath.c_str(), pPSBlob.GetAddressOf());
 		ENSURES(hr, "PixelShader読み込み");
 
-		// パイプラインステートの設定
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineState = {};
-		const auto span = gsl::make_span(elements);
-		pipelineState.InputLayout = { span.data(), gsl::narrow<uint32_t>(span.size()) };
-		pipelineState.pRootSignature = m_pRootSignature.Get();
-		pipelineState.VS = { pVSBlob->GetBufferPointer(),pVSBlob->GetBufferSize() };
-		pipelineState.PS = { pPSBlob->GetBufferPointer(),pPSBlob->GetBufferSize() };
-		pipelineState.RasterizerState = descRS;
-		pipelineState.BlendState = descBS;
-		pipelineState.DepthStencilState = descDSS;
-		pipelineState.SampleMask = UINT_MAX;
-		pipelineState.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineState.NumRenderTargets = 1;
-		pipelineState.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-		pipelineState.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-		pipelineState.SampleDesc.Count = 1;
-		pipelineState.SampleDesc.Quality = 0;
 
-		// パイプラインステートを生成
-		hr = Graphics::g_pDevice->CreateGraphicsPipelineState(
-			&pipelineState,
-			IID_PPV_ARGS(m_pPSO.GetAddressOf()));
-		ENSURES(hr, "PipelineStateObject生成")
+		pipelineStateObject.SetInputLayout(gsl::make_span(elements));
+		pipelineStateObject.SetRootSignature(m_pRootSignature.Get());
+		pipelineStateObject.SetVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize());
+		pipelineStateObject.SetPixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize());
+		pipelineStateObject.SetRasterizerDesc();
+		pipelineStateObject.SetBlendDesc();
+		pipelineStateObject.SetDepthStencil(true);
+
+		pipelineStateObject.Create();
 	}
 
 	// ■ ビューポートとシザー矩形の設定
@@ -258,8 +206,6 @@ bool TestModel::OnInit()
 
 void TestModel::Update()
 {
-	// Transformの更新
-	m_RotateAngle += 0.025f;
 	m_pTransform->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }
 
@@ -267,7 +213,7 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
 	cmdList->SetDescriptorHeaps(1, m_CbvHeap.GetHeapAddress());
-	cmdList->SetPipelineState(m_pPSO.Get());
+	cmdList->SetPipelineState(pipelineStateObject.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	const auto vertexView = m_VertexData.GetVertexView();
 	cmdList->IASetVertexBuffers(0, 1, &vertexView);

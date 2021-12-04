@@ -23,7 +23,10 @@
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <d3dcompiler.h>
 #include <wrl/client.h>
+#include <DirectXTK12/DDSTextureLoader.h>
+#include <DirectXTK12/ResourceUploadBatch.h>
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #endif

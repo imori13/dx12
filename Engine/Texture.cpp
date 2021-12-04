@@ -2,9 +2,6 @@
 #include "FileSearch.h"
 #include "GraphicsCore.h"
 
-#include <DirectXTK12/DDSTextureLoader.h>
-#include <DirectXTK12/ResourceUploadBatch.h>
-
 void Texture::Create(const std::wstring& path)
 {
 	std::wstring texturePath;
@@ -21,8 +18,7 @@ void Texture::Create(const std::wstring& path)
 		device,
 		batch,
 		texturePath.c_str(),
-		m_pResource.GetAddressOf(),
-		true);
+		m_pResource.GetAddressOf());
 	ENSURES(hr, _T("テクスチャ生成:%s"), texturePath.c_str());
 
 	// コマンド実行

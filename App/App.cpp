@@ -1,5 +1,4 @@
 #include "GameCore.h"
-#include "GraphicsCore.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
 #include "TestModel.h"
@@ -22,8 +21,9 @@ CREATE_APPLICATION(App, 1280, 720);
 
 void App::Startup(void)
 {
-	model.OnInit();
-	model2.OnInit();
+	std::wstring path = L"Resource/Texture/";
+	model.OnInit(path + L"neko.dds");
+	model2.OnInit(path + L"neko2.dds");
 }
 
 void App::Cleanup(void) noexcept
@@ -35,6 +35,9 @@ void App::Cleanup(void) noexcept
 void App::Update(float deltaT)
 {
 	deltaT++;
+
+	model.m_RotateAngle += 0.025;
+	model2.m_RotateAngle += 0.010f;
 
 	model.Update();
 	model2.Update();

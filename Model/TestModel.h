@@ -1,9 +1,8 @@
 #pragma once
-#include "pch.h"
-#include "Display.h"
-#include "UploadBuffer.h"
 #include "ResourceHeap.h"
+#include "UploadBuffer.h"
 #include "Texture.h"
+#include "PipelineStateObject.h"
 
 struct Vertex
 {
@@ -22,31 +21,31 @@ class TestModel
 {
 public:
 	TestModel() noexcept
-		: m_pPSO(nullptr)
-		, m_pRootSignature(nullptr)
+		: m_pRootSignature(nullptr)
 		, m_Viewport{}
 		, m_Scissor{}
 	{
 
 	}
 
-	bool OnInit();
+	bool OnInit(const std::wstring& texturePath);
 	void Update();
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
+
+	float m_RotateAngle;
 private:
 	ResourceHeap m_CbvHeap;
 	UploadBuffer m_VertexData;
 	UploadBuffer m_IndexData;
 	UploadBuffer m_ConstantData;
 	Texture m_Texture;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPSO;
+	PipelineStateObject pipelineStateObject;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 
 	Transform* m_pTransform;	// UploadBufferのメモリを参照しているので、デストラクタで破棄される
 
 	D3D12_VIEWPORT m_Viewport;
 	D3D12_RECT m_Scissor;
-	float m_RotateAngle;
 };
 

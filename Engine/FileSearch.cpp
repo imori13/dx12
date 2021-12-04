@@ -1,5 +1,8 @@
 #include "FileSearch.h"
 
+#include <Shlwapi.h>
+#pragma comment(lib,"shlwapi.lib")
+
 bool SearchFilePath(const wchar_t* filename, std::wstring& retFilepath) noexcept
 {
 	// “ü—Í‚ª‚È‚¯‚ê‚ÎI—¹

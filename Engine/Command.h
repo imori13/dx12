@@ -1,5 +1,4 @@
 #pragma once
-#include "Display.h"
 
 class Command
 {

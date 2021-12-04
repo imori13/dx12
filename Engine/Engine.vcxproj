@@ -98,6 +98,7 @@
     <ClCompile Include="FileSearch.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
+    <ClCompile Include="PipelineStateObject.cpp" />
     <ClCompile Include="ResourceHeap.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -117,6 +118,7 @@
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="PipelineStateObject.h" />
     <ClInclude Include="ResourceHeap.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTargetBuffer.h" />

@@ -4,8 +4,8 @@
 
 void UploadBuffer::Create(size_t bufferSize, size_t strideSize)
 {
-	m_BufferSize = bufferSize;
-	m_StrideSize = strideSize;
+	m_BufferSize = gsl::narrow<uint32_t>(bufferSize);
+	m_StrideSize = gsl::narrow<uint32_t>(strideSize);
 
 	// ÉqÅ[Évê›íË
 	D3D12_HEAP_PROPERTIES HeapProps;

@@ -1,0 +1,3 @@
+画像をおいてファイルをShift+右クリ->powershellで起動
+
+.\texconv.exe -f BC1_UNORM neko2.jpg
