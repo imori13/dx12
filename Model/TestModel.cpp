@@ -43,7 +43,7 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 	}
 
 	// テクスチャバッファを生成
-	m_Texture.Create(texturePath);
+	m_Texture.CreateWIC(texturePath);
 
 	// 定数バッファ用ヒープの生成
 	m_CbvHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
@@ -84,6 +84,7 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 		// スタティックサンプラーの設定
 		D3D12_STATIC_SAMPLER_DESC sampler = {};
 		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		//sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
 		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;

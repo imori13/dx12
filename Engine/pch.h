@@ -26,6 +26,7 @@
 #include <d3dcompiler.h>
 #include <wrl/client.h>
 #include <DirectXTK12/DDSTextureLoader.h>
+#include <DirectXTK12/WICTextureLoader.h>
 #include <DirectXTK12/ResourceUploadBatch.h>
 #ifdef _DEBUG
 #include <dxgidebug.h>

@@ -22,8 +22,8 @@ CREATE_APPLICATION(App, 1280, 720);
 void App::Startup(void)
 {
 	std::wstring path = L"Resource/Texture/";
-	model.OnInit(path + L"neko.dds");
-	model2.OnInit(path + L"neko2.dds");
+	model.OnInit(path + L"neko.jpg");
+	model2.OnInit(path + L"neko2.jpg");
 }
 
 void App::Cleanup(void) noexcept
@@ -36,7 +36,7 @@ void App::Update(float deltaT)
 {
 	deltaT++;
 
-	model.m_RotateAngle += 0.025;
+	model.m_RotateAngle += 0.025f;
 	model2.m_RotateAngle += 0.010f;
 
 	model.Update();
