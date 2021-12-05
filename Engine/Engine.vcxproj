@@ -118,6 +118,7 @@
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="InputElement.h" />
     <ClInclude Include="PipelineStateObject.h" />
     <ClInclude Include="ResourceHeap.h" />
     <ClInclude Include="pch.h" />

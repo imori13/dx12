@@ -2,6 +2,7 @@
 #include "GraphicsCore.h"
 #include "WinApp.h"
 #include "FileSearch.h"
+#include "InputElement.h"
 
 
 bool TestModel::OnInit(const std::wstring& texturePath)
@@ -55,23 +56,9 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 
 	// ■ パイプラインステートの生成
 	{
-		// 入力レイアウトの設定 (頂点シェーダと定数バッファの紐づけ)
-		D3D12_INPUT_ELEMENT_DESC elements[2];
-		elements[0].SemanticName = "POSITION";
-		elements[0].SemanticIndex = 0;	// POSITION0,1,2と頂点シェーダで使うなら設定する
-		elements[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;	// フォーマット
-		elements[0].InputSlot = 0;		// 複数の頂点バッファ用?
-		elements[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;	// 各要素が連続する場合のelement調整
-		elements[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;	// 頂点ごとの入力データ
-		elements[0].InstanceDataStepRate = 0;
-
-		elements[1].SemanticName = "TEXCOORD";
-		elements[1].SemanticIndex = 0;
-		elements[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-		elements[1].InputSlot = 0;
-		elements[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-		elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-		elements[1].InstanceDataStepRate = 0;
+		InputElement inputElement;
+		inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+		inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 
 		std::wstring vsPath;
 		std::wstring psPath;
@@ -103,7 +90,7 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 		ENSURES(hr, "RootSignatureの生成");
 
 		// パイプラインステート設定
-		pipelineStateObject.SetInputLayout(gsl::make_span(elements));
+		pipelineStateObject.SetInputLayout(inputElement.Get());
 		pipelineStateObject.SetRootSignature(m_pRootSignature.Get());
 		pipelineStateObject.SetVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize());
 		pipelineStateObject.SetPixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize());
