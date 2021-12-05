@@ -53,79 +53,6 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 	m_Texture.SetHeap(m_CbvHeap, 1);
 
 
-	// ■ ルートシグニチャの生成
-	{
-		// ルートシグネチャが頂点シェーダ―のみを使用するので、最適化しやすいようにフラグを設定
-		auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
-		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
-		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-
-		// SRV用
-		D3D12_DESCRIPTOR_RANGE range = {};
-		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-		range.NumDescriptors = 1;
-		range.BaseShaderRegister = 0;
-		range.RegisterSpace = 0;
-		range.OffsetInDescriptorsFromTableStart = 0;
-
-		// ルートパラメータの設定
-		D3D12_ROOT_PARAMETER rootparam[2] = {};
-		rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootparam[0].Descriptor.ShaderRegister = 0;
-		rootparam[0].Descriptor.RegisterSpace = 0;
-		rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
-		rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
-		rootparam[1].DescriptorTable.pDescriptorRanges = &range;
-		rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-		// スタティックサンプラーの設定
-		D3D12_STATIC_SAMPLER_DESC sampler = {};
-		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-		//sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		sampler.MipLODBias = D3D12_DEFAULT_MIP_LOD_BIAS;
-		sampler.MaxAnisotropy = 1;
-		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-		sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-		sampler.MinLOD = -D3D12_FLOAT32_MAX;
-		sampler.MaxLOD = +D3D12_FLOAT32_MAX;
-		sampler.ShaderRegister = 0;
-		sampler.RegisterSpace = 0;
-		sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-		// ルートシグネチャの設定
-		D3D12_ROOT_SIGNATURE_DESC rootdesc = {};
-		rootdesc.NumParameters = 2;
-		rootdesc.NumStaticSamplers = 1;
-		rootdesc.pParameters = static_cast<D3D12_ROOT_PARAMETER*>(rootparam);
-		rootdesc.pStaticSamplers = &sampler;
-		rootdesc.Flags = flag;
-
-		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-		Microsoft::WRL::ComPtr<ID3DBlob> pErrorBlob;
-
-		// シリアライズ (直列化)
-		hr = D3D12SerializeRootSignature(
-			&rootdesc,
-			D3D_ROOT_SIGNATURE_VERSION_1_0,
-			pBlob.GetAddressOf(),
-			pErrorBlob.GetAddressOf());
-		ENSURES(hr, "RootSignature直列化");
-
-		// ルートシグニチャ
-		hr = Graphics::g_pDevice->CreateRootSignature(
-			0,
-			pBlob->GetBufferPointer(),
-			pBlob->GetBufferSize(),
-			IID_PPV_ARGS(m_pRootSignature.GetAddressOf()));
-		ENSURES(hr, "RootSignature生成");
-	}
-
 	// ■ パイプラインステートの生成
 	{
 		// 入力レイアウトの設定 (頂点シェーダと定数バッファの紐づけ)
@@ -166,7 +93,16 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 		hr = D3DReadFileToBlob(psPath.c_str(), pPSBlob.GetAddressOf());
 		ENSURES(hr, "PixelShader読み込み");
 
+		// ルートシグネチャ読み込み
+		Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob;
+		hr = D3DGetBlobPart(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
+		ENSURES(hr, "RootSignature設定の取得");
 
+		// ルートシグネチャ設定
+		hr = Graphics::g_pDevice->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature));
+		ENSURES(hr, "RootSignatureの生成");
+
+		// パイプラインステート設定
 		pipelineStateObject.SetInputLayout(gsl::make_span(elements));
 		pipelineStateObject.SetRootSignature(m_pRootSignature.Get());
 		pipelineStateObject.SetVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize());
@@ -175,6 +111,7 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 		pipelineStateObject.SetBlendDesc();
 		pipelineStateObject.SetDepthStencil(true);
 
+		// パイプラインステート生成
 		pipelineStateObject.Create();
 	}
 
@@ -213,15 +150,18 @@ void TestModel::Update()
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
-	cmdList->SetDescriptorHeaps(1, m_CbvHeap.GetHeapAddress());
 	cmdList->SetPipelineState(pipelineStateObject.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	const auto vertexView = m_VertexData.GetVertexView();
 	cmdList->IASetVertexBuffers(0, 1, &vertexView);
 	const auto indexView = m_IndexData.GetIndexView();
 	cmdList->IASetIndexBuffer(&indexView);
+
+	cmdList->SetDescriptorHeaps(1, m_CbvHeap.GetHeapAddress());
 	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.GetGpuHandle());
+
 	cmdList->RSSetViewports(1, &m_Viewport);
 	cmdList->RSSetScissorRects(1, &m_Scissor);
 	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);

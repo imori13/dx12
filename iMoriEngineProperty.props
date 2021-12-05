@@ -29,6 +29,9 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <FxCompile>
+      <ShaderModel>6.5</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
