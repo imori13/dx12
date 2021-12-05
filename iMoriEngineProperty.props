@@ -6,8 +6,8 @@
     <IntDir>$(SolutionDir)\Build\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\iMoriEngineRuleset.ruleset</CodeAnalysisRuleSet>
-    <ExternalIncludePath>$(ProjectDir)..\Include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(ProjectDir)..\Library\$(Configuration);$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(ProjectDir)..\Include;C:\Boost\include\boost-1_78;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(ProjectDir)..\Library\$(Configuration);C:\Boost\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

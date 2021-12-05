@@ -16,7 +16,8 @@ namespace Window
 
 	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
-		EXPECTS(hInstance != nullptr, "HINSTANCE�̎擾");
+		if(hInstance != nullptr)
+			hInstance = ::GetModuleHandle(nullptr);
 
 		g_hInst = hInstance;
 		g_Width = width;

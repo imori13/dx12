@@ -8,6 +8,8 @@
 #include "GraphicsCore.h"
 #include "Display.h"
 
+#include <boost/version.hpp>
+
 namespace GameCore
 {
 	void InitializeApplication(IGameApp& game)

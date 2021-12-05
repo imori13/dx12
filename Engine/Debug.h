@@ -9,9 +9,11 @@ namespace Debug
 #define LOG( msg, ... ) {}
 #define LOGLINE( msg, ... ) {}
 
+	inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
+	inline void Print(const std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
 #else
-	inline void Print(std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
-	inline void Print(std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
+	inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
+	inline void Print(const std::wstring_view msg) noexcept { wprintf(L"%ws", msg.data()); }
 	inline void Print(void) noexcept {}
 
 	inline void Printf(std::string_view format, ...) noexcept
@@ -83,7 +85,7 @@ namespace Debug
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \
-			std::abort(); \
+			std::cin.get(); \
 		}
 
 #endif

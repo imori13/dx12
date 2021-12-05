@@ -36,6 +36,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <iostream>
 #include <DirectXMath.h>
 
 #include "Debug.h"
