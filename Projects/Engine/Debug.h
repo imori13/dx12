@@ -3,15 +3,12 @@
 
 namespace Debug
 {
-#ifdef RELEASE
+	constexpr inline bool Check(HRESULT flag) noexcept(false) { return SUCCEEDED(flag); }
+	constexpr inline bool Check(bool flag) noexcept(false) { return flag; }
 
-#define ASSERT( FLAG, ... ) {}
-#define LOG( msg, ... ) {}
-#define LOGLINE( msg, ... ) {}
-
-	inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
-	inline void Print(const std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
-#else
+#ifdef DEBUG
+	//inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
+	//inline void Print(const std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
 	inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
 	inline void Print(const std::wstring_view msg) noexcept { wprintf(L"%ws", msg.data()); }
 	inline void Print(void) noexcept {}
@@ -48,9 +45,6 @@ namespace Debug
 	inline void LogResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
 	inline void LogResult(bool flag) noexcept { flag; }
 
-	constexpr inline bool Check(HRESULT flag) noexcept { return SUCCEEDED(flag); }
-	constexpr inline bool Check(bool flag) noexcept { return flag; }
-
 #define STRINGIFY(x) #x
 #define STRINGIFY_BUILTIN(x) STRINGIFY(x)
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
@@ -85,14 +79,20 @@ namespace Debug
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \
-			std::cin.get(); \
+			std::terminate(); \
 		}
+
+#elif RELEASE
+
+	// 事前確認
+#define ASSERT(FLAG, ... ) (FLAG) ? (static_cast<void>(0)) : (std::terminate())
+#define LOG( msg, ... ) {}
+#define LOGLINE( msg, ... ) {}
 
 #endif
 
 	// 事前確認
-#define EXPECTS( FLAG, ... ) ASSERT(FLAG, __VA_ARGS__)
+#define EXPECTS( FLAG, ... ) ASSERT(Debug::Check(FLAG),__VA_ARGS__)
 	// 事後確認
-#define ENSURES( FLAG, ... ) ASSERT(FLAG, __VA_ARGS__)
-
+#define ENSURES( FLAG, ... ) ASSERT(Debug::Check(FLAG),__VA_ARGS__)
 };

@@ -29,7 +29,7 @@
       </Command>
     </PreBuildEvent>
     <FxCompile>
-      <ShaderModel>6.5</ShaderModel>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
