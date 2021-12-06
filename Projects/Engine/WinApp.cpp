@@ -31,7 +31,7 @@ namespace Window
 		windowClass.lpfnWndProc = WndProc;
 		windowClass.hInstance = hInstance;
 		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		windowClass.lpszClassName = g_windowName;
+		windowClass.lpszClassName = (LPCSTR)g_windowName;
 
 		// ウィンドウの登録
 		bool flag = RegisterClassEx(&windowClass);
@@ -76,7 +76,7 @@ namespace Window
 	{
 		// ウィンドウの登録を解除
 		if(g_hInst != nullptr)
-		{ UnregisterClass(g_windowName, g_hInst); }
+		{ UnregisterClass((LPCSTR)g_windowName, g_hInst); }
 
 		g_hInst = nullptr;
 		g_hWnd = nullptr;

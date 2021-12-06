@@ -1,12 +1,13 @@
 #pragma once
 #include <tchar.h>
+#include <GSL\gsl>
 
 namespace Debug
 {
 	constexpr inline bool Check(HRESULT flag) noexcept(false) { return SUCCEEDED(flag); }
 	constexpr inline bool Check(bool flag) noexcept(false) { return flag; }
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	//inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
 	//inline void Print(const std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
 	inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
@@ -82,7 +83,7 @@ namespace Debug
 			std::terminate(); \
 		}
 
-#elif RELEASE
+#elif _RELEASE
 
 	// Ž–‘OŠm”F
 #define ASSERT(FLAG, ... ) (FLAG) ? (static_cast<void>(0)) : (std::terminate())
