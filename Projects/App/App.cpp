@@ -21,7 +21,7 @@ CREATE_APPLICATION(App, 1280, 720);
 
 void App::Startup(void)
 {
-	std::wstring path = L"/Resource/Texture/";
+	std::wstring path = L"/Resources/Textures/";
 	model.OnInit(path + L"neko.jpg");
 	model2.OnInit(path + L"neko2.jpg");
 }
