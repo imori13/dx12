@@ -29,7 +29,7 @@ public:
 	}
 
 	bool OnInit(const std::wstring& texturePath);
-	void Update();
+	void Update() noexcept;
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
 

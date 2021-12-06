@@ -28,7 +28,7 @@ void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE t
 	m_IncrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(type);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE ResourceHeap::GetCPUHandle(uint32_t index) noexcept
+D3D12_CPU_DESCRIPTOR_HANDLE ResourceHeap::GetCPUHandle(uint32_t index)
 {
 	EXPECTS(index >= 0 && index < m_DescriptorCount);
 
@@ -37,7 +37,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE ResourceHeap::GetCPUHandle(uint32_t index) noexcept
 	return copyHandle;
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE ResourceHeap::GetGPUHandle(uint32_t index) noexcept
+D3D12_GPU_DESCRIPTOR_HANDLE ResourceHeap::GetGPUHandle(uint32_t index)
 {
 	EXPECTS(index >= 0 && index < m_DescriptorCount);
 

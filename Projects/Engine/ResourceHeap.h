@@ -15,8 +15,8 @@ public:
 	void Create(uint32_t bufferCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag);
 
 	// 指定のハンドル取得
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index) noexcept;
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index) noexcept;
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index);
 	// ヒープのアドレス取得
 	ID3D12DescriptorHeap** GetHeapAddress() noexcept { return m_pHeap.GetAddressOf(); }
 private:

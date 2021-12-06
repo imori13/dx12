@@ -10,7 +10,7 @@ public:
 
 	void Startup(void) override;
 	void Cleanup(void) noexcept override;
-	void Update(float deltaT) override;
+	void Update(float deltaT) noexcept override;
 	void RenderScene(void) override;
 private:
 	TestModel model;
@@ -32,7 +32,7 @@ void App::Cleanup(void) noexcept
 	model2.OnTerm();
 }
 
-void App::Update(float deltaT)
+void App::Update(float deltaT) noexcept
 {
 	deltaT++;
 

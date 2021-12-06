@@ -66,7 +66,7 @@ const D3D12_DEPTH_STENCIL_DESC PipelineStateObject::GetDepthStencilDesc(bool ena
 {
 	// 深度ステンシルステートの設定
 	D3D12_DEPTH_STENCIL_DESC descDSS = {};
-	descDSS.DepthEnable = TRUE;
+	descDSS.DepthEnable = enableDepth;
 	descDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	descDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	// 深度テストの比較関係
 	descDSS.StencilEnable = FALSE;

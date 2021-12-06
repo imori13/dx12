@@ -129,7 +129,7 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 	return true;
 }
 
-void TestModel::Update()
+void TestModel::Update() noexcept
 {
 	m_pTransform->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 }

@@ -9,4 +9,7 @@
     <FxCompile Include="SimpleTexVS.hlsl" />
     <FxCompile Include="SimpleTexPS.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 #include <Shlwapi.h>
 #pragma comment(lib,"shlwapi.lib")
 
-bool SearchFilePath(const wchar_t* filename, std::wstring& retFilepath) noexcept
+bool SearchFilePath(const wchar_t* filename, std::wstring& retFilepath)
 {
 	// “ü—Í‚ª‚È‚¯‚ê‚ÎI—¹
 	if(filename == nullptr)
