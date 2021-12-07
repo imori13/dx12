@@ -12,8 +12,6 @@ namespace Window
 	uint32_t g_Height = 0;
 	HWND g_hWnd = nullptr;
 
-	LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM) noexcept;
-
 	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
 		if(hInstance != nullptr)
@@ -80,20 +78,5 @@ namespace Window
 
 		s_hInst = nullptr;
 		g_hWnd = nullptr;
-	}
-
-	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) noexcept
-	{
-		switch(message)
-		{
-			case WM_DESTROY:
-				PostQuitMessage(0);
-				break;
-
-			default:
-				return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-
-		return 0;
 	}
 }

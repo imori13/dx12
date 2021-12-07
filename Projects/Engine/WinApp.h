@@ -10,4 +10,6 @@ namespace Window
 	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height);
 	bool Update() noexcept;
 	void TermWnd() noexcept;
+
+	extern LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 }
