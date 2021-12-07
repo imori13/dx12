@@ -3,10 +3,7 @@
 #include "TranslationBarrirUtil.h"
 #include "TestModel.h"
 #include "WinApp.h"
-
-#include <imgui.h>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_dx12.h>
+#include "App_ImGui.h"
 
 class App : public GameCore::IGameApp
 {
@@ -26,15 +23,7 @@ CREATE_APPLICATION(App, 1280, 720);
 
 void App::Startup(void)
 {
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	const ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(Window::g_hWnd);
-	ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
-						DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, Graphics::g_ResourceHeap.Get(),
-						Graphics::g_ResourceHeap.GetCPUHandle(0),
-						Graphics::g_ResourceHeap.GetGPUHandle(0));
+	App_ImGui::Initialize();
 
 	std::wstring path = L"/Resources/Textures/";
 	model.OnInit(path + L"neko.jpg");
@@ -43,21 +32,15 @@ void App::Startup(void)
 
 void App::Cleanup(void)
 {
+	App_ImGui::Terminate();
+
 	model.OnTerm();
 	model2.OnTerm();
-
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
 }
 
 void App::Update(float deltaT)
 {
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	ImGui::ShowDemoWindow();
+	App_ImGui::Update();
 
 	deltaT++;
 
@@ -70,8 +53,6 @@ void App::Update(float deltaT)
 
 void App::RenderScene(void)
 {
-	ImGui::Render();
-
 	using namespace Graphics;
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
@@ -99,8 +80,7 @@ void App::RenderScene(void)
 	model.Render(cmdList.Get());
 	model2.Render(cmdList.Get());
 
-	cmdList->SetDescriptorHeaps(1, Graphics::g_ResourceHeap.GetHeapAddress());
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdList.Get());
+	App_ImGui::Render(cmdList.Get());
 
 	{
 		// リソースバリア

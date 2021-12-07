@@ -11,7 +11,6 @@
     <ClInclude Include="imconfig.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx12.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />

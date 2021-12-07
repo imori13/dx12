@@ -2,8 +2,8 @@
 
 namespace
 {
-	HINSTANCE g_hInst = nullptr;
-	const wchar_t* g_windowName = nullptr;
+	HINSTANCE s_hInst = nullptr;
+	std::wstring s_windowName;
 }
 
 namespace Window
@@ -19,22 +19,22 @@ namespace Window
 		if(hInstance != nullptr)
 			hInstance = ::GetModuleHandle(nullptr);
 
-		g_hInst = hInstance;
+		s_hInst = hInstance;
 		g_Width = width;
 		g_Height = height;
-		g_windowName = L"iMoriEngine";
+		s_windowName = L"iMoriEngine";
 
 		// ウィンドウの設定
-		WNDCLASSEX windowClass = { 0 };
-		windowClass.cbSize = sizeof(WNDCLASSEX);
+		WNDCLASSEXW windowClass = { 0 };
+		windowClass.cbSize = sizeof(WNDCLASSEXW);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
 		windowClass.lpfnWndProc = WndProc;
 		windowClass.hInstance = hInstance;
 		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		windowClass.lpszClassName = g_windowName;
+		windowClass.lpszClassName = s_windowName.c_str();
 
 		// ウィンドウの登録
-		bool flag = RegisterClassEx(&windowClass);
+		bool flag = RegisterClassExW(&windowClass);
 		ENSURES(flag, "Window登録");
 
 		// ウィンドウサイズを調整
@@ -43,7 +43,7 @@ namespace Window
 		ENSURES(flag, "WindowRect調整");
 
 		// ウィンドウを生成
-		g_hWnd = CreateWindowW(g_windowName, g_windowName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+		g_hWnd = CreateWindowW(s_windowName.c_str(), s_windowName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 							   rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 		ENSURES(g_hWnd != nullptr, "Window生成");
 
@@ -75,10 +75,10 @@ namespace Window
 	void TermWnd() noexcept
 	{
 		// ウィンドウの登録を解除
-		if(g_hInst != nullptr)
-		{ UnregisterClassW(g_windowName, g_hInst); }
+		if(s_hInst != nullptr)
+		{ UnregisterClassW(s_windowName.c_str(), s_hInst); }
 
-		g_hInst = nullptr;
+		s_hInst = nullptr;
 		g_hWnd = nullptr;
 	}
 

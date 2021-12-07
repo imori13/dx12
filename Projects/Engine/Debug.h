@@ -8,10 +8,10 @@ namespace Debug
 	constexpr inline bool Check(bool flag) noexcept(false) { return flag; }
 
 #ifdef _DEBUG
-	//inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
-	//inline void Print(const std::wstring_view msg) noexcept { OutputDebugString(msg.data()); }
-	inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
-	inline void Print(const std::wstring_view msg) noexcept { wprintf(L"%ws", msg.data()); }
+	//inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
+	//inline void Print(const std::wstring_view msg) noexcept { wprintf(L"%ws", msg.data()); }
+	inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
+	inline void Print(const std::wstring_view msg) noexcept { OutputDebugStringW(msg.data()); }
 	inline void Print(void) noexcept {}
 
 	inline void Printf(std::string_view format, ...) noexcept
@@ -51,10 +51,10 @@ namespace Debug
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define FILE_POS_LOG(...) \
 			Debug::Printf(__VA_ARGS__); \
-			Debug::Print("        ..."); \
+			Debug::Print(L"        ..."); \
 			Debug::Print(__FILENAME__); \
-			Debug::Print("(" STRINGIFY_BUILTIN(__LINE__)") "); \
-			Debug::Print("\n");
+			Debug::Print(_T("(" STRINGIFY_BUILTIN(__LINE__)") ")); \
+			Debug::Print(L"\n");
 
 	constexpr inline bool HAVESTRING(std::string_view format, ...) noexcept { return format.size() > 0; }
 	constexpr inline bool HAVESTRING(std::wstring_view format, ...) noexcept { return format.size() > 0; }
@@ -65,18 +65,18 @@ namespace Debug
     Debug::Printf( msg , ##__VA_ARGS__ );
 	// ÉçÉO(â¸çsÇ†ÇË)
 #define LOGLINE( msg, ... ) \
-    Debug::Printf( msg "\n", ##__VA_ARGS__ );
+    Debug::Printf( msg L"\n", ##__VA_ARGS__ );
 
 #define ASSERT( FLAG, ... ) \
 	if (Debug::Check(FLAG)) \
 		{ \
 			if(Debug::HAVESTRING(__VA_ARGS__)) \
 			{ \
-				Debug::Print("SUCCEEDED: "); \
+				Debug::Print(L"SUCCEEDED: "); \
 				FILE_POS_LOG(__VA_ARGS__); \
 			} \
 		} else { \
-			Debug::Print("FAILED: "); \
+			Debug::Print(L"FAILED: "); \
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \

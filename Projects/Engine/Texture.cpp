@@ -41,7 +41,7 @@ void Texture::CreateWIC(const std::wstring& path)
 {
 	std::wstring texturePath;
 	const bool find = SearchFilePath(path.c_str(), texturePath);
-	ENSURES(find, _T("ファイル検索:%s"), path.c_str());
+	ENSURES(find, L"ファイル検索:%s", path.c_str());
 
 	const gsl::not_null<ID3D12Device*> device = Graphics::g_pDevice.Get();
 
@@ -57,7 +57,7 @@ void Texture::CreateWIC(const std::wstring& path)
 		D3D12_RESOURCE_FLAG_NONE,
 		DirectX::WIC_LOADER_FLAGS::WIC_LOADER_FORCE_SRGB | DirectX::WIC_LOADER_FLAGS::WIC_LOADER_MIP_AUTOGEN,
 		m_pResource.GetAddressOf());
-	ENSURES(hr, _T("テクスチャ生成:%s"), texturePath.c_str());
+	ENSURES(hr, L"テクスチャ生成:%s", texturePath.c_str());
 
 	// コマンド実行
 	auto future = batch.End(Graphics::g_Command.GetCmdQueue());

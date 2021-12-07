@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="App_ImGui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimplePS.hlsl" />
@@ -11,5 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App_ImGui.h" />
   </ItemGroup>
 </Project>
