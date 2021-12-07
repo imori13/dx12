@@ -2,7 +2,7 @@
 #include "WinApp.h"
 #include "GraphicsCore.h"
 
-void DepthStencilBuffer::Create(DXGI_FORMAT format, float depthValue, uint8_t stencilValue)
+void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT format, float depthValue, uint8_t stencilValue)
 {
 	// ÉqÅ[Évê›íË
 	D3D12_HEAP_PROPERTIES prop = {};
@@ -16,8 +16,8 @@ void DepthStencilBuffer::Create(DXGI_FORMAT format, float depthValue, uint8_t st
 	D3D12_RESOURCE_DESC resDesc = {};
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	resDesc.Alignment = 0;
-	resDesc.Width = Window::g_Width;
-	resDesc.Height = Window::g_Height;
+	resDesc.Width = width;
+	resDesc.Height = height;
 	resDesc.DepthOrArraySize = 1;
 	resDesc.MipLevels = 1;
 	resDesc.Format = format;

@@ -1,8 +1,8 @@
 #include "TestModel.h"
 #include "GraphicsCore.h"
-#include "WinApp.h"
 #include "FileSearch.h"
 #include "InputElement.h"
+#include "Display.h"
 
 
 bool TestModel::OnInit(const std::wstring& texturePath)
@@ -106,21 +106,21 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 	{
 		m_Viewport.TopLeftX = 0;
 		m_Viewport.TopLeftY = 0;
-		m_Viewport.Width = static_cast<float>(Window::g_Width);
-		m_Viewport.Height = static_cast<float>(Window::g_Height);
+		m_Viewport.Width = static_cast<float>(Display::g_AppWidth);
+		m_Viewport.Height = static_cast<float>(Display::g_AppHeight);
 		m_Viewport.MinDepth = 0.0f;
 		m_Viewport.MaxDepth = 1.0f;
 		m_Scissor.left = 0;
-		m_Scissor.right = Window::g_Width;
+		m_Scissor.right = Display::g_AppWidth;
 		m_Scissor.top = 0;
-		m_Scissor.bottom = Window::g_Height;
+		m_Scissor.bottom = Display::g_AppHeight;
 	}
 
 	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 	auto targetPos = DirectX::XMVectorZero();
 	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-	const auto aspect = static_cast<float>(Window::g_Width) / static_cast<float>(Window::g_Height);
+	const auto aspect = static_cast<float>(Display::g_AppWidth) / static_cast<float>(Display::g_AppHeight);
 
 	m_pTransform->World = DirectX::XMMatrixIdentity();
 	m_pTransform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);

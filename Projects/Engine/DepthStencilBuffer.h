@@ -8,7 +8,7 @@ public:
 		, m_CpuHandle{}
 	{}
 
-	void Create(DXGI_FORMAT format, float depthValue, uint8_t stencilValue);
+	void Create(uint32_t width, uint32_t height, DXGI_FORMAT format, float depthValue, uint8_t stencilValue);
 
 	ID3D12Resource* Get() noexcept { return m_pBuffer.Get(); }
 	void SetCpuHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle) noexcept { m_CpuHandle = handle; }

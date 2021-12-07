@@ -5,7 +5,6 @@ namespace Graphics
 {
 	Microsoft::WRL::ComPtr<ID3D12Device> g_pDevice = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> g_pColorBuffer[FRAME_COUNT] = { nullptr };
-	Command g_Command;
 
 	void Initialize()
 	{
@@ -29,9 +28,6 @@ namespace Graphics
 			D3D_FEATURE_LEVEL_11_0,
 			IID_PPV_ARGS(g_pDevice.GetAddressOf()));
 		ENSURES(hr, "Deviceê∂ê¨");
-
-		// ÉRÉ}ÉìÉhÇÃê∂ê¨
-		g_Command.Create(FRAME_COUNT);
 	}
 
 	void Terminate() noexcept

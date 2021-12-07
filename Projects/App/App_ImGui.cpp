@@ -39,6 +39,8 @@ namespace App_ImGui
 		//ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar
 		ImGui::Text("Hello World!");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("WindowSize : { %d ,%d }", Window::g_Width, Window::g_Height);
+		ImGui::Text("AppSize : { %d ,%d }", Display::g_AppWidth, Display::g_AppHeight);
 		ImGui::End();
 
 		ImGui::Render();
@@ -61,13 +63,30 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if(ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
-		return true;
+	{ return true; }
 
 	switch(message)
 	{
 		case WM_DESTROY:
+		{
 			PostQuitMessage(0);
 			break;
+		}
+
+		case WM_SIZE:
+		{
+			if(Graphics::g_pDevice != nullptr)
+			{
+				RECT windowRect = {};
+				GetWindowRect(hWnd, &windowRect);
+				Window::g_Width = windowRect.right - windowRect.left;
+				Window::g_Height = windowRect.bottom - windowRect.top;
+
+				RECT clientRect = {};
+				GetClientRect(hWnd, &clientRect);
+				Display::OnSizeChanged(clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
+			}
+		}
 
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);

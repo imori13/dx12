@@ -3,6 +3,7 @@
 #include "TranslationBarrirUtil.h"
 #include "TestModel.h"
 #include "WinApp.h"
+#include "Command.h"
 #include "App_ImGui.h"
 
 class App : public GameCore::IGameApp
@@ -54,7 +55,7 @@ void App::Update(float deltaT)
 void App::RenderScene(void)
 {
 	using namespace Graphics;
-	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
+	auto cmdList = Command::Begin(Display::g_FrameIndex);
 
 	EXPECTS(cmdList != nullptr);
 
@@ -88,5 +89,5 @@ void App::RenderScene(void)
 		cmdList->ResourceBarrier(1, &barrier);
 	}
 
-	g_Command.Finish();
+	Command::End();
 }

@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "FileSearch.h"
 #include "GraphicsCore.h"
+#include "Command.h"
 
 void Texture::Create(const std::wstring& path)
 {
@@ -22,7 +23,7 @@ void Texture::Create(const std::wstring& path)
 	ENSURES(hr, _T("テクスチャ生成:%s"), texturePath.c_str());
 
 	// コマンド実行
-	auto future = batch.End(Graphics::g_Command.GetCmdQueue());
+	auto future = batch.End(Command::GetCmdQueue());
 	future.wait();
 
 	// texture設定取得
@@ -60,7 +61,7 @@ void Texture::CreateWIC(const std::wstring& path)
 	ENSURES(hr, L"テクスチャ生成:%s", texturePath.c_str());
 
 	// コマンド実行
-	auto future = batch.End(Graphics::g_Command.GetCmdQueue());
+	auto future = batch.End(Command::GetCmdQueue());
 	future.wait();
 
 	// texture設定取得

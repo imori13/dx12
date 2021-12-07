@@ -7,6 +7,7 @@
 #include "WinApp.h"
 #include "GraphicsCore.h"
 #include "Display.h"
+#include "Command.h"
 
 #include <boost/version.hpp>
 
@@ -15,6 +16,7 @@ namespace GameCore
 	void InitializeApplication(IGameApp& game)
 	{
 		Graphics::Initialize();
+		Command::Initialize();
 		Display::Initialize();
 
 		game.Startup();
@@ -26,13 +28,14 @@ namespace GameCore
 		game.RenderScene();
 
 		Display::Present(1);
+		Command::MoveToNextFrame();
 
 		return !game.IsDone();
 	}
 
 	void TerminateApplication(IGameApp& game)
 	{
-		Graphics::g_Command.WaitForGpu();
+		Command::WaitForGpu();
 
 		game.Cleanup();
 		Display::Terminate();

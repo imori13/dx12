@@ -1,41 +1,19 @@
 #pragma once
 
-class Command
+namespace Command
 {
-public:
-	Command() noexcept
-		: m_pCmdQueue(nullptr)
-		, m_pCmdList(nullptr)
-		, m_pFence(nullptr)
-		, m_NextFenceValue(0)
-		, m_FenceEventHandle(nullptr)
-	{
-
-	}
-
 	// 生成処理
-	void Create(uint32_t swapCount);
+	void Initialize();
 
 	// 描画開始
 	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& Begin(uint32_t SwapIndex);
 	// 描画終了
-	void Finish();
+	void End();
 
+	// 次のフレームに移動する
+	void MoveToNextFrame();
 	// GPU待機
 	void WaitForGpu();
 
-	ID3D12CommandQueue* GetCmdQueue() noexcept { return m_pCmdQueue.Get(); }
-private:
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pCmdQueue;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_pCmdList;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> m_pCmdAllocators;
-	Microsoft::WRL::ComPtr<ID3D12Fence> m_pFence;
-
-	uint64_t m_NextFenceValue;
-	HANDLE m_FenceEventHandle;
-
-	void ClearCommand(uint32_t SwapCount);
-	uint64_t SignalQueue();
-	uint64_t ExecuteCommandList();
-	void WaitForFence(uint64_t fenceValue);
+	ID3D12CommandQueue* GetCmdQueue() noexcept;
 };
