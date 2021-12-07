@@ -32,7 +32,7 @@ void App::Startup(void)
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(Window::g_hWnd);
 	ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
-						DXGI_FORMAT_R8G8B8A8_UNORM, Graphics::g_ResourceHeap.Get(),
+						DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, Graphics::g_ResourceHeap.Get(),
 						Graphics::g_ResourceHeap.GetCPUHandle(0),
 						Graphics::g_ResourceHeap.GetGPUHandle(0));
 

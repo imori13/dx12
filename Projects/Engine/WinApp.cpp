@@ -31,7 +31,7 @@ namespace Window
 		windowClass.lpfnWndProc = WndProc;
 		windowClass.hInstance = hInstance;
 		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		windowClass.lpszClassName = "iMoriEngine";
+		windowClass.lpszClassName = g_windowName;
 
 		// ウィンドウの登録
 		bool flag = RegisterClassEx(&windowClass);

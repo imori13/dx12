@@ -604,8 +604,8 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             \
             float4 main(PS_INPUT input) : SV_Target\
             {\
-              float4 out_col = input.col * texture0.Sample(sampler0, input.uv); \
-              return out_col; \
+              float4 out_col = input.col* texture0.Sample(sampler0, input.uv); \
+              return pow(out_col, 2.2); \
             }";
 
         if (FAILED(D3DCompile(pixelShader, strlen(pixelShader), NULL, NULL, NULL, "main", "ps_5_0", 0, 0, &pixelShaderBlob, NULL)))
