@@ -49,7 +49,7 @@ namespace GameCore
 		// メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-		//_CrtSetBreakAlloc(n);
+		//_CrtSetBreakAlloc(266);
 #endif
 		// ウィンドウ初期化
 		Window::InitWnd(hInstance, width, height);

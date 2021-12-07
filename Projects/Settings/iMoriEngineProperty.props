@@ -6,7 +6,7 @@
     <IntDir>$(SolutionDir)\Build\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Settings\iMoriEngineRuleset.ruleset</CodeAnalysisRuleSet>
-    <IncludePath>$(ProjectDir)..\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\Includes;C:\Includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

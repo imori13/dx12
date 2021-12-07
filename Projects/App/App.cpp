@@ -2,6 +2,11 @@
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
 #include "TestModel.h"
+#include "WinApp.h"
+
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx12.h>
 
 class App : public GameCore::IGameApp
 {
@@ -9,8 +14,8 @@ public:
 	App() noexcept {};
 
 	void Startup(void) override;
-	void Cleanup(void) noexcept override;
-	void Update(float deltaT) noexcept override;
+	void Cleanup(void) override;
+	void Update(float deltaT) override;
 	void RenderScene(void) override;
 private:
 	TestModel model;
@@ -21,19 +26,39 @@ CREATE_APPLICATION(App, 1280, 720);
 
 void App::Startup(void)
 {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	const ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(Window::g_hWnd);
+	ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
+						DXGI_FORMAT_R8G8B8A8_UNORM, Graphics::g_ResourceHeap.Get(),
+						Graphics::g_ResourceHeap.GetCPUHandle(0),
+						Graphics::g_ResourceHeap.GetGPUHandle(0));
+
 	std::wstring path = L"/Resources/Textures/";
 	model.OnInit(path + L"neko.jpg");
 	model2.OnInit(path + L"neko2.jpg");
 }
 
-void App::Cleanup(void) noexcept
+void App::Cleanup(void)
 {
 	model.OnTerm();
 	model2.OnTerm();
+
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
-void App::Update(float deltaT) noexcept
+void App::Update(float deltaT)
 {
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::ShowDemoWindow();
+
 	deltaT++;
 
 	model.m_RotateAngle += 0.025f;
@@ -45,6 +70,8 @@ void App::Update(float deltaT) noexcept
 
 void App::RenderScene(void)
 {
+	ImGui::Render();
+
 	using namespace Graphics;
 	auto cmdList = g_Command.Begin(Display::g_FrameIndex);
 
@@ -71,6 +98,9 @@ void App::RenderScene(void)
 
 	model.Render(cmdList.Get());
 	model2.Render(cmdList.Get());
+
+	cmdList->SetDescriptorHeaps(1, Graphics::g_ResourceHeap.GetHeapAddress());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdList.Get());
 
 	{
 		// リソースバリア

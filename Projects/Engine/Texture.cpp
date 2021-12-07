@@ -55,7 +55,7 @@ void Texture::CreateWIC(const std::wstring& path)
 		texturePath.c_str(),
 		0,
 		D3D12_RESOURCE_FLAG_NONE,
-		DirectX::WIC_LOADER_FLAGS::WIC_LOADER_FORCE_SRGB | DirectX::WIC_LOADER_FLAGS::WIC_LOADER_MIP_AUTOGEN,
+		DirectX::WIC_LOADER_FLAGS::WIC_LOADER_MIP_AUTOGEN, // 削除 :DirectX::WIC_LOADER_FLAGS::WIC_LOADER_FORCE_SRGB
 		m_pResource.GetAddressOf());
 	ENSURES(hr, _T("テクスチャ生成:%s"), texturePath.c_str());
 

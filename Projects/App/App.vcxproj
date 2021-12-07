@@ -52,7 +52,7 @@
     <ClCompile>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Engine;$(ProjectDir)..\Model;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Engine;$(ProjectDir)..\Model;$(ProjectDir)..\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -101,6 +101,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
       <Project>{4be9100c-c251-455d-bcf2-9b9ddbd4485e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ImGui\ImGui.vcxproj">
+      <Project>{d94b0416-0435-4f38-8ae1-99ddcec77c50}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.vcxproj">
       <Project>{aa21cc3a-b58c-4624-a6b1-851871092157}</Project>

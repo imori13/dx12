@@ -6,6 +6,7 @@ namespace Graphics
 	Microsoft::WRL::ComPtr<ID3D12Device> g_pDevice = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> g_pColorBuffer[FRAME_COUNT] = { nullptr };
 	Command g_Command;
+	ResourceHeap g_ResourceHeap;
 
 	void Initialize()
 	{
@@ -32,6 +33,8 @@ namespace Graphics
 
 		// ÉRÉ}ÉìÉhÇÃê∂ê¨
 		g_Command.Create(FRAME_COUNT);
+
+		g_ResourceHeap.Create(1, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 	}
 
 	void Terminate() noexcept
