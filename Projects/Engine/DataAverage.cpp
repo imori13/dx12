@@ -10,7 +10,7 @@ namespace
 void DataAverage::Set(const std::wstring& name, const float value, const Average average)
 {
 	auto& list = performanceView[name];
-	list.push_back(value);
+	list.emplace_back(value);
 	if(list.size() > static_cast<uint32_t>(average))
 	{ list.pop_front(); }
 }
