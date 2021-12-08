@@ -69,12 +69,19 @@ namespace App_ImGui
 
 		ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
 		ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
-		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"描画処理"), DataAverage::Get(L"描画書き込み") + DataAverage::Get(L"画面表示") + DataAverage::Get(L"GPU待機"));
-		ImGui::Text("  Render  : %.2fms", DataAverage::Get(L"描画書き込み"));
-		ImGui::Text("  Present : %.2fms", DataAverage::Get(L"画面表示"));
-		ImGui::Text("  GPUwait : %.2fms", DataAverage::Get(L"GPU待機"));
-		ImGui::Text("    GPUwait(free) : %.2fms", DataAverage::Get(L"GPU待機"));
-		ImGui::Text("    GPUwait(busy) : %.2fms", DataAverage::Get(L"GPU待機"));
+
+		const double update = DataAverage::Get(L"Update");
+		const double render = DataAverage::Get(L"Render");
+		const double present = DataAverage::Get(L"Present");
+		const double syncHz = DataAverage::Get(L"SyncHz");
+		const double gpuWait = DataAverage::Get(L"GPUwait");
+		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"更新時間"), update + render + present + syncHz + gpuWait);
+		ImGui::Text("  Update  : %.2fms", update);
+		ImGui::Text("  Render  : %.2fms", render);
+		ImGui::Text("  Present : %.2fms", present);
+		ImGui::Text("  SyncHz  : %.2fms", syncHz);
+		ImGui::Text("  GPUwait : %.2fms", gpuWait);
+		ImGui::Checkbox("Sync", &GameCore::g_IsSync);
 
 		ImGui::End();
 

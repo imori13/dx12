@@ -46,15 +46,21 @@ namespace Debug
 	inline void LogResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
 	inline void LogResult(bool flag) noexcept { flag; }
 
+	inline char const* GetFileName(std::string_view path) noexcept
+	{
+#pragma warning( push )
+#pragma warning (disable : 26481)
+		const auto str = strrchr(path.data(), '\\');
+		return (str != nullptr) ? (str + 1) : (str);
+#pragma warning( pop )
+	}
+
 #define STRINGIFY(x) #x
 #define STRINGIFY_BUILTIN(x) STRINGIFY(x)
-#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define FILE_POS_LOG(...) \
-			Debug::Printf(__VA_ARGS__); \
-			Debug::Print(L"        ..."); \
-			Debug::Print(__FILENAME__); \
-			Debug::Print(_T("(" STRINGIFY_BUILTIN(__LINE__)") ")); \
-			Debug::Print(L"\n");
+		LOG(_T("[%2s]%-20s : "), STRINGIFY_BUILTIN(__LINE__), Debug::GetFileName(__FILE__)); \
+		Debug::Printf(__VA_ARGS__); \
+		Debug::Print(_T("\n"));
 
 	constexpr inline bool HAVESTRING(std::string_view format, ...) noexcept { return format.size() > 0; }
 	constexpr inline bool HAVESTRING(std::wstring_view format, ...) noexcept { return format.size() > 0; }
@@ -65,18 +71,18 @@ namespace Debug
     Debug::Printf( msg , ##__VA_ARGS__ );
 	// ÉçÉO(â¸çsÇ†ÇË)
 #define LOGLINE( msg, ... ) \
-    Debug::Printf( msg L"\n", ##__VA_ARGS__ );
+    Debug::Printf(_T("%s\n"), msg, ##__VA_ARGS__ );
 
 #define ASSERT( FLAG, ... ) \
 	if (Debug::Check(FLAG)) \
 		{ \
 			if(Debug::HAVESTRING(__VA_ARGS__)) \
 			{ \
-				Debug::Print(L"SUCCEEDED: "); \
+				Debug::Print(_T("SUCCEEDED: ")); \
 				FILE_POS_LOG(__VA_ARGS__); \
 			} \
 		} else { \
-			Debug::Print(L"FAILED: "); \
+			Debug::Print(_T("FAILED: ")); \
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \

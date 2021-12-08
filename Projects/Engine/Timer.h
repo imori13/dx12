@@ -6,6 +6,6 @@ namespace Timer
 	extern float g_FrameTime;
 
 	void Initialize() noexcept(false);
-	void Update() noexcept(false);
+	void Update(const bool frameWait) noexcept(false);
 };
 

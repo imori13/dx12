@@ -5,6 +5,9 @@
 #pragma warning (disable : 26487)	// D3D12_RESOURCE_BARRIRのunion内ポインタが原因の警告を無視する 解決できない
 #pragma warning (disable : 26490)	// TODO : gsl C26490 リソースMap時に reinterpret_castを使用
 
+// Issue warning C4385 only once.
+//#pragma warning( once : 4385 ) //使えそう
+
 
 #define NOMINMAX
 #define NOHELP

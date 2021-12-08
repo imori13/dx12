@@ -22,6 +22,8 @@ namespace GameCore
 
 namespace GameCore
 {
+	extern bool g_IsSync;
+
 	int RunApplication(IGameApp& app, HINSTANCE hInstance, uint32_t width, uint32_t height);
 }
 
