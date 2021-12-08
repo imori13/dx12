@@ -29,7 +29,7 @@ namespace TimeStamp
 	{
 		QueryPerformanceCounter(&s_EndTimer);
 		const auto value = static_cast<float>(s_EndTimer.QuadPart - s_StartTimers[watchName].QuadPart) / static_cast<float>(s_Frequency.QuadPart) * MILLI_SECOND;
-		LOGLINE("%s : %3.4f ms", (watchName.size() > 0) ? (watchName.c_str()) : (L"_"), value);
+		//LOGLINE("%s : %3.4f ms", (watchName.size() > 0) ? (watchName.c_str()) : (L"_"), value);
 		return value;
 	}
 }

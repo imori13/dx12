@@ -28,12 +28,13 @@ namespace GameCore
 		Display::Initialize();
 		game.Startup();
 
-		TimeStamp::End(L"‰Šú‰»ˆ—");
+		LOGLINE("‰Šú‰»ŠÔ-> %f", TimeStamp::End(L"‰Šú‰»ˆ—"));
 	}
 
 	bool UpdateApplication(IGameApp& game)
 	{
 		Timer::Update();
+
 		TimeStamp::Begin(L"•`‰æˆ—");
 
 		// XVˆ—

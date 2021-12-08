@@ -10,6 +10,11 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
 
+namespace
+{
+	bool s_ViewportsEnable;
+}
+
 namespace App_ImGui
 {
 	ResourceHeap g_ResourceHeap;
@@ -30,7 +35,10 @@ namespace App_ImGui
 		ImGui::StyleColorsDark();
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
-		if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+
+		s_ViewportsEnable = (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable);
+
+		if(s_ViewportsEnable)
 		{
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
@@ -56,15 +64,18 @@ namespace App_ImGui
 		ImGui::Begin("Test");
 		//ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar
 		ImGui::Text("Hello World!");
-		ImGui::Text("WindowSize : { %d ,%d }", Window::g_Width, Window::g_Height);
-		ImGui::Text("AppSize : { %d ,%d }", Display::g_AppWidth, Display::g_AppHeight);
-		ImGui::Text("Draw[%.2fms]", DataAverage::Get(L"ï`âÊèàóù"));
-		ImGui::Text(" Render  :%.2fms", DataAverage::Get(L"ï`âÊèëÇ´çûÇ›"));
-		ImGui::Text(" Present :%.2fms", DataAverage::Get(L"âÊñ ï\é¶"));
-		ImGui::Text(" GPUwait :%.2fms", DataAverage::Get(L"GPUë“ã@"));
-		ImGui::Text("Elapsed : %.1lf/second", Timer::g_ElapsedTime);
-		ImGui::Text("imguiFPS %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Text("deltaT :%.2lfms (FPS: %.1lf)", gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f), 1.f / DataAverage::Get(L"FPS"));
+		ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
+		ImGui::Text("AppSize    : W %d  H %d", Display::g_AppWidth, Display::g_AppHeight);
+
+		ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
+		ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
+		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"ï`âÊèàóù"), DataAverage::Get(L"ï`âÊèëÇ´çûÇ›") + DataAverage::Get(L"âÊñ ï\é¶") + DataAverage::Get(L"GPUë“ã@"));
+		ImGui::Text("  Render  : %.2fms", DataAverage::Get(L"ï`âÊèëÇ´çûÇ›"));
+		ImGui::Text("  Present : %.2fms", DataAverage::Get(L"âÊñ ï\é¶"));
+		ImGui::Text("  GPUwait : %.2fms", DataAverage::Get(L"GPUë“ã@"));
+		ImGui::Text("    GPUwait(free) : %.2fms", DataAverage::Get(L"GPUë“ã@"));
+		ImGui::Text("    GPUwait(busy) : %.2fms", DataAverage::Get(L"GPUë“ã@"));
+
 		ImGui::End();
 
 		ImGui::Begin("Hoge");
@@ -86,8 +97,11 @@ namespace App_ImGui
 
 	void UpdateAdditionalPlatformWindows(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault(nullptr, static_cast<void*>(cmdList));
+		if(s_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault(nullptr, static_cast<void*>(cmdList));
+		}
 	}
 }
 
