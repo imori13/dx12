@@ -22,8 +22,21 @@ namespace GameCore
 
 namespace GameCore
 {
+	extern float g_DrawSumT;
+	extern float g_WriteT;
+	extern float g_FrameWaitT;
+	extern float g_GpuWaitT;
 	int RunApplication(IGameApp& app, HINSTANCE hInstance, uint32_t width, uint32_t height);
 }
+
+
+#define CREATE_APPLICATION( app_class , width, height) \
+    int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE , _In_ LPWSTR , _In_ int) \
+    { \
+		app_class app = app_class();\
+        return GameCore::RunApplication(app, hInstance, width, height ); \
+    }
+
 
 //#ifdef _DEBUG
 //#define CREATE_APPLICATION( app_class , width, height) \
@@ -33,10 +46,3 @@ namespace GameCore
 //		return GameCore::RunApplication(app, nullptr, width, height ); \
 //    }
 //#else
-#define CREATE_APPLICATION( app_class , width, height) \
-    int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE , _In_ LPWSTR , _In_ int) \
-    { \
-		app_class app = app_class();\
-        return GameCore::RunApplication(app, hInstance, width, height ); \
-    }
-//#endif

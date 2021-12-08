@@ -49,6 +49,9 @@
     <ClCompile Include="PipelineStateObject.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="TimeStamp.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCore.h">
@@ -109,6 +112,9 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="InputElement.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeStamp.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>

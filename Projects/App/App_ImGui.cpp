@@ -2,6 +2,7 @@
 #include "WinApp.h"
 #include "GraphicsCore.h"
 #include "Display.h"
+#include "GameCore.h"
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -41,6 +42,7 @@ namespace App_ImGui
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("WindowSize : { %d ,%d }", Window::g_Width, Window::g_Height);
 		ImGui::Text("AppSize : { %d ,%d }", Display::g_AppWidth, Display::g_AppHeight);
+		ImGui::Text("DrawSum %f : { Update & Draw: %f , FrameWait: %f, GpuWait: %f}", GameCore::g_DrawSumT, GameCore::g_WriteT, GameCore::g_FrameWaitT, GameCore::g_GpuWaitT);
 		ImGui::End();
 
 		ImGui::Render();
