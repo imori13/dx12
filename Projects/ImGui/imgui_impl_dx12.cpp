@@ -683,7 +683,7 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             float4 main(PS_INPUT input) : SV_Target\
             {\
               float4 out_col = input.col * texture0.Sample(sampler0, input.uv); \
-              return pow(out_col, 2.2); \
+              return out_col; \
             }";
 
 		if(FAILED(D3DCompile(pixelShader, strlen(pixelShader), NULL, NULL, NULL, "main", "ps_5_0", 0, 0, &pixelShaderBlob, NULL)))
@@ -886,7 +886,7 @@ static void ImGui_ImplDX12_CreateWindow(ImGuiViewport* viewport)
 	sd1.BufferCount = bd->numFramesInFlight;
 	sd1.Width = (UINT)viewport->Size.x;
 	sd1.Height = (UINT)viewport->Size.y;
-	sd1.Format = (bd->RTVFormat == DXGI_FORMAT_R8G8B8A8_UNORM_SRGB) ? (DXGI_FORMAT_R8G8B8A8_UNORM) : (bd->RTVFormat);
+	sd1.Format = bd->RTVFormat;
 	sd1.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd1.SampleDesc.Count = 1;
 	sd1.SampleDesc.Quality = 0;

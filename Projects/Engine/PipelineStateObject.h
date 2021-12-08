@@ -12,7 +12,7 @@ public:
 		m_State.SampleMask = UINT_MAX;
 		m_State.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		m_State.NumRenderTargets = 1;
-		m_State.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		m_State.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		m_State.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		m_State.SampleDesc.Count = 1;
 		m_State.SampleDesc.Quality = 0;

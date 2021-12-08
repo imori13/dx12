@@ -38,7 +38,7 @@ namespace App_ImGui
 
 		ImGui_ImplWin32_Init(Window::g_hWnd);
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
-							DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, g_ResourceHeap.Get(),
+							DXGI_FORMAT_R8G8B8A8_UNORM, g_ResourceHeap.Get(),
 							g_ResourceHeap.GetCPUHandle(0),
 							g_ResourceHeap.GetGPUHandle(0));
 
@@ -56,15 +56,15 @@ namespace App_ImGui
 		ImGui::Begin("Test");
 		//ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar
 		ImGui::Text("Hello World!");
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("WindowSize : { %d ,%d }", Window::g_Width, Window::g_Height);
 		ImGui::Text("AppSize : { %d ,%d }", Display::g_AppWidth, Display::g_AppHeight);
-		ImGui::Text("DrawSum :%f", DataAverage::Get(L"•`‰æˆ—"));
-		ImGui::Text("1 :%f", DataAverage::Get(L"•`‰æ‘‚«‚İ"));
-		ImGui::Text("2 :%f", DataAverage::Get(L"‰æ–Ê•\¦"));
-		ImGui::Text("3 :%f", DataAverage::Get(L"GPU‘Ò‹@"));
-		ImGui::Text("Elapsed : %lf", Timer::g_ElapsedTime);
-		ImGui::Text("deltaT :%lf (FPS: %lf)", DataAverage::Get(L"FPS"), 1.f / DataAverage::Get(L"FPS"));
+		ImGui::Text("Draw[%.2fms]", DataAverage::Get(L"•`‰æˆ—"));
+		ImGui::Text(" Render  :%.2fms", DataAverage::Get(L"•`‰æ‘‚«‚İ"));
+		ImGui::Text(" Present :%.2fms", DataAverage::Get(L"‰æ–Ê•\¦"));
+		ImGui::Text(" GPUwait :%.2fms", DataAverage::Get(L"GPU‘Ò‹@"));
+		ImGui::Text("Elapsed : %.1lf/second", Timer::g_ElapsedTime);
+		ImGui::Text("imguiFPS %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("deltaT :%.2lfms (FPS: %.1lf)", gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f), 1.f / DataAverage::Get(L"FPS"));
 		ImGui::End();
 
 		ImGui::Begin("Hoge");
