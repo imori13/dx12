@@ -3,6 +3,8 @@
 #include "GraphicsCore.h"
 #include "Display.h"
 #include "GameCore.h"
+#include "Timer.h"
+#include "DataAverage.h"
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -18,13 +20,28 @@ namespace App_ImGui
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		const ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
+
+		ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigDockingWithShift = true;
+
 		ImGui::StyleColorsDark();
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+		ImGuiStyle& style = ImGui::GetStyle();
+		if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
 		ImGui_ImplWin32_Init(Window::g_hWnd);
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
 							DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, g_ResourceHeap.Get(),
 							g_ResourceHeap.GetCPUHandle(0),
 							g_ResourceHeap.GetGPUHandle(0));
+
 	}
 
 	void Update()
@@ -42,7 +59,16 @@ namespace App_ImGui
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("WindowSize : { %d ,%d }", Window::g_Width, Window::g_Height);
 		ImGui::Text("AppSize : { %d ,%d }", Display::g_AppWidth, Display::g_AppHeight);
-		ImGui::Text("DrawSum %f : { Update & Draw: %f , FrameWait: %f, GpuWait: %f}", GameCore::g_DrawSumT, GameCore::g_WriteT, GameCore::g_FrameWaitT, GameCore::g_GpuWaitT);
+		ImGui::Text("DrawSum :%f", DataAverage::Get(L"ï`âÊèàóù"));
+		ImGui::Text("1 :%f", DataAverage::Get(L"ï`âÊèëÇ´çûÇ›"));
+		ImGui::Text("2 :%f", DataAverage::Get(L"âÊñ ï\é¶"));
+		ImGui::Text("3 :%f", DataAverage::Get(L"GPUë“ã@"));
+		ImGui::Text("Elapsed : %lf", Timer::g_ElapsedTime);
+		ImGui::Text("deltaT :%lf (FPS: %lf)", DataAverage::Get(L"FPS"), 1.f / DataAverage::Get(L"FPS"));
+		ImGui::End();
+
+		ImGui::Begin("Hoge");
+		ImGui::Text("Docking Test");
 		ImGui::End();
 
 		ImGui::Render();
@@ -56,6 +82,12 @@ namespace App_ImGui
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX12_Shutdown();
 		ImGui::DestroyContext();
+	}
+
+	void UpdateAdditionalPlatformWindows(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault(nullptr, static_cast<void*>(cmdList));
 	}
 }
 

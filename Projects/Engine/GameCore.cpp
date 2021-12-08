@@ -9,18 +9,16 @@
 #include "Display.h"
 #include "Command.h"
 #include "TimeStamp.h"
+#include "Timer.h"
+#include "DataAverage.h"
 
 #include <boost/version.hpp>
 
 namespace GameCore
 {
-	float g_DrawSumT;
-	float g_WriteT;
-	float g_FrameWaitT;
-	float g_GpuWaitT;
-
 	void InitializeApplication(IGameApp& game)
 	{
+		Timer::Initialize();
 		TimeStamp::Initialize();
 
 		TimeStamp::Begin(L"初期化処理");
@@ -35,6 +33,7 @@ namespace GameCore
 
 	bool UpdateApplication(IGameApp& game)
 	{
+		Timer::Update();
 		TimeStamp::Begin(L"描画処理");
 
 		// 更新処理
@@ -48,16 +47,16 @@ namespace GameCore
 		{
 			game.RenderScene();
 
-			g_WriteT = TimeStamp::End(L"描画書き込み");
+			DataAverage::Set(L"描画書き込み", TimeStamp::End(L"描画書き込み"), Average::Default);
 		}
 
 		// 画面表示
 		{
 			TimeStamp::Begin(L"画面表示");
 
-			Display::Present(1);
+			Display::Present(0);
 
-			g_FrameWaitT = TimeStamp::End(L"画面表示");
+			DataAverage::Set(L"画面表示", TimeStamp::End(L"画面表示"), Average::Default);
 		}
 
 		// GPU待機
@@ -66,10 +65,10 @@ namespace GameCore
 
 			Command::MoveToNextFrame();
 
-			g_GpuWaitT = TimeStamp::End(L"GPU待機");
+			DataAverage::Set(L"GPU待機", TimeStamp::End(L"GPU待機"), Average::Default);
 		}
 
-		g_DrawSumT = TimeStamp::End(L"描画処理");
+		DataAverage::Set(L"描画処理", TimeStamp::End(L"描画処理"), Average::Default);
 
 		return !game.IsDone();
 	}

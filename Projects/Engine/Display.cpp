@@ -56,7 +56,8 @@ namespace Display
 			desc.BufferCount = FRAME_COUNT;
 			desc.OutputWindow = Window::g_hWnd;
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-			desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			desc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+			//desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 			// スワップチェインの生成
 			Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;

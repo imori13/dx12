@@ -22,10 +22,6 @@ namespace GameCore
 
 namespace GameCore
 {
-	extern float g_DrawSumT;
-	extern float g_WriteT;
-	extern float g_FrameWaitT;
-	extern float g_GpuWaitT;
 	int RunApplication(IGameApp& app, HINSTANCE hInstance, uint32_t width, uint32_t height);
 }
 

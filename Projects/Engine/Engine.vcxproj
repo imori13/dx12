@@ -99,6 +99,7 @@
     <ClCompile Include="FileSearch.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
+    <ClCompile Include="DataAverage.cpp" />
     <ClCompile Include="PipelineStateObject.cpp" />
     <ClCompile Include="ResourceHeap.cpp" />
     <ClCompile Include="pch.cpp">
@@ -106,6 +107,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeStamp.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="WinApp.cpp" />
@@ -121,11 +123,13 @@
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputElement.h" />
+    <ClInclude Include="DataAverage.h" />
     <ClInclude Include="PipelineStateObject.h" />
     <ClInclude Include="ResourceHeap.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTargetBuffer.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TimeStamp.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="UploadBuffer.h" />

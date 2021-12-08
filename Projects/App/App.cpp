@@ -5,6 +5,7 @@
 #include "WinApp.h"
 #include "Command.h"
 #include "App_ImGui.h"
+#include "Timer.h"
 
 class App : public GameCore::IGameApp
 {
@@ -45,8 +46,8 @@ void App::Update(float deltaT)
 
 	deltaT++;
 
-	model.m_RotateAngle += 0.025f;
-	model2.m_RotateAngle += 0.010f;
+	model.m_RotateAngle += 1.f * Timer::g_FrameTime;
+	model2.m_RotateAngle += 1.5f * Timer::g_FrameTime;
 
 	model.Update();
 	model2.Update();
@@ -92,5 +93,8 @@ void App::RenderScene(void)
 		cmdList->ResourceBarrier(1, &barrier);
 	}
 
+
 	Command::End();
+
+	App_ImGui::UpdateAdditionalPlatformWindows(cmdList.Get());
 }
