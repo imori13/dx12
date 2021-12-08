@@ -71,7 +71,7 @@ namespace Debug
     Debug::Printf( msg , ##__VA_ARGS__ );
 	// ÉçÉO(â¸çsÇ†ÇË)
 #define LOGLINE( msg, ... ) \
-    Debug::Printf(_T("%s\n"), msg, ##__VA_ARGS__ );
+    Debug::Printf(msg _T("\n"), ##__VA_ARGS__ );
 
 #define ASSERT( FLAG, ... ) \
 	if (Debug::Check(FLAG)) \

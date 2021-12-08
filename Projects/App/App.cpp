@@ -27,7 +27,7 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	std::wstring path = L"/Resources/Textures/";
+	std::wstring path = L"Textures\\";
 	model.OnInit(path + L"neko.jpg");
 	model2.OnInit(path + L"neko2.jpg");
 }

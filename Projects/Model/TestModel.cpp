@@ -63,30 +63,30 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 		std::wstring psPath;
 
 		if(!SearchFilePath(L"SimpleTexVS.cso", vsPath))
-			ENSURES(false, "VertexShaderパス検索");
+			ENSURES(false, L"VertexShaderパス検索");
 
 		if(!SearchFilePath(L"SimpleTexPS.cso", psPath))
-			ENSURES(false, "PixelShaderパス検索");
+			ENSURES(false, L"PixelShaderパス検索");
 
 		Microsoft::WRL::ComPtr<ID3DBlob> pVSBlob;
 		Microsoft::WRL::ComPtr<ID3DBlob> pPSBlob;
 
 		// 頂点シェーダ読み込み
 		hr = D3DReadFileToBlob(vsPath.c_str(), pVSBlob.GetAddressOf());
-		ENSURES(hr, "VertexShader読み込み");
+		ENSURES(hr, L"VertexShader読み込み [ %s ]",vsPath.c_str());
 
 		// ピクセルシェーダ読み込み
 		hr = D3DReadFileToBlob(psPath.c_str(), pPSBlob.GetAddressOf());
-		ENSURES(hr, "PixelShader読み込み");
+		ENSURES(hr, L"PixelShader読み込み [ %s ]", vsPath.c_str());
 
 		// ルートシグネチャ読み込み
 		Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob;
 		hr = D3DGetBlobPart(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
-		ENSURES(hr, "RootSignature設定の取得");
+		ENSURES(hr, L"RootSignature設定の取得");
 
 		// ルートシグネチャ設定
 		hr = Graphics::g_pDevice->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature));
-		ENSURES(hr, "RootSignatureの生成");
+		ENSURES(hr, L"RootSignatureの生成");
 
 		// パイプラインステート設定
 		pipelineStateObject.SetInputLayout(inputElement.Get());

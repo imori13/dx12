@@ -5,15 +5,28 @@
     <ClCompile Include="App_ImGui.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SimplePS.hlsl" />
-    <FxCompile Include="SimpleVS.hlsl" />
-    <FxCompile Include="SimpleTexVS.hlsl" />
-    <FxCompile Include="SimpleTexPS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_ImGui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{90cc14d6-c71d-4ab3-92db-41e3961be231}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="SimpleTexPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SimpleTexVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SimpleVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SimplePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
