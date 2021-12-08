@@ -11,6 +11,7 @@ namespace Display
 	extern uint32_t g_FrameIndex;
 	extern uint32_t g_AppWidth;
 	extern uint32_t g_AppHeight;
+	extern float g_Aspect;
 
 	extern D3D12_VIEWPORT g_Viewport;
 	extern D3D12_RECT g_Scissor;

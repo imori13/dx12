@@ -19,6 +19,7 @@ namespace Display
 	std::array<DepthStencilBuffer, FRAME_COUNT> g_DepthStencilBuffer;
 	uint32_t g_AppWidth;
 	uint32_t g_AppHeight;
+	float g_Aspect;
 	D3D12_VIEWPORT g_Viewport;
 	D3D12_RECT g_Scissor;
 
@@ -199,5 +200,7 @@ namespace Display
 		g_Scissor.right = width;
 		g_Scissor.top = 0;
 		g_Scissor.bottom = height;
+
+		g_Aspect = static_cast<float>(Display::g_AppWidth) / static_cast<float>(Display::g_AppHeight);
 	}
 }
