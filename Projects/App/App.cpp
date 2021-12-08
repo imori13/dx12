@@ -78,6 +78,9 @@ void App::RenderScene(void)
 	// DSV‚ðƒNƒŠƒA
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
+	cmdList->RSSetViewports(1, &Display::g_Viewport);
+	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
+
 	model.Render(cmdList.Get());
 	model2.Render(cmdList.Get());
 

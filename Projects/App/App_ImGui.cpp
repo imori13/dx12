@@ -86,10 +86,13 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 				GetClientRect(hWnd, &clientRect);
 				Display::OnSizeChanged(clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
 			}
+			break;
 		}
 
 		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
+		{
+			break;
+		}
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

@@ -106,7 +106,7 @@ namespace Command
 		ENSURES(hr);
 
 		// Swapchainのバッファ更新
-		Display::NextFrame();
+		Display::UpdateNextFrame();
 
 		// 次の書き込み先バッファがまだGPUで使用されていたら待つ
 		if(s_pFence->GetCompletedValue() < s_NextFenceValue.at(Display::g_FrameIndex))
@@ -126,8 +126,6 @@ namespace Command
 		auto hr = s_pCmdQueue->Signal(s_pFence.Get(), s_NextFenceValue.at(Display::g_FrameIndex));
 		ENSURES(hr);
 
-		//if(m_pFence->GetCompletedValue() < m_NextFenceValue[Display::g_FrameIndex])
-
 		// Fenceが更新されるまで待機
 		hr = s_pFence->SetEventOnCompletion(s_NextFenceValue.at(Display::g_FrameIndex), s_FenceEventHandle);
 		WaitForSingleObjectEx(s_FenceEventHandle, INFINITE, FALSE);
@@ -135,19 +133,5 @@ namespace Command
 
 		// Fence値を更新して終了
 		s_NextFenceValue.at(Display::g_FrameIndex)++;
-	}
-
-
-
-	// private method ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	void ExecuteCommandList()
-	{
-		s_pCmdList->Close();
-
-		ID3D12CommandList* ppCmdLists[] = { s_pCmdList.Get() };
-		const auto span = gsl::make_span(ppCmdLists);
-
-		s_pCmdQueue->ExecuteCommandLists(1, span.data());
 	}
 }

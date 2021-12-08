@@ -12,6 +12,9 @@ namespace Display
 	extern uint32_t g_AppWidth;
 	extern uint32_t g_AppHeight;
 
+	extern D3D12_VIEWPORT g_Viewport;
+	extern D3D12_RECT g_Scissor;
+
 	// ‰Šú‰»
 	void Initialize(void);
 	// I—¹
@@ -19,6 +22,6 @@ namespace Display
 	// •\¦ˆ—
 	void Present(uint32_t interval);
 
-	void NextFrame();
+	void UpdateNextFrame();
 	void OnSizeChanged(uint32_t width, uint32_t height);
 }

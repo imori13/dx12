@@ -4,7 +4,6 @@
 namespace Graphics
 {
 	Microsoft::WRL::ComPtr<ID3D12Device> g_pDevice = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> g_pColorBuffer[FRAME_COUNT] = { nullptr };
 
 	void Initialize()
 	{

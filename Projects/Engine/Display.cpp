@@ -18,8 +18,11 @@ namespace Display
 	std::array<DepthStencilBuffer, FRAME_COUNT> g_DepthStencilBuffer;
 	uint32_t g_AppWidth;
 	uint32_t g_AppHeight;
+	D3D12_VIEWPORT g_Viewport;
+	D3D12_RECT g_Scissor;
 
-	void CreateRenderTargetView();
+	void CreateColorBuffer();
+	void InitializeView(uint32_t width, uint32_t height) noexcept;
 
 	void Initialize(void)
 	{
@@ -66,12 +69,74 @@ namespace Display
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		}
 
-		// レンダーターゲットビューの生成
-		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-		CreateRenderTargetView();
 
-		// デフスステンシルビューの生成
+		// RSV/DSVの生成
+		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+
+		CreateColorBuffer();
+		InitializeView(g_AppWidth, g_AppHeight);
+	}
+
+	void Terminate(void) noexcept
+	{
+	}
+
+	void Present(uint32_t interval)
+	{
+		// 画面に表示
+		const auto hr = s_pSwapChain->Present(interval, 0);
+		ENSURES(hr);
+	}
+
+	void UpdateNextFrame()
+	{
+		g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
+	}
+
+	void OnSizeChanged(uint32_t width, uint32_t height)
+	{
+		Command::WaitForGpu();
+
+		// リソースのクリア
+		for(auto i = 0u; i < FRAME_COUNT; ++i)
+		{
+			g_RenderTargetBuffer.at(i).Reset();
+			g_DepthStencilBuffer.at(i).Reset();
+		}
+
+		// スワップチェインをリサイズ
+		DXGI_SWAP_CHAIN_DESC desc = {};
+		auto hr = s_pSwapChain->GetDesc(&desc);
+		ENSURES(hr, "Swapchain設定の読み込み");
+		hr = s_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, desc.BufferDesc.Format, desc.Flags);
+		ENSURES(hr, "Swapchainリサイズバッファ");
+
+		//g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
+		Command::MoveToNextFrame();
+
+		// サイズ変更
+		g_AppWidth = width;
+		g_AppHeight = height;
+
+		CreateColorBuffer();
+		InitializeView(width, height);
+	}
+
+	void CreateColorBuffer()
+	{
+		for(auto i = 0u; i < FRAME_COUNT; ++i)
+		{
+			const auto hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
+			ENSURES(hr, "SwapChainのBuffer取得");
+
+			// レンダーターゲットビューの生成
+			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
+			const auto handle = s_RenderTargetHeap.GetCPUHandle(i);
+			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle);
+			g_RenderTargetBuffer.at(i).SetCpuHandle(handle);
+		}
+
 		for(auto i = 0u; i < g_DepthStencilBuffer.size(); ++i)
 		{
 			g_DepthStencilBuffer.at(i).Create(Display::g_AppWidth, Display::g_AppHeight, DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
@@ -83,58 +148,17 @@ namespace Display
 		}
 	}
 
-	void Terminate(void) noexcept
+	void InitializeView(uint32_t width, uint32_t height) noexcept
 	{
-	}
-
-	void Present(uint32_t interval)
-	{
-		// 画面に表示
-		s_pSwapChain->Present(interval, 0);
-	}
-
-	void NextFrame()
-	{
-		g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
-	}
-
-	void OnSizeChanged(uint32_t width, uint32_t height)
-	{
-		if(width == Window::g_Width || height == Window::g_Height)return;
-
-		Command::WaitForGpu();
-
-		// リソースのクリア
-		for(auto i = 0u; i < FRAME_COUNT; ++i)
-		{ g_RenderTargetBuffer.at(i).Get()->Release(); }
-
-		// スワップチェインをリサイズ
-		DXGI_SWAP_CHAIN_DESC desc = {};
-		s_pSwapChain->GetDesc(&desc);
-		s_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, desc.BufferDesc.Format, desc.Flags);
-
-		BOOL fullScreenState;
-		s_pSwapChain->GetFullscreenState(&fullScreenState, nullptr);
-
-		g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
-
-		// サイズ変更
-		g_AppWidth = width;
-		g_AppHeight = height;
-	}
-
-	void CreateRenderTargetView()
-	{
-		for(auto i = 0u; i < g_RenderTargetBuffer.size(); ++i)
-		{
-			const auto hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
-			ENSURES(hr, "SwapChainのBuffer取得");
-
-			// レンダーターゲットビューの生成
-			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
-			const auto handle = s_RenderTargetHeap.GetCPUHandle(i);
-			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle);
-			g_RenderTargetBuffer.at(i).SetCpuHandle(handle);
-		}
+		g_Viewport.TopLeftX = 0;
+		g_Viewport.TopLeftY = 0;
+		g_Viewport.Width = static_cast<float>(width);
+		g_Viewport.Height = static_cast<float>(height);
+		g_Viewport.MinDepth = 0.0f;
+		g_Viewport.MaxDepth = 1.0f;
+		g_Scissor.left = 0;
+		g_Scissor.right = width;
+		g_Scissor.top = 0;
+		g_Scissor.bottom = height;
 	}
 }

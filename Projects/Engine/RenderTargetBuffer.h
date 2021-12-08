@@ -10,6 +10,7 @@ public:
 		, m_CpuHandle{}
 	{}
 
+	void Reset() { m_ColorBuffer.Reset(); }
 	ID3D12Resource* Get() noexcept { return m_ColorBuffer.Get(); }
 	ID3D12Resource** GetAddressOf() noexcept { return m_ColorBuffer.GetAddressOf(); }
 

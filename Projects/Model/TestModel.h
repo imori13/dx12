@@ -22,8 +22,8 @@ class TestModel
 public:
 	TestModel() noexcept
 		: m_pRootSignature(nullptr)
-		, m_Viewport{}
-		, m_Scissor{}
+		, m_pTransform(nullptr)
+		, m_RotateAngle(0)
 	{
 
 	}
@@ -35,7 +35,7 @@ public:
 
 	float m_RotateAngle;
 private:
-	ResourceHeap m_CbvHeap;
+	ResourceHeap m_CBV_SRVHeap;
 	UploadBuffer m_VertexData;
 	UploadBuffer m_IndexData;
 	UploadBuffer m_ConstantData;
@@ -44,8 +44,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 
 	Transform* m_pTransform;	// UploadBufferのメモリを参照しているので、デストラクタで破棄される
-
-	D3D12_VIEWPORT m_Viewport;
-	D3D12_RECT m_Scissor;
 };
 
