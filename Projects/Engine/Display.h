@@ -24,4 +24,5 @@ namespace Display
 
 	void UpdateNextFrame();
 	void OnSizeChanged(uint32_t width, uint32_t height);
+	void ToggleFullscreen();
 }

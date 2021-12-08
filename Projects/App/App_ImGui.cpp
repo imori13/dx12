@@ -89,6 +89,15 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			break;
 		}
 
+		case WM_SYSKEYDOWN:
+		{
+			if((wParam == VK_RETURN) && (lParam & (1 << 29)) && Graphics::g_pDevice != nullptr)
+			{
+				Display::ToggleFullscreen();
+			}
+			break;
+		}
+
 		default:
 		{
 			break;

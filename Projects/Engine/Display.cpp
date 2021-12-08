@@ -9,6 +9,7 @@ namespace
 	Microsoft::WRL::ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
 	ResourceHeap s_RenderTargetHeap;
 	ResourceHeap s_DepthStencilHeap;
+	bool s_IsFullscreen = false;
 }
 
 namespace Display
@@ -22,7 +23,7 @@ namespace Display
 	D3D12_RECT g_Scissor;
 
 	void CreateColorBuffer();
-	void InitializeView(uint32_t width, uint32_t height) noexcept;
+	void InitializeViewport(uint32_t width, uint32_t height) noexcept;
 
 	void Initialize(void)
 	{
@@ -40,6 +41,7 @@ namespace Display
 
 			// スワップチェインの設定
 			DXGI_SWAP_CHAIN_DESC desc = {};
+			desc.Windowed = !s_IsFullscreen;
 			desc.BufferDesc.Width = g_AppWidth;
 			desc.BufferDesc.Height = g_AppHeight;
 			desc.BufferDesc.RefreshRate.Numerator = 60;		// リフレッシュレート
@@ -52,7 +54,6 @@ namespace Display
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			desc.BufferCount = FRAME_COUNT;
 			desc.OutputWindow = Window::g_hWnd;
-			desc.Windowed = TRUE;
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -60,6 +61,10 @@ namespace Display
 			Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 			hr = pFactory->CreateSwapChain(Command::GetCmdQueue(), &desc, &pSwapChain);
 			ENSURES(hr, "SwapChain生成");
+
+			// DXGIのAlt+Enterを禁止する(CreateSwapchainの後に呼ぶ)
+			hr = pFactory->MakeWindowAssociation(Window::g_hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
+			ENSURES(hr, "DXGIfullscreenn無効化");
 
 			// IDXGISwapChain3を取得
 			hr = pSwapChain->QueryInterface(IID_PPV_ARGS(s_pSwapChain.GetAddressOf()));
@@ -75,7 +80,7 @@ namespace Display
 		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
 		CreateColorBuffer();
-		InitializeView(g_AppWidth, g_AppHeight);
+		InitializeViewport(g_AppWidth, g_AppHeight);
 	}
 
 	void Terminate(void) noexcept
@@ -112,7 +117,6 @@ namespace Display
 		hr = s_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, desc.BufferDesc.Format, desc.Flags);
 		ENSURES(hr, "Swapchainリサイズバッファ");
 
-		//g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		Command::MoveToNextFrame();
 
 		// サイズ変更
@@ -120,7 +124,42 @@ namespace Display
 		g_AppHeight = height;
 
 		CreateColorBuffer();
-		InitializeView(width, height);
+		InitializeViewport(width, height);
+	}
+
+	void ToggleFullscreen()
+	{
+		LOGLINE("fullscreen切り替え");
+
+		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullscreenDesc;
+		s_pSwapChain->GetFullscreenDesc(&fullscreenDesc);
+
+		// Fullscreen -> Windowed
+		if(!fullscreenDesc.Windowed)
+		{
+			s_pSwapChain->SetFullscreenState(false, nullptr);
+			SetWindowLong(Window::g_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+			ShowWindow(Window::g_hWnd, SW_NORMAL);
+		}
+		// Windowed -> Fullscreen
+		else
+		{
+			DXGI_MODE_DESC desc;
+			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			desc.Width = 1920;
+			desc.Height = 1080;
+			desc.RefreshRate.Denominator = 1;
+			desc.RefreshRate.Numerator = 60;
+			desc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+			desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+			s_pSwapChain->ResizeTarget(&desc);
+			s_pSwapChain->SetFullscreenState(true, nullptr);
+		}
+
+		// 解像度を変更する
+		OnSizeChanged(Window::g_Width, Window::g_Height);
+
+		s_IsFullscreen = !s_IsFullscreen;
 	}
 
 	void CreateColorBuffer()
@@ -148,7 +187,7 @@ namespace Display
 		}
 	}
 
-	void InitializeView(uint32_t width, uint32_t height) noexcept
+	void InitializeViewport(uint32_t width, uint32_t height) noexcept
 	{
 		g_Viewport.TopLeftX = 0;
 		g_Viewport.TopLeftY = 0;
