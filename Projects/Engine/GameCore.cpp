@@ -16,7 +16,7 @@
 
 namespace GameCore
 {
-	bool g_IsSync = false;
+	bool g_IsSync = true;
 
 	void InitializeApplication(IGameApp& game)
 	{

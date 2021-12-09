@@ -5,10 +5,12 @@
 #include "GameCore.h"
 #include "Timer.h"
 #include "DataAverage.h"
+#include "Command.h"
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
+#include <implot.h>
 
 namespace
 {
@@ -23,8 +25,8 @@ namespace App_ImGui
 	{
 		g_ResourceHeap.Create(1, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
-		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 
 		ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -50,7 +52,6 @@ namespace App_ImGui
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
 							DXGI_FORMAT_R8G8B8A8_UNORM, g_ResourceHeap.Get(),
 							handle.CPU, handle.GPU);
-
 	}
 
 	void Update()
@@ -76,16 +77,21 @@ namespace App_ImGui
 		const double present = DataAverage::Get(L"Present");
 		const double gpuWait = DataAverage::Get(L"GPUwait");
 		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"çXêVéûä‘"), update + render + present + gpuWait);
-		ImGui::Text("  Update  : %.2fms", update);
-		ImGui::Text("  Render  : %.2fms", render);
-		ImGui::Text("  Present : %.2fms", present);
-		ImGui::Text("  GPUwait : %.2fms", gpuWait);
+		{
+			ImGui::Indent();
+			ImGui::Text("Update  : %.2fms", update);
+			ImGui::Text("Render  : %.2fms", render);
+			ImGui::Text("Present : %.2fms", present);
+			ImGui::Text("GPUwait : %.2fms", gpuWait);
+			ImGui::Unindent();
+		}
 		ImGui::Checkbox("Sync", &GameCore::g_IsSync);
 
 		ImGui::End();
 
 		ImGui::Begin("Hoge");
-		ImGui::Text("Docking Test");
+		ImPlot::BeginPlot("Test");
+		ImPlot::EndPlot();
 		ImGui::End();
 
 		ImGui::Render();
@@ -98,6 +104,7 @@ namespace App_ImGui
 	{
 		ImGui_ImplWin32_Shutdown();
 		ImGui_ImplDX12_Shutdown();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 	}
 

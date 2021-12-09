@@ -6,7 +6,7 @@
 struct Value
 {
 	double Sum = {};
-	std::list<float> ValueList = {};
+	std::vector<float> ValueList = {};
 };
 
 namespace
@@ -24,7 +24,7 @@ void DataAverage::Set(const std::wstring_view name, const float value, const Ave
 	while(pair.ValueList.size() * (Timer::g_FrameTime * 60) > static_cast<uint32_t>(limit))
 	{
 		pair.Sum -= pair.ValueList.front();
-		pair.ValueList.pop_front();
+		pair.ValueList.erase(pair.ValueList.begin());
 	}
 }
 
@@ -32,4 +32,10 @@ float DataAverage::Get(const std::wstring_view name)
 {
 	const auto& pair = averageList[name.data()];
 	return gsl::narrow_cast<float>(pair.Sum / static_cast<double>(pair.ValueList.size()));
+}
+
+std::vector<float> DataAverage::GetArray(const std::wstring_view name)
+{
+	const auto& vec = averageList[name.data()].ValueList;
+	return vec;
 }

@@ -9,6 +9,8 @@
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="imconfig.h" />
+    <ClInclude Include="implot_internal.h" />
+    <ClInclude Include="implot.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui_draw.cpp" />
@@ -17,5 +19,7 @@
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="implot_items.cpp" />
+    <ClCompile Include="implot.cpp" />
   </ItemGroup>
 </Project>
