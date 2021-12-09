@@ -3,9 +3,10 @@
 #include "FileSearch.h"
 #include "InputElement.h"
 #include "Display.h"
+#include "TextureManager.h"
 
 
-bool TestModel::OnInit(const std::wstring& texturePath)
+bool TestModel::OnInit()
 {
 	m_RotateAngle = static_cast<float>(rand());
 	HRESULT hr{};
@@ -45,12 +46,8 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 
 	m_CBV_SRVHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
-	// テクスチャバッファを生成
-	m_Texture.CreateWIC(texturePath);
-
 	const auto constView = m_ConstantData.GetConstantView();
 	Graphics::g_pDevice->CreateConstantBufferView(&constView, m_CBV_SRVHeap.GetCPUHandle(0));
-	m_Texture.SetHeap(m_CBV_SRVHeap, 1);
 
 
 	// ■ パイプラインステートの生成
@@ -112,6 +109,12 @@ bool TestModel::OnInit(const std::wstring& texturePath)
 	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
 
 	return true;
+}
+
+void TestModel::SetTexture(const std::wstring_view textureName)
+{
+	m_Texture = TextureManager::GetTexture(textureName);
+	m_Texture.SetHeap(m_CBV_SRVHeap, 1);
 }
 
 void TestModel::Update() noexcept

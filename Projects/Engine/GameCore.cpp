@@ -43,7 +43,7 @@ namespace GameCore
 
 			game.Update(0);
 
-			DataAverage::Set(L"Update", TimeStamp::End(), Average::Middle);
+			DataAverage::Set(L"Update", TimeStamp::End());
 		}
 
 		// 描画処理
@@ -52,7 +52,7 @@ namespace GameCore
 
 			game.RenderScene();
 
-			DataAverage::Set(L"Render", TimeStamp::End(), Average::Middle);
+			DataAverage::Set(L"Render", TimeStamp::End());
 		}
 
 		// 画面表示
@@ -61,7 +61,7 @@ namespace GameCore
 
 			Display::Present(0);
 
-			DataAverage::Set(L"Present", TimeStamp::End(), Average::Middle);
+			DataAverage::Set(L"Present", TimeStamp::End());
 		}
 
 		// Frame待機
@@ -69,8 +69,9 @@ namespace GameCore
 			TimeStamp::Begin();
 
 			Timer::Update(g_IsSync);
+			DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Low);
 
-			DataAverage::Set(L"SyncHz", TimeStamp::End(), Average::Middle);
+			DataAverage::Set(L"SyncHz", TimeStamp::End());
 		}
 
 		// GPU待機
@@ -79,10 +80,10 @@ namespace GameCore
 
 			Command::MoveToNextFrame();
 
-			DataAverage::Set(L"GPUwait", TimeStamp::End(), Average::Middle);
+			DataAverage::Set(L"GPUwait", TimeStamp::End());
 		}
 
-		DataAverage::Set(L"更新時間", TimeStamp::End(), Average::Middle);
+		DataAverage::Set(L"更新時間", TimeStamp::End());
 
 		return !game.IsDone();
 	}

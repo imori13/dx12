@@ -6,6 +6,7 @@
 #include "Command.h"
 #include "App_ImGui.h"
 #include "Timer.h"
+#include "TextureManager.h"
 
 class App : public GameCore::IGameApp
 {
@@ -27,9 +28,13 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	std::wstring path = L"Textures\\";
-	model.OnInit(path + L"neko.jpg");
-	model2.OnInit(path + L"neko2.jpg");
+	TextureManager::LoadTexture(L"neko.jpg");
+	TextureManager::LoadTexture(L"neko2.jpg");
+
+	model.OnInit();
+	model.SetTexture(L"neko.jpg");
+	model2.OnInit();
+	model2.SetTexture(L"neko2.jpg");
 }
 
 void App::Cleanup(void)

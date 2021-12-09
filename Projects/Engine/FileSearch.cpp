@@ -45,5 +45,12 @@ bool SearchFilePath(const wchar_t* filename, std::wstring& retFilepath)
 		return true;
 	}
 
+	swprintf_s(dstPath.data(), dstPath.max_size(), L"%s\\Textures\\%s", exePath.data(), filename);
+	if(PathFileExistsW(dstPath.data()) == TRUE)
+	{
+		retFilepath = dstPath.data();
+		return true;
+	}
+
 	return false;
 }

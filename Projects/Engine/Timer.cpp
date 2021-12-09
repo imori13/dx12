@@ -32,7 +32,5 @@ namespace Timer
 		} while(frameWait && g_FrameTime < s_SyncDestFrame);
 
 		g_ElapsedTime = NewElapsed;
-
-		DataAverage::Set(L"FPS", g_FrameTime, Average::Middle);
 	}
 }

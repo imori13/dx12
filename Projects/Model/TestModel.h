@@ -28,7 +28,8 @@ public:
 
 	}
 
-	bool OnInit(const std::wstring& texturePath);
+	bool OnInit();
+	void SetTexture(const std::wstring_view textureName);
 	void Update() noexcept;
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;

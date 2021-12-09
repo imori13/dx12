@@ -58,6 +58,9 @@
     <ClCompile Include="DataAverage.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCore.h">
@@ -127,6 +130,9 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="DataAverage.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>
