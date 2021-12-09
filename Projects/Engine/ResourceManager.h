@@ -9,5 +9,5 @@ namespace ResourceManager
 	void LoadShader(const std::wstring_view shaderName);
 
 	const Texture& GetTexture(const std::wstring_view texutreName);
-	ID3DBlob* GetShader(const std::wstring_view shaderName);
+	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName);
 };

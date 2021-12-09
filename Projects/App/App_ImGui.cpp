@@ -45,10 +45,11 @@ namespace App_ImGui
 		}
 
 		ImGui_ImplWin32_Init(Window::g_hWnd);
+
+		const auto& handle = g_ResourceHeap.GetHandle();
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
 							DXGI_FORMAT_R8G8B8A8_UNORM, g_ResourceHeap.Get(),
-							g_ResourceHeap.GetCPUHandle(0),
-							g_ResourceHeap.GetGPUHandle(0));
+							handle.CPU, handle.GPU);
 
 	}
 
@@ -91,7 +92,7 @@ namespace App_ImGui
 
 		ImGui::Render();
 
-		cmdList->SetDescriptorHeaps(1, g_ResourceHeap.GetHeapAddress());
+		cmdList->SetDescriptorHeaps(1, g_ResourceHeap.GetAddress());
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), cmdList);
 	}
 

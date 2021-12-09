@@ -17,15 +17,8 @@ public:
 
 	void CreateWIC(const std::wstring_view path);
 
-	const void SetHeap(ResourceHeap& heap, const uint32_t index)
-	{
-		m_HandleCPU = heap.GetCPUHandle(index);
-		m_HandleGPU = heap.GetGPUHandle(index);
+	gsl::not_null<ID3D12Resource*> Get() noexcept { return m_pResource.Get(); }
 
-		Graphics::g_pDevice->CreateShaderResourceView(m_pResource.Get(), &m_View, m_HandleCPU);
-	}
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGpuHandle() noexcept { return m_HandleGPU; }
-private:
 	D3D12_CPU_DESCRIPTOR_HANDLE m_HandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_HandleGPU;
 	D3D12_SHADER_RESOURCE_VIEW_DESC m_View;

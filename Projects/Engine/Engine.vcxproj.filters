@@ -90,12 +90,6 @@
     <ClInclude Include="VertexBuffer.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceHeap.h">
       <Filter>Source File\GpuHeaps</Filter>
     </ClInclude>

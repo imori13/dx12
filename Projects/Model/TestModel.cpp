@@ -45,10 +45,9 @@ bool TestModel::OnInit()
 	}
 
 	m_CBV_SRVHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-
+	const auto& handle = m_CBV_SRVHeap.GetHandle();
 	const auto constView = m_ConstantData.GetConstantView();
-	Graphics::g_pDevice->CreateConstantBufferView(&constView, m_CBV_SRVHeap.GetCPUHandle(0));
-
+	Graphics::g_pDevice->CreateConstantBufferView(&constView, handle.CPU);
 
 	// ■ パイプラインステートの生成
 	{
@@ -56,8 +55,8 @@ bool TestModel::OnInit()
 		inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 		inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 
-		const gsl::not_null<ID3DBlob*> vsShader = ResourceManager::GetShader(L"SimpleTexVS.cso");
-		const gsl::not_null<ID3DBlob*> psShader = ResourceManager::GetShader(L"SimpleTexPS.cso");
+		const auto vsShader = ResourceManager::GetShader(L"SimpleTexVS.cso");
+		const auto psShader = ResourceManager::GetShader(L"SimpleTexPS.cso");
 
 		// ルートシグネチャ読み込み
 		Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob;
@@ -97,7 +96,12 @@ bool TestModel::OnInit()
 void TestModel::SetTexture(const std::wstring_view textureName)
 {
 	m_Texture = ResourceManager::GetTexture(textureName);
-	m_Texture.SetHeap(m_CBV_SRVHeap, 1);
+
+	const auto& handle = m_CBV_SRVHeap.GetHandle();
+	m_Texture.m_HandleCPU = handle.CPU;
+	m_Texture.m_HandleGPU = handle.GPU;
+
+	Graphics::g_pDevice->CreateShaderResourceView(m_Texture.Get(), &m_Texture.m_View, m_Texture.m_HandleCPU);
 }
 
 void TestModel::Update() noexcept
@@ -124,9 +128,9 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	const auto indexView = m_IndexData.GetIndexView();
 	cmdList->IASetIndexBuffer(&indexView);
 
-	cmdList->SetDescriptorHeaps(1, m_CBV_SRVHeap.GetHeapAddress());
+	cmdList->SetDescriptorHeaps(1, m_CBV_SRVHeap.GetAddress());
 	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
-	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.GetGpuHandle());
+	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.m_HandleGPU);
 
 	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

@@ -173,9 +173,9 @@ namespace Display
 
 			// レンダーターゲットビューの生成
 			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
-			const auto handle = s_RenderTargetHeap.GetCPUHandle(i);
-			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle);
-			g_RenderTargetBuffer.at(i).SetCpuHandle(handle);
+			const auto handle = s_RenderTargetHeap.GetHandle();
+			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle.CPU);
+			g_RenderTargetBuffer.at(i).SetCpuHandle(handle.CPU);
 		}
 
 		for(auto i = 0u; i < g_DepthStencilBuffer.size(); ++i)
@@ -183,9 +183,9 @@ namespace Display
 			g_DepthStencilBuffer.at(i).Create(Display::g_AppWidth, Display::g_AppHeight, DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
 
 			const auto& dsvView = g_DepthStencilBuffer.at(i).GetView();
-			const auto handle = s_DepthStencilHeap.GetCPUHandle(i);
-			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer.at(i).Get(), &dsvView, handle);
-			g_DepthStencilBuffer.at(i).SetCpuHandle(handle);
+			const auto handle = s_DepthStencilHeap.GetHandle();
+			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer.at(i).Get(), &dsvView, handle.CPU);
+			g_DepthStencilBuffer.at(i).SetCpuHandle(handle.CPU);
 		}
 	}
 

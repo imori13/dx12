@@ -37,7 +37,7 @@ namespace ResourceManager
 		const auto& texture = s_Textures[texutreName.data()];
 		return texture;
 	}
-	ID3DBlob* GetShader(const std::wstring_view shaderName)
+	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
 	{
 		const auto& shader = s_Shaders[shaderName.data()];
 		return shader.Get();
