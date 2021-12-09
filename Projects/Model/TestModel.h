@@ -34,7 +34,8 @@ public:
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void OnTerm() noexcept;
 
-	float m_RotateAngle;
+	float m_X{}, m_Y{}, m_Z{};
+	float m_RotateAngle{};
 private:
 	ResourceHeap m_CBV_SRVHeap;
 	UploadBuffer m_VertexData;

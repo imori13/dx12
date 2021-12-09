@@ -84,11 +84,10 @@ bool TestModel::OnInit()
 	auto targetPos = DirectX::XMVectorZero();
 	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-	const auto aspect = static_cast<float>(Display::g_AppWidth) / static_cast<float>(Display::g_AppHeight);
 
 	m_pTransform->World = DirectX::XMMatrixIdentity();
 	m_pTransform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, aspect, 1.0f, 1000.0f);
+	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
 
 	return true;
 }
@@ -106,15 +105,9 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 
 void TestModel::Update() noexcept
 {
-	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
-	auto targetPos = DirectX::XMVectorZero();
-	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-
 	m_pTransform->World = DirectX::XMMatrixIdentity();
-	m_pTransform->World = DirectX::XMMatrixRotationY(m_RotateAngle);
-	m_pTransform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
+	m_pTransform->World *= DirectX::XMMatrixRotationY(m_RotateAngle);
+	m_pTransform->World *= DirectX::XMMatrixTranslation(m_X,m_Y,m_Z);
 }
 
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

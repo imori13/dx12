@@ -3,7 +3,6 @@
 
 namespace
 {
-	constexpr float s_SyncDestFrame = 1.f / 60.f;
 	LARGE_INTEGER s_Frequency;
 	LARGE_INTEGER s_StartTimer;
 	LARGE_INTEGER s_EndTimer;
@@ -20,17 +19,11 @@ namespace Timer
 		QueryPerformanceCounter(&s_StartTimer);
 	}
 
-	void Update(const bool frameWait)
+	void Update()
 	{
-		double NewElapsed;
-		do
-		{
-			QueryPerformanceCounter(&s_EndTimer);
-			NewElapsed = static_cast<double>(s_EndTimer.QuadPart - s_StartTimer.QuadPart) / static_cast<double>(s_Frequency.QuadPart);
-			g_FrameTime = gsl::narrow_cast<float>(NewElapsed - g_ElapsedTime);
-
-		} while(frameWait && g_FrameTime < s_SyncDestFrame);
-
+		QueryPerformanceCounter(&s_EndTimer);
+		const double NewElapsed = static_cast<double>(s_EndTimer.QuadPart - s_StartTimer.QuadPart) / static_cast<double>(s_Frequency.QuadPart);
+		g_FrameTime = gsl::narrow_cast<float>(NewElapsed - g_ElapsedTime);
 		g_ElapsedTime = NewElapsed;
 	}
 }

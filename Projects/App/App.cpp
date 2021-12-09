@@ -38,6 +38,9 @@ void App::Startup(void)
 	model.SetTexture(L"neko.jpg");
 	model2.OnInit();
 	model2.SetTexture(L"neko2.jpg");
+
+	model.m_X = 0.9f;
+	model2.m_X = -0.9f;
 }
 
 void App::Cleanup(void)

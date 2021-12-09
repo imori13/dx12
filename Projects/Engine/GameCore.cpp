@@ -16,7 +16,7 @@
 
 namespace GameCore
 {
-	bool g_IsSync = true;
+	bool g_IsSync = false;
 
 	void InitializeApplication(IGameApp& game)
 	{
@@ -35,6 +35,9 @@ namespace GameCore
 
 	bool UpdateApplication(IGameApp& game)
 	{
+		Timer::Update();
+		DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Middle);
+
 		TimeStamp::Begin();
 
 		// 更新処理
@@ -43,7 +46,7 @@ namespace GameCore
 
 			game.Update(0);
 
-			DataAverage::Set(L"Update", TimeStamp::End());
+			DataAverage::Set(L"Update", TimeStamp::End(), Average::Middle);
 		}
 
 		// 描画処理
@@ -52,26 +55,16 @@ namespace GameCore
 
 			game.RenderScene();
 
-			DataAverage::Set(L"Render", TimeStamp::End());
+			DataAverage::Set(L"Render", TimeStamp::End(), Average::Middle);
 		}
 
 		// 画面表示
 		{
 			TimeStamp::Begin();
 
-			Display::Present(0);
+			Display::Present(g_IsSync);
 
-			DataAverage::Set(L"Present", TimeStamp::End());
-		}
-
-		// Frame待機
-		{
-			TimeStamp::Begin();
-
-			Timer::Update(g_IsSync);
-			DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Low);
-
-			DataAverage::Set(L"SyncHz", TimeStamp::End());
+			DataAverage::Set(L"Present", TimeStamp::End(),Average::Middle);
 		}
 
 		// GPU待機
@@ -80,10 +73,10 @@ namespace GameCore
 
 			Command::MoveToNextFrame();
 
-			DataAverage::Set(L"GPUwait", TimeStamp::End());
+			DataAverage::Set(L"GPUwait", TimeStamp::End(), Average::Middle);
 		}
 
-		DataAverage::Set(L"更新時間", TimeStamp::End());
+		DataAverage::Set(L"更新時間", TimeStamp::End(), Average::Middle);
 
 		return !game.IsDone();
 	}
