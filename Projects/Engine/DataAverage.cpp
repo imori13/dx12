@@ -14,7 +14,7 @@ namespace
 	std::map<std::wstring, Value> averageList;
 }
 
-// ˆÚ“®•½‹Ï
+// ’PƒˆÚ“®•½‹Ï
 void DataAverage::Set(const std::wstring_view name, const float value, const Average limit)
 {
 	auto& pair = averageList[name.data()];

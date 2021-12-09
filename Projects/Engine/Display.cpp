@@ -166,6 +166,9 @@ namespace Display
 
 	void CreateColorBuffer()
 	{
+		s_RenderTargetHeap.InitializeIndex();
+		s_DepthStencilHeap.InitializeIndex();
+
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{
 			const auto hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
@@ -173,17 +176,16 @@ namespace Display
 
 			// レンダーターゲットビューの生成
 			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
-			const auto handle = s_RenderTargetHeap.GetHandle();
+			const auto handle = s_RenderTargetHeap.GetNextHandle();
 			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle.CPU);
 			g_RenderTargetBuffer.at(i).SetCpuHandle(handle.CPU);
 		}
-
 		for(auto i = 0u; i < g_DepthStencilBuffer.size(); ++i)
 		{
 			g_DepthStencilBuffer.at(i).Create(Display::g_AppWidth, Display::g_AppHeight, DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
 
 			const auto& dsvView = g_DepthStencilBuffer.at(i).GetView();
-			const auto handle = s_DepthStencilHeap.GetHandle();
+			const auto handle = s_DepthStencilHeap.GetNextHandle();
 			Graphics::g_pDevice->CreateDepthStencilView(g_DepthStencilBuffer.at(i).Get(), &dsvView, handle.CPU);
 			g_DepthStencilBuffer.at(i).SetCpuHandle(handle.CPU);
 		}

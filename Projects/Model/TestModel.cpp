@@ -45,7 +45,7 @@ bool TestModel::OnInit()
 	}
 
 	m_CBV_SRVHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-	const auto& handle = m_CBV_SRVHeap.GetHandle();
+	const auto& handle = m_CBV_SRVHeap.GetNextHandle();
 	const auto constView = m_ConstantData.GetConstantView();
 	Graphics::g_pDevice->CreateConstantBufferView(&constView, handle.CPU);
 
@@ -96,7 +96,7 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 {
 	m_Texture = ResourceManager::GetTexture(textureName);
 
-	const auto& handle = m_CBV_SRVHeap.GetHandle();
+	const auto& handle = m_CBV_SRVHeap.GetNextHandle();
 	m_Texture.m_HandleCPU = handle.CPU;
 	m_Texture.m_HandleGPU = handle.GPU;
 
@@ -108,6 +108,9 @@ void TestModel::Update() noexcept
 	m_pTransform->World = DirectX::XMMatrixIdentity();
 	m_pTransform->World *= DirectX::XMMatrixRotationY(m_RotateAngle);
 	m_pTransform->World *= DirectX::XMMatrixTranslation(m_X,m_Y,m_Z);
+
+	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
+	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
 }
 
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

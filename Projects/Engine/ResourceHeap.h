@@ -23,15 +23,21 @@ public:
 	gsl::not_null<ID3D12DescriptorHeap*> Get() { return m_pHeap.Get(); }
 	gsl::not_null<ID3D12DescriptorHeap**> GetAddress() { return m_pHeap.GetAddressOf(); }
 
-	const Handle_CPU_GPU GetHandle()
+	void InitializeIndex() noexcept { m_Index = 0; }
+	const Handle_CPU_GPU GetNextHandle()
 	{
-		const auto rtVal = m_Handle;
-		Increment();	// m_Handle_CPU_GPU‚ð•ÏX‚·‚é
+		EXPECTS(m_Index >= 0 && m_Index < m_DescriptorCount);
+
+		Handle_CPU_GPU rtVal = m_Handle;
+
+		rtVal.CPU.ptr += gsl::narrow<uint64_t>(m_IncrementSize * m_Index);
+		rtVal.GPU.ptr += gsl::narrow<uint64_t>(m_IncrementSize * m_Index);
+
+		++m_Index;
+
 		return rtVal;
 	}
 private:
-	void Increment();
-
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pHeap;
 	uint32_t m_Index;
 	uint32_t m_IncrementSize;

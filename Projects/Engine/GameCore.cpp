@@ -36,7 +36,7 @@ namespace GameCore
 	bool UpdateApplication(IGameApp& game)
 	{
 		Timer::Update();
-		DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Middle);
+		DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Low);
 
 		TimeStamp::Begin();
 

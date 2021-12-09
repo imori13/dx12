@@ -27,13 +27,3 @@ void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE t
 	// インクリメントサイズ取得
 	m_IncrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(type);
 }
-
-void ResourceHeap::Increment()
-{
-	EXPECTS(m_Index >= 0 && m_Index < m_DescriptorCount);
-
-	m_Handle.CPU.ptr += static_cast<uint64_t>(m_IncrementSize);
-	m_Handle.GPU.ptr += static_cast<uint64_t>(m_IncrementSize);
-
-	++m_Index;
-}

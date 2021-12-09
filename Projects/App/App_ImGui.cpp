@@ -46,7 +46,7 @@ namespace App_ImGui
 
 		ImGui_ImplWin32_Init(Window::g_hWnd);
 
-		const auto& handle = g_ResourceHeap.GetHandle();
+		const auto& handle = g_ResourceHeap.GetNextHandle();
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
 							DXGI_FORMAT_R8G8B8A8_UNORM, g_ResourceHeap.Get(),
 							handle.CPU, handle.GPU);
