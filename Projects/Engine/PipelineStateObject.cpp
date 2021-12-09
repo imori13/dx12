@@ -4,14 +4,14 @@
 void PipelineStateObject::SetInputLayout(const gsl::span<const D3D12_INPUT_ELEMENT_DESC> inputLayout)
 { m_State.InputLayout = { inputLayout.data(), gsl::narrow<uint32_t>(inputLayout.size()) }; }
 
-void PipelineStateObject::SetRootSignature(gsl::not_null<ID3D12RootSignature*> rootSignature)
+void PipelineStateObject::SetRootSignature(const gsl::not_null<ID3D12RootSignature*> rootSignature)
 { m_State.pRootSignature = rootSignature; }
 
-void PipelineStateObject::SetVertexShader(const LPVOID blob, const SIZE_T bufferSize) noexcept
-{ m_State.VS = { blob, bufferSize }; }
+void PipelineStateObject::SetVertexShader(const gsl::not_null<ID3DBlob*> vsShader)
+{ m_State.VS = { vsShader->GetBufferPointer(), vsShader->GetBufferSize() }; }
 
-void PipelineStateObject::SetPixelShader(const LPVOID blob, const SIZE_T bufferSize) noexcept
-{ m_State.PS = { blob, bufferSize }; }
+void PipelineStateObject::SetPixelShader(const gsl::not_null<ID3DBlob*> psShader)
+{ m_State.PS = { psShader->GetBufferPointer(), psShader->GetBufferSize() }; }
 
 void PipelineStateObject::SetRasterizerDesc() noexcept
 { m_State.RasterizerState = GetDefaultRasterizerDesc(); }

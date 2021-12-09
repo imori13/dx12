@@ -6,7 +6,7 @@
 #include "Command.h"
 #include "App_ImGui.h"
 #include "Timer.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 class App : public GameCore::IGameApp
 {
@@ -28,8 +28,11 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	TextureManager::LoadTexture(L"neko.jpg");
-	TextureManager::LoadTexture(L"neko2.jpg");
+	ResourceManager::LoadTexture(L"neko.jpg");
+	ResourceManager::LoadTexture(L"neko2.jpg");
+
+	ResourceManager::LoadShader(L"SimpleTexVS.cso");
+	ResourceManager::LoadShader(L"SimpleTexPS.cso");
 
 	model.OnInit();
 	model.SetTexture(L"neko.jpg");
@@ -52,7 +55,7 @@ void App::Update(float deltaT)
 	deltaT++;
 
 	model.m_RotateAngle += 1.f * Timer::g_FrameTime;
-	model2.m_RotateAngle += 1.5f * Timer::g_FrameTime;
+	model2.m_RotateAngle += 2.f * Timer::g_FrameTime;
 
 	model.Update();
 	model2.Update();

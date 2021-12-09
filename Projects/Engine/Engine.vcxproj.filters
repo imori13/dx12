@@ -58,7 +58,7 @@
     <ClCompile Include="DataAverage.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
+    <ClCompile Include="ResourceManager.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,7 +132,7 @@
     <ClInclude Include="DataAverage.h">
       <Filter>Source File</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
+    <ClInclude Include="ResourceManager.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,13 +8,14 @@
 class Texture : public GpuResource
 {
 public:
-	Texture() noexcept
+	Texture::Texture()  noexcept
 		: m_HandleCPU{}
 		, m_HandleGPU{}
+		, m_View{}
 	{
 	}
-	void Create(const std::wstring& path);
-	void CreateWIC(const std::wstring& path);
+
+	void CreateWIC(const std::wstring_view path);
 
 	const void SetHeap(ResourceHeap& heap, const uint32_t index)
 	{

@@ -33,9 +33,9 @@ public:
 	ID3D12PipelineState* Get() noexcept { return m_PipelineStateObject.Get(); }
 
 	void SetInputLayout(const gsl::span<const D3D12_INPUT_ELEMENT_DESC> inputLayout);
-	void SetRootSignature(gsl::not_null<ID3D12RootSignature*> rootSignature);
-	void SetVertexShader(const LPVOID blob, const SIZE_T bufferSize) noexcept;
-	void SetPixelShader(const LPVOID blob, const SIZE_T bufferSize) noexcept;
+	void SetRootSignature(const gsl::not_null<ID3D12RootSignature*> rootSignature);
+	void SetVertexShader(const gsl::not_null<ID3DBlob*> vsShader);
+	void SetPixelShader(const gsl::not_null<ID3DBlob*> psShader);
 	void SetRasterizerDesc() noexcept;
 	void SetBlendDesc();
 	void SetDepthStencil(const bool enableDepth) noexcept;

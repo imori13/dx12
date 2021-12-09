@@ -3,7 +3,7 @@
 #include "FileSearch.h"
 #include "InputElement.h"
 #include "Display.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 
 bool TestModel::OnInit()
@@ -56,29 +56,12 @@ bool TestModel::OnInit()
 		inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 		inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 
-		std::wstring vsPath;
-		std::wstring psPath;
-
-		if(!SearchFilePath(L"SimpleTexVS.cso", vsPath))
-			ENSURES(false, L"VertexShaderパス検索");
-
-		if(!SearchFilePath(L"SimpleTexPS.cso", psPath))
-			ENSURES(false, L"PixelShaderパス検索");
-
-		Microsoft::WRL::ComPtr<ID3DBlob> pVSBlob;
-		Microsoft::WRL::ComPtr<ID3DBlob> pPSBlob;
-
-		// 頂点シェーダ読み込み
-		hr = D3DReadFileToBlob(vsPath.c_str(), pVSBlob.GetAddressOf());
-		ENSURES(hr, L"VertexShader読み込み [ %s ]",vsPath.c_str());
-
-		// ピクセルシェーダ読み込み
-		hr = D3DReadFileToBlob(psPath.c_str(), pPSBlob.GetAddressOf());
-		ENSURES(hr, L"PixelShader読み込み [ %s ]", vsPath.c_str());
+		const gsl::not_null<ID3DBlob*> vsShader = ResourceManager::GetShader(L"SimpleTexVS.cso");
+		const gsl::not_null<ID3DBlob*> psShader = ResourceManager::GetShader(L"SimpleTexPS.cso");
 
 		// ルートシグネチャ読み込み
 		Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob;
-		hr = D3DGetBlobPart(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
+		hr = D3DGetBlobPart(vsShader->GetBufferPointer(), vsShader->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
 		ENSURES(hr, L"RootSignature設定の取得");
 
 		// ルートシグネチャ設定
@@ -88,8 +71,8 @@ bool TestModel::OnInit()
 		// パイプラインステート設定
 		pipelineStateObject.SetInputLayout(inputElement.Get());
 		pipelineStateObject.SetRootSignature(m_pRootSignature.Get());
-		pipelineStateObject.SetVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize());
-		pipelineStateObject.SetPixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize());
+		pipelineStateObject.SetVertexShader(vsShader);
+		pipelineStateObject.SetPixelShader(psShader);
 		pipelineStateObject.SetRasterizerDesc();
 		pipelineStateObject.SetBlendDesc();
 		pipelineStateObject.SetDepthStencil(true);
@@ -113,7 +96,7 @@ bool TestModel::OnInit()
 
 void TestModel::SetTexture(const std::wstring_view textureName)
 {
-	m_Texture = TextureManager::GetTexture(textureName);
+	m_Texture = ResourceManager::GetTexture(textureName);
 	m_Texture.SetHeap(m_CBV_SRVHeap, 1);
 }
 
