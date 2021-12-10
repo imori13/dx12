@@ -64,7 +64,7 @@ namespace App_ImGui
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
-		ImGui::Begin("Test");
+		ImGui::Begin("DebugWindow");
 		//ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar
 		ImGui::Text("Hello World!");
 		ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
@@ -73,10 +73,14 @@ namespace App_ImGui
 		ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
 		ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
 
-		const double update = DataAverage::Get(L"Update");
-		const double render = DataAverage::Get(L"Render");
-		const double present = DataAverage::Get(L"Present");
-		const double gpuWait = DataAverage::Get(L"GPUwait");
+		static double update{};
+		static double render{};
+		static double present{};
+		static double gpuWait{};
+		update = DataAverage::Get(L"Update");
+		render = DataAverage::Get(L"Render");
+		present = DataAverage::Get(L"Present");
+		gpuWait = DataAverage::Get(L"GPUwait");
 		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"çXêVéûä‘"), update + render + present + gpuWait);
 		{
 			ImGui::Indent();
@@ -90,6 +94,41 @@ namespace App_ImGui
 
 		ImGui::End();
 
+
+		{
+			ImPlot::SetNextAxisToFit(ImAxis_X1);
+		}
+
+		static bool normalize = false;
+		static std::array< const char*, 4> label = { "Update" ,"Render" ,"Present", "GPUwait" };
+		static std::vector<double> datas = { 0,0,0,0 };
+		datas.at(0) = update;
+		datas.at(1) = render;
+		datas.at(2) = present;
+		datas.at(3) = gpuWait;
+
+		ImGui::Begin("AAAAA");
+		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2)));
+		if(ImPlot::BeginPlot("##Pie1", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxes(NULL, NULL, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			ImPlot::SetupAxesLimits(0, 1, 0, 1);
+			ImPlot::PlotPieChart(label.data(), datas.data(), datas.size() - 1, 0.5, 0.5, 0.4, normalize, "%.1f");
+			ImPlot::EndPlot();
+		}
+		ImGui::End();
+
+		ImGui::Begin("BBBBB");
+		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
+		if(ImPlot::BeginPlot("##Pie2", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxes(NULL, NULL, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			ImPlot::SetupAxesLimits(0, 1, 0, 1);
+			ImPlot::PlotPieChart(label.data(), datas.data(), datas.size(), 0.5, 0.5, 0.4, normalize, "%.1f");
+			ImPlot::EndPlot();
+		}
+		ImGui::End();
+
 		static std::vector<float> fps{};
 		fps.emplace_back(DataAverage::Get(L"FPS"));
 		constexpr uint32_t size = 1000;
@@ -98,14 +137,13 @@ namespace App_ImGui
 			fps.erase(fps.begin());
 		}
 
-		ImGui::Begin("Hoge");
-		ImPlot::BeginPlot("Test");
-		ImPlot::SetupAxes("Frame", "Time");
-		ImPlot::SetNextAxisToFit(ImAxis_X1);
-		//ImPlot::SetNextAxisToFit(ImAxis_Y1);
-		ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
-		ImPlot::PlotLine("FPS", fps.data(), fps.size());
-		ImPlot::EndPlot();
+		ImGui::Begin("LineGraphWindow");
+		if(ImPlot::BeginPlot("LineGraph"))
+		{
+			ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
+			ImPlot::PlotLine("FPS", fps.data(), fps.size());
+			ImPlot::EndPlot();
+		}
 		ImGui::End();
 
 		ImGui::Render();

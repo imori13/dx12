@@ -6,10 +6,10 @@ enum class Average
 {
 	None = 2,
 	VeryLow = 10,
-	Low = 100,
-	Middle = 300,
-	High = 600,
-	VeryHigh = 1200,
+	Low = 20,
+	Middle = 30,
+	High = 40,
+	VeryHigh = 50,
 };
 
 namespace DataAverage
