@@ -27,6 +27,7 @@ namespace App_ImGui
 
 		ImGui::CreateContext();
 		ImPlot::CreateContext();
+		ImPlot::GetStyle().AntiAliasedLines = true;
 
 		ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -89,8 +90,21 @@ namespace App_ImGui
 
 		ImGui::End();
 
+		static std::vector<float> fps{};
+		fps.emplace_back(DataAverage::Get(L"FPS"));
+		constexpr uint32_t size = 1000;
+		if(!fps.empty() && fps.size() > size)
+		{
+			fps.erase(fps.begin());
+		}
+
 		ImGui::Begin("Hoge");
 		ImPlot::BeginPlot("Test");
+		ImPlot::SetupAxes("Frame", "Time");
+		ImPlot::SetNextAxisToFit(ImAxis_X1);
+		//ImPlot::SetNextAxisToFit(ImAxis_Y1);
+		ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
+		ImPlot::PlotLine("FPS", fps.data(), fps.size());
 		ImPlot::EndPlot();
 		ImGui::End();
 

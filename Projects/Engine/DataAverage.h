@@ -1,9 +1,11 @@
 #pragma once
 
+#include <deque>
+
 enum class Average
 {
 	None = 2,
-	VeryLow = 25,
+	VeryLow = 10,
 	Low = 100,
 	Middle = 300,
 	High = 600,

@@ -36,6 +36,6 @@ float DataAverage::Get(const std::wstring_view name)
 
 std::vector<float> DataAverage::GetArray(const std::wstring_view name)
 {
-	const auto& vec = averageList[name.data()].ValueList;
-	return vec;
+	const auto& deque = averageList[name.data()].ValueList;
+	return deque;
 }
