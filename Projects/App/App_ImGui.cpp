@@ -94,9 +94,12 @@ namespace App_ImGui
 
 		ImGui::End();
 
-
+		static std::vector<float> fps{};
+		fps.emplace_back(DataAverage::Get(L"FPS"));
+		constexpr uint32_t size = 1000;
+		if(!fps.empty() && fps.size() > size)
 		{
-			ImPlot::SetNextAxisToFit(ImAxis_X1);
+			fps.erase(fps.begin());
 		}
 
 		static bool normalize = false;
@@ -107,6 +110,10 @@ namespace App_ImGui
 		datas.at(2) = present;
 		datas.at(3) = gpuWait;
 
+		{
+			ImPlot::SetNextAxisToFit(ImAxis_X1);
+		}
+
 		ImGui::Begin("AAAAA");
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2)));
 		if(ImPlot::BeginPlot("##Pie1", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
@@ -116,9 +123,7 @@ namespace App_ImGui
 			ImPlot::PlotPieChart(label.data(), datas.data(), datas.size() - 1, 0.5, 0.5, 0.4, normalize, "%.1f");
 			ImPlot::EndPlot();
 		}
-		ImGui::End();
 
-		ImGui::Begin("BBBBB");
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
 		if(ImPlot::BeginPlot("##Pie2", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
 		{
@@ -129,13 +134,6 @@ namespace App_ImGui
 		}
 		ImGui::End();
 
-		static std::vector<float> fps{};
-		fps.emplace_back(DataAverage::Get(L"FPS"));
-		constexpr uint32_t size = 1000;
-		if(!fps.empty() && fps.size() > size)
-		{
-			fps.erase(fps.begin());
-		}
 
 		ImGui::Begin("LineGraphWindow");
 		if(ImPlot::BeginPlot("LineGraph"))
