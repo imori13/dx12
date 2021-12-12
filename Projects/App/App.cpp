@@ -7,6 +7,7 @@
 #include "App_ImGui.h"
 #include "Timer.h"
 #include "ResourceManager.h"
+#include "PipelineInitializer.h"
 
 class App : public GameCore::IGameApp
 {
@@ -33,6 +34,8 @@ void App::Startup(void)
 
 	ResourceManager::LoadShader(L"SimpleTexVS.cso");
 	ResourceManager::LoadShader(L"SimpleTexPS.cso");
+
+	PipelineInitializer::Initialize();
 
 	model.OnInit();
 	model.SetTexture(L"neko.jpg");

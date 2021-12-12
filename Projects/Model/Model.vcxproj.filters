@@ -2,9 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="TestModel.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="PipelineInitializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestModel.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="PipelineInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

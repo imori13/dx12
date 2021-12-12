@@ -2,7 +2,6 @@
 #include "ResourceHeap.h"
 #include "UploadBuffer.h"
 #include "Texture.h"
-#include "PipelineStateObject.h"
 
 struct Vertex
 {
@@ -21,8 +20,7 @@ class TestModel
 {
 public:
 	TestModel() noexcept
-		: m_pRootSignature(nullptr)
-		, m_pTransform(nullptr)
+		: m_pTransform(nullptr)
 		, m_RotateAngle(0)
 	{
 
@@ -42,8 +40,6 @@ private:
 	UploadBuffer m_IndexData;
 	UploadBuffer m_ConstantData;
 	Texture m_Texture;
-	PipelineStateObject pipelineStateObject;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 
 	Transform* m_pTransform;	// UploadBufferのメモリを参照しているので、デストラクタで破棄される
 };

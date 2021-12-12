@@ -83,9 +83,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PipelineInitializer.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="TestModel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PipelineInitializer.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TestModel.cpp" />
   </ItemGroup>
   <ItemGroup>

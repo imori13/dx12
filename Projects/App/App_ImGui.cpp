@@ -118,18 +118,18 @@ namespace App_ImGui
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2)));
 		if(ImPlot::BeginPlot("##Pie1", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
 		{
-			ImPlot::SetupAxes(NULL, NULL, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
 			ImPlot::SetupAxesLimits(0, 1, 0, 1);
-			ImPlot::PlotPieChart(label.data(), datas.data(), datas.size() - 1, 0.5, 0.5, 0.4, normalize, "%.1f");
+			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size() - 1), 0.5, 0.5, 0.4, normalize, "%.1f");
 			ImPlot::EndPlot();
 		}
 
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
 		if(ImPlot::BeginPlot("##Pie2", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
 		{
-			ImPlot::SetupAxes(NULL, NULL, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
 			ImPlot::SetupAxesLimits(0, 1, 0, 1);
-			ImPlot::PlotPieChart(label.data(), datas.data(), datas.size(), 0.5, 0.5, 0.4, normalize, "%.1f");
+			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size()), 0.5, 0.5, 0.4, normalize, "%.1f");
 			ImPlot::EndPlot();
 		}
 		ImGui::End();
@@ -139,7 +139,7 @@ namespace App_ImGui
 		if(ImPlot::BeginPlot("LineGraph"))
 		{
 			ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
-			ImPlot::PlotLine("FPS", fps.data(), fps.size());
+			ImPlot::PlotLine("FPS", fps.data(), gsl::narrow<int>(fps.size()));
 			ImPlot::EndPlot();
 		}
 		ImGui::End();

@@ -29,7 +29,7 @@ namespace ResourceManager
 		auto& shader = s_Shaders[shaderName.data()];
 
 		const auto hr = D3DReadFileToBlob(path.c_str(), shader.GetAddressOf());
-		ENSURES(hr, L"Shaderì«Ç›çûÇ› [ %s ]", path.c_str());
+		ENSURES(L"Shaderì«Ç›çûÇ› [ %s ]", path.c_str());
 	}
 
 	const Texture& GetTexture(const std::wstring_view texutreName)

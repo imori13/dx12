@@ -5,7 +5,7 @@ void PipelineStateObject::SetInputLayout(const gsl::span<const D3D12_INPUT_ELEME
 { m_State.InputLayout = { inputLayout.data(), gsl::narrow<uint32_t>(inputLayout.size()) }; }
 
 void PipelineStateObject::SetRootSignature(const gsl::not_null<ID3D12RootSignature*> rootSignature)
-{ m_State.pRootSignature = rootSignature; }
+{ m_State.pRootSignature = rootSignature; m_pRootSignature = rootSignature; }
 
 void PipelineStateObject::SetVertexShader(const gsl::not_null<ID3DBlob*> vsShader)
 { m_State.VS = { vsShader->GetBufferPointer(), vsShader->GetBufferSize() }; }

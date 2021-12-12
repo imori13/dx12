@@ -5,7 +5,7 @@ class PipelineStateObject
 {
 public:
 	PipelineStateObject() noexcept
-		: m_PipelineStateObject(nullptr)
+		: m_pPipelineStateObject(nullptr)
 		, m_State{}
 		, isCreated(false)
 	{
@@ -24,13 +24,14 @@ public:
 		EXPECTS(isCreated == false);
 
 		// パイプラインステートを生成
-		const auto hr = Graphics::g_pDevice->CreateGraphicsPipelineState(&m_State, IID_PPV_ARGS(m_PipelineStateObject.GetAddressOf()));
+		const auto hr = Graphics::g_pDevice->CreateGraphicsPipelineState(&m_State, IID_PPV_ARGS(m_pPipelineStateObject.GetAddressOf()));
 		ENSURES(hr, "PipelineStateObject生成");
 
 		isCreated = true;
 	}
 	// Get
-	ID3D12PipelineState* Get() noexcept { return m_PipelineStateObject.Get(); }
+	const gsl::not_null<ID3D12PipelineState*> Get() const noexcept { return m_pPipelineStateObject.Get(); }
+	const gsl::not_null<ID3D12RootSignature*> GetSignature() const noexcept { return m_pRootSignature.Get(); }
 
 	void SetInputLayout(const gsl::span<const D3D12_INPUT_ELEMENT_DESC> inputLayout);
 	void SetRootSignature(const gsl::not_null<ID3D12RootSignature*> rootSignature);
@@ -45,7 +46,8 @@ private:
 	const D3D12_BLEND_DESC GetDefaultBlendDesc() const;
 	const D3D12_DEPTH_STENCIL_DESC GetDepthStencilDesc(bool enableDepth) const noexcept;
 
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_PipelineStateObject;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPipelineStateObject;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC m_State;
 	bool isCreated;
 };

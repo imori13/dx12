@@ -1,15 +1,14 @@
 #include "TestModel.h"
 #include "GraphicsCore.h"
 #include "FileSearch.h"
-#include "InputElement.h"
 #include "Display.h"
 #include "ResourceManager.h"
+#include "PipelineInitializer.h"
 
 
 bool TestModel::OnInit()
 {
 	m_RotateAngle = static_cast<float>(rand());
-	HRESULT hr{};
 
 	// 頂点データ生成
 	{
@@ -49,37 +48,6 @@ bool TestModel::OnInit()
 	const auto constView = m_ConstantData.GetConstantView();
 	Graphics::g_pDevice->CreateConstantBufferView(&constView, handle.CPU);
 
-	// ■ パイプラインステートの生成
-	{
-		InputElement inputElement;
-		inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-		inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-
-		const auto vsShader = ResourceManager::GetShader(L"SimpleTexVS.cso");
-		const auto psShader = ResourceManager::GetShader(L"SimpleTexPS.cso");
-
-		// ルートシグネチャ読み込み
-		Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob;
-		hr = D3DGetBlobPart(vsShader->GetBufferPointer(), vsShader->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
-		ENSURES(hr, L"RootSignature設定の取得");
-
-		// ルートシグネチャ設定
-		hr = Graphics::g_pDevice->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature));
-		ENSURES(hr, L"RootSignatureの生成");
-
-		// パイプラインステート設定
-		pipelineStateObject.SetInputLayout(inputElement.Get());
-		pipelineStateObject.SetRootSignature(m_pRootSignature.Get());
-		pipelineStateObject.SetVertexShader(vsShader);
-		pipelineStateObject.SetPixelShader(psShader);
-		pipelineStateObject.SetRasterizerDesc();
-		pipelineStateObject.SetBlendDesc();
-		pipelineStateObject.SetDepthStencil(true);
-
-		// パイプラインステート生成
-		pipelineStateObject.Create();
-	}
-
 	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 	auto targetPos = DirectX::XMVectorZero();
 	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -115,8 +83,9 @@ void TestModel::Update() noexcept
 
 void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
-	cmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
-	cmdList->SetPipelineState(pipelineStateObject.Get());
+	const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
+	cmdList->SetGraphicsRootSignature(pipeline.GetSignature());
+	cmdList->SetPipelineState(pipeline.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	const auto vertexView = m_VertexData.GetVertexView();
