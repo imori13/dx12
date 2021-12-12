@@ -4,11 +4,13 @@
     <ClInclude Include="TestModel.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="PipelineInitializer.h" />
+    <ClInclude Include="File.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestModel.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="PipelineInitializer.cpp" />
+    <ClCompile Include="File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,5 +1,4 @@
 #include "Timer.h"
-#include "DataAverage.h"
 
 namespace
 {
