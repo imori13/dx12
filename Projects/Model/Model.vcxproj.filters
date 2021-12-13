@@ -12,7 +12,4 @@
     <ClCompile Include="PipelineInitializer.cpp" />
     <ClCompile Include="File.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
 </Project>
