@@ -1,6 +1,5 @@
 #pragma once
 #include <tchar.h>
-#include <GSL\gsl>
 
 namespace Debug
 {
