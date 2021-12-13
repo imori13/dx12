@@ -29,11 +29,10 @@ namespace App_ImGui
 		ImPlot::CreateContext();
 		ImPlot::GetStyle().AntiAliasedLines = true;
 
-		ImGuiIO& io = ImGui::GetIO(); static_cast<void>(io);
+		auto& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigDockingWithShift = true;
 
 		ImGui::StyleColorsDark();
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
@@ -65,7 +64,6 @@ namespace App_ImGui
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
 		ImGui::Begin("DebugWindow");
-		//ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar
 		ImGui::Text("Hello World!");
 		ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
 		ImGui::Text("AppSize    : W %d  H %d", Display::g_AppWidth, Display::g_AppHeight);
@@ -111,24 +109,24 @@ namespace App_ImGui
 		datas.at(3) = gpuWait;
 
 		{
-			ImPlot::SetNextAxisToFit(ImAxis_X1);
+			ImPlot::SetNextPlotFormatY("formatY", ImPlotYAxis_1);
 		}
 
 		ImGui::Begin("AAAAA");
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2)));
-		if(ImPlot::BeginPlot("##Pie1", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
+		if(ImPlot::BeginPlot("##Pie1"))
 		{
-			ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-			ImPlot::SetupAxesLimits(0, 1, 0, 1);
+			//ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			//ImPlot::SetupAxesLimits(0, 1, 0, 1);
 			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size() - 1), 0.5, 0.5, 0.4, normalize, "%.1f");
 			ImPlot::EndPlot();
 		}
 
 		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
-		if(ImPlot::BeginPlot("##Pie2", ImVec2(250, 250), ImPlotFlags_Equal | ImPlotFlags_NoMouseText))
+		if(ImPlot::BeginPlot("##Pie2"))
 		{
-			ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-			ImPlot::SetupAxesLimits(0, 1, 0, 1);
+			//ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+			//ImPlot::SetupAxesLimits(0, 1, 0, 1);
 			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size()), 0.5, 0.5, 0.4, normalize, "%.1f");
 			ImPlot::EndPlot();
 		}
@@ -138,7 +136,7 @@ namespace App_ImGui
 		ImGui::Begin("LineGraphWindow");
 		if(ImPlot::BeginPlot("LineGraph"))
 		{
-			ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
+			//ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
 			ImPlot::PlotLine("FPS", fps.data(), gsl::narrow<int>(fps.size()));
 			ImPlot::EndPlot();
 		}

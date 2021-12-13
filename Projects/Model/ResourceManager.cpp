@@ -1,17 +1,18 @@
-#include "ResourceManager.h"
-#include "File.h"
+ï»¿#include "ResourceManager.h"
+#include "FileSearch.h"
 
 namespace
 {
-	const std::wstring LoadPath(const std::wstring_view path)
+	const std::wstring LoadPath(const std::wstring_view name)
 	{
-		const bool flag = File::Exists(path.data());
-		ENSURES(flag == true, L"ƒtƒ@ƒCƒ‹ƒ[ƒh [ %s ]", path.data());
-		return path.data();
+		std::wstring path;
+		const bool flag = SearchFilePath(name.data(), path);
+		ENSURES(flag == true, L"ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢ [ %s ]", path.c_str());
+		return path;
 	}
 
 	std::map<std::wstring, Texture> s_Textures;
-	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3DBlob>> s_Shaders;
+	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3DBlob>> s_Shaders = {};
 }
 
 namespace ResourceManager
@@ -28,7 +29,7 @@ namespace ResourceManager
 		auto& shader = s_Shaders[shaderName.data()];
 
 		const auto hr = D3DReadFileToBlob(path.c_str(), shader.GetAddressOf());
-		ENSURES(L"Shader“Ç‚İ‚İ [ %s ]", path.c_str());
+		ENSURES(L"Shaderèª­ã¿è¾¼ã¿ [ %s ]", path.c_str());
 	}
 
 	const Texture& GetTexture(const std::wstring_view texutreName)

@@ -5,9 +5,6 @@
     <ClCompile Include="App_ImGui.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="App_ImGui.h" />
   </ItemGroup>
   <ItemGroup>
@@ -28,5 +25,8 @@
     <FxCompile Include="SimplePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

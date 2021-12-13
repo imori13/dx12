@@ -9,12 +9,14 @@ struct Vertex
 	DirectX::XMFLOAT2 Texcoord;
 };
 
+#pragma warning (disable : 4324)
 struct alignas(256) Transform
 {
-	DirectX::XMMATRIX World;	// ワールド行列
+	DirectX::XMMATRIX World;		// ワールド行列
 	DirectX::XMMATRIX View;		// ビュー行列
 	DirectX::XMMATRIX Proj;		// 射影行列
 };
+#pragma warning (default : 4324)
 
 class TestModel
 {

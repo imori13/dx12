@@ -12,8 +12,6 @@
 #include "Timer.h"
 #include "DataAverage.h"
 
-#include <boost/version.hpp>
-
 namespace GameCore
 {
 	bool g_IsSync = true;

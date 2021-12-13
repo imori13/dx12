@@ -1,7 +1,6 @@
 #include "File.h"
 
 #include <boost/filesystem.hpp>
-#pragma comment(lib,"lib64-msvc-12.0")
 
 namespace
 {
