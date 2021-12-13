@@ -1,14 +1,13 @@
 #include "ResourceManager.h"
-#include "FileSearch.h"
+#include "File.h"
 
 namespace
 {
-	const std::wstring LoadPath(const std::wstring_view name)
+	const std::wstring LoadPath(const std::wstring_view path)
 	{
-		std::wstring path;
-		const bool flag = SearchFilePath(name.data(), path);
-		ENSURES(flag == true, L"ファイルロード [ %s ]", path.c_str());
-		return path;
+		const bool flag = File::Exists(path.data());
+		ENSURES(flag == true, L"ファイルロード [ %s ]", path.data());
+		return path.data();
 	}
 
 	std::map<std::wstring, Texture> s_Textures;

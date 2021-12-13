@@ -1,6 +1,7 @@
 #include "File.h"
 
 #include <boost/filesystem.hpp>
+#pragma comment(lib,"lib64-msvc-12.0")
 
 namespace
 {
@@ -13,28 +14,28 @@ namespace File
 	{
 		return boost::filesystem::exists(path.data());
 	}
+}
 
-	void File::Open(std::wstring_view path)
-	{
-		EXPECTS(Exists(path), L"ファイルチェック");
+void FileInput::Open(std::wstring_view path)
+{
+	EXPECTS(File::Exists(path), L"ファイル存在チェック [%s]", path.data());
 
-		m_ReadingFile.open(path.data(), std::ios::in);
+	m_ReadingFile.open(path.data(), std::ios::in);
+	ENSURES(m_ReadingFile.is_open(), L"ファイルオープン [ %s ]", path.data());
+}
 
-		std::wstring reading_line_buffer;
-		std::getline(m_ReadingFile, reading_line_buffer);
-	}
+bool FileInput::ReadLine(std::wstring& line)
+{
+	// EOFか
+	if(m_ReadingFile.eof())
+	{ return false; }
 
-	bool File::ReadLine(std::wstring_view line)
-	{
-		//std::wstring reading_line_buffer;
-		///*boost::filesystem::lin*/
-		//std::getline(m_ReadingFile, line.data());
-		//std::getline(m_ReadingFile, reading_line_buffer);
+	std::getline(m_ReadingFile, line);
 
-		return false;
-	}
+	return true;
+}
 
-	void File::Close()
-	{
-	}
+void FileInput::Close()
+{
+	m_ReadingFile.close();
 }
