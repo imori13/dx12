@@ -96,7 +96,6 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="DepthStencilBuffer.cpp" />
     <ClCompile Include="Display.cpp" />
-    <ClCompile Include="FileSearch.cpp" />
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="DataAverage.cpp" />
@@ -116,7 +115,6 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="DepthStencilBuffer.h" />
     <ClInclude Include="Display.h" />
-    <ClInclude Include="FileSearch.h" />
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />

@@ -1,26 +1,20 @@
 #include "TestModel.h"
 #include "GraphicsCore.h"
-#include "FileSearch.h"
 #include "Display.h"
 #include "ResourceManager.h"
 #include "PipelineInitializer.h"
 #include "File.h"
 
-bool TestModel::OnInit()
+bool TestModel::OnInit(std::wstring_view modelName)
 {
 	m_RotateAngle = static_cast<float>(rand());
 
 	// 頂点データ生成
 	{
-		const Vertex data[] = {
-				Vertex{DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f)},
-				Vertex{DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
-				Vertex{DirectX::XMFLOAT3(1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f)},
-				Vertex{DirectX::XMFLOAT3(-1.0f,-1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f)},
-		};
+		const std::vector<ModelMeshVertex> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Vertices;
 		const auto span = gsl::make_span(data);
 
-		m_VertexData.Create(sizeof(data), sizeof(Vertex));
+		m_VertexData.Create(span.size_bytes(), sizeof(ModelMeshVertex));
 		void* ptr = m_VertexData.Map();
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_VertexData.UnMap();
@@ -28,10 +22,10 @@ bool TestModel::OnInit()
 
 	// インデックスデータ生成
 	{
-		const uint32_t data[] = { 0, 1, 2, 0, 2, 3 };
+		const std::vector<uint32_t> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Indices;
 		const auto span = gsl::make_span(data);
 
-		m_IndexData.Create(sizeof(data), sizeof(uint32_t));
+		m_IndexData.Create(span.size_bytes(), sizeof(uint32_t));
 		void* ptr = m_IndexData.Map();
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_IndexData.UnMap();
@@ -74,7 +68,9 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 void TestModel::Update() noexcept
 {
 	m_pTransform->World = DirectX::XMMatrixIdentity();
+	m_pTransform->World *= DirectX::XMMatrixRotationZ(m_RotateAngle);
 	m_pTransform->World *= DirectX::XMMatrixRotationY(m_RotateAngle);
+	m_pTransform->World *= DirectX::XMMatrixRotationX(m_RotateAngle);
 	m_pTransform->World *= DirectX::XMMatrixTranslation(m_X,m_Y,m_Z);
 
 	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
@@ -97,7 +93,7 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.m_HandleGPU);
 
-	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(36, 1, 0, 0, 0);
 }
 
 void TestModel::OnTerm() noexcept

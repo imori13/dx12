@@ -1,15 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="TestModel.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="PipelineInitializer.h" />
-    <ClInclude Include="File.h" />
+    <ClInclude Include="FileInput.h">
+      <Filter>SourceFile\File</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>SourceFile\File</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineInitializer.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+    <ClInclude Include="TestModel.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestModel.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="PipelineInitializer.cpp" />
-    <ClCompile Include="File.cpp" />
+    <ClCompile Include="File.cpp">
+      <Filter>SourceFile\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FileInput.cpp">
+      <Filter>SourceFile\File</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineInitializer.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="TestModel.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>SourceFile\Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SourceFile">
+      <UniqueIdentifier>{80fa10ed-f40b-462f-b9ea-53a1655cb6a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\Model">
+      <UniqueIdentifier>{b0c940b4-cdc1-41b4-8503-7334476269b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\File">
+      <UniqueIdentifier>{532a16f1-d338-47a8-baed-9b7794d79cab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

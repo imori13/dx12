@@ -2,39 +2,27 @@
 
 #include <boost/filesystem.hpp>
 
-namespace
-{
-	boost::filesystem::wifstream m_ReadingFile;
-}
-
 namespace File
 {
-	bool Exists(std::wstring_view path)
+	const bool Exists(std::wstring_view name)
 	{
-		return boost::filesystem::exists(path.data());
+		const bool flag = boost::filesystem::exists(name.data());
+		ENSURES(flag == true, L"ファイル検索 [ %s ]", name.data());
+		return flag;
 	}
-}
 
-void FileInput::Open(std::wstring_view path)
-{
-	EXPECTS(File::Exists(path), L"ファイル存在チェック [%s]", path.data());
+	const Path LoadPath(std::wstring_view name)
+	{
+		Exists(name);
 
-	m_ReadingFile.open(path.data(), std::ios::in);
-	ENSURES(m_ReadingFile.is_open(), L"ファイルオープン [ %s ]", path.data());
-}
+		boost::filesystem::wpath boostPath = name.data();
 
-bool FileInput::ReadLine(std::wstring& line)
-{
-	// EOFか
-	if(m_ReadingFile.eof())
-	{ return false; }
+		Path path;
+		path.AbsolutePath = boost::filesystem::absolute(name.data()).generic_wstring();
+		path.RelativePath = boost::filesystem::relative(name.data()).generic_wstring();
+		path.FileName = boostPath.filename().generic_wstring();
+		path.Extension = boostPath.filename().extension().generic_wstring();
 
-	std::getline(m_ReadingFile, line);
-
-	return true;
-}
-
-void FileInput::Close()
-{
-	m_ReadingFile.close();
+		return path;
+	}
 }

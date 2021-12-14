@@ -1,15 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="App_ImGui.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="App_ImGui.h" />
+    <ClCompile Include="App.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="App_ImGui.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
       <UniqueIdentifier>{90cc14d6-c71d-4ab3-92db-41e3961be231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile">
+      <UniqueIdentifier>{4ae547b8-b73f-4394-b9e7-6289ad452b8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,5 +29,10 @@
     <FxCompile Include="SimplePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App_ImGui.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

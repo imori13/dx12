@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "ResourceManager.h"
 #include "PipelineInitializer.h"
+#include "ObjLoader.h"
 
 class App : public GameCore::IGameApp
 {
@@ -29,21 +30,23 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	ResourceManager::LoadTexture(L"neko.jpg");
-	ResourceManager::LoadTexture(L"neko2.jpg");
+	ResourceManager::LoadTexture(L"Textures/neko.jpg");
+	ResourceManager::LoadTexture(L"Textures/neko2.jpg");
 
 	ResourceManager::LoadShader(L"SimpleTexVS.cso");
 	ResourceManager::LoadShader(L"SimpleTexPS.cso");
 
+	ResourceManager::LoadObjModel(L"Models/Cube.obj");
+
 	PipelineInitializer::Initialize();
 
-	model.OnInit();
+	model.OnInit(L"Cube.obj");
 	model.SetTexture(L"neko.jpg");
-	model2.OnInit();
+	model2.OnInit(L"Cube.obj");
 	model2.SetTexture(L"neko2.jpg");
 
-	model.m_X = 0.9f;
-	model2.m_X = -0.9f;
+	model.m_X = 0.1f;
+	model2.m_X = -0.1f;
 }
 
 void App::Cleanup(void)

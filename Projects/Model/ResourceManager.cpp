@@ -1,35 +1,43 @@
 ﻿#include "ResourceManager.h"
-#include "FileSearch.h"
+#include "File.h"
+#include "ObjLoader.h"
 
 namespace
 {
-	const std::wstring LoadPath(const std::wstring_view name)
-	{
-		std::wstring path;
-		const bool flag = SearchFilePath(name.data(), path);
-		ENSURES(flag == true, L"ファイル検索 [ %s ]", path.c_str());
-		return path;
-	}
-
 	std::map<std::wstring, Texture> s_Textures;
-	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3DBlob>> s_Shaders = {};
+	std::map<std::wstring, Model> s_Models;
+	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3DBlob>> s_Shaders;
 }
 
 namespace ResourceManager
 {
-	void LoadTexture(const std::wstring_view textureName)
-	{
-		auto& texture = s_Textures[textureName.data()];
-		texture.CreateWIC(LoadPath(textureName));
-
-	}
 	void LoadShader(const std::wstring_view shaderName)
 	{
-		const auto& path = LoadPath(shaderName);
-		auto& shader = s_Shaders[shaderName.data()];
+		const auto& path = File::LoadPath(shaderName);
+		auto& shader = s_Shaders[path.FileName];
 
-		const auto hr = D3DReadFileToBlob(path.c_str(), shader.GetAddressOf());
-		ENSURES(L"Shader読み込み [ %s ]", path.c_str());
+		const auto hr = D3DReadFileToBlob(path.RelativePath.c_str(), shader.GetAddressOf());
+		ENSURES(L"Shader読み込み [ %s ]", path.RelativePath);
+	}
+
+	void LoadTexture(const std::wstring_view textureName)
+	{
+		const auto& path = File::LoadPath(textureName);
+
+		auto& texture = s_Textures[path.FileName];
+		texture.CreateWIC(path.RelativePath);
+	}
+
+	void LoadObjModel(const std::wstring_view modelName)
+	{
+		const auto& path = File::LoadPath(modelName);
+		s_Models[path.FileName] = ObjLoader::LoadFile(path.RelativePath.c_str());
+	}
+
+	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
+	{
+		const auto& shader = s_Shaders[shaderName.data()];
+		return shader.Get();
 	}
 
 	const Texture& GetTexture(const std::wstring_view texutreName)
@@ -37,9 +45,10 @@ namespace ResourceManager
 		const auto& texture = s_Textures[texutreName.data()];
 		return texture;
 	}
-	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
+
+	const Model& GetModel(const std::wstring_view modelName)
 	{
-		const auto& shader = s_Shaders[shaderName.data()];
-		return shader.Get();
+		const auto& model = s_Models[modelName.data()];
+		return model;
 	}
 }
