@@ -45,8 +45,8 @@ void App::Startup(void)
 	model2.OnInit(L"Cube.obj");
 	model2.SetTexture(L"neko2.jpg");
 
-	model.m_X = 0.1f;
-	model2.m_X = -0.1f;
+	model.m_X = 1.0f;
+	model2.m_X = -1.0f;
 }
 
 void App::Cleanup(void)

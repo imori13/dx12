@@ -68,6 +68,7 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 void TestModel::Update() noexcept
 {
 	m_pTransform->World = DirectX::XMMatrixIdentity();
+	m_pTransform->World *= DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	m_pTransform->World *= DirectX::XMMatrixRotationZ(m_RotateAngle);
 	m_pTransform->World *= DirectX::XMMatrixRotationY(m_RotateAngle);
 	m_pTransform->World *= DirectX::XMMatrixRotationX(m_RotateAngle);
