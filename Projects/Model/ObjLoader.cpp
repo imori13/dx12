@@ -7,11 +7,13 @@
 
 namespace
 {
+#define FaceVertexNum
+
 	struct FaceIndex
 	{
-		uint32_t PositionIndex[3];
-		uint32_t TexcoordIndex[3];
-		uint32_t NormalIndex[3];
+		std::vector<uint32_t> PositionIndex;
+		std::vector<uint32_t> TexcoordIndex;
+		std::vector<uint32_t> NormalIndex;
 	};
 
 	struct LoadMesh
@@ -19,12 +21,11 @@ namespace
 		std::wstring MaterialName;
 		std::vector<DirectX::XMFLOAT3> Position;
 		std::vector<DirectX::XMFLOAT2> Texcoord;
-		//std::vector<DirectX::XMFLOAT3> Normal;
+		std::vector<DirectX::XMFLOAT3> Normal;
 		std::vector<FaceIndex> Faces;
 	};
 
 	std::vector<LoadMesh> s_LoadMesh;
-	LoadMesh s_TempMesh;
 }
 
 namespace ObjLoader
@@ -41,10 +42,12 @@ namespace ObjLoader
 		// クリア
 		s_LoadMesh.clear();
 
+		LoadMesh s_TempMesh;
+
 		while(!file.EndOfFile())
 		{
 			// 1行読み込む
-			const std::wstring& line = file.ReadLine();
+			std::wstring line = file.ReadLine();
 
 			// コメントの行を無視
 			if(line.empty() || line.at(0) == L'#')
@@ -57,16 +60,15 @@ namespace ObjLoader
 			std::wstring header = splitLine.at(0);
 			splitLine.erase(splitLine.begin());
 
+			// スペースが2個あるとき用 (仮
+			for(auto i = 0u; i < splitLine.size(); ++i)
+			{
+				if(splitLine.at(i) == L"") splitLine.erase(splitLine.begin() + i);
+			}
+
 			// マテリアル
 			if(header == L"mtllib")
 			{
-				if(s_TempMesh.MaterialName.size() > 0)
-				{
-					s_LoadMesh.emplace_back(s_TempMesh);
-					// 書き込み先初期化
-					s_TempMesh = {};
-				}
-
 				s_TempMesh.MaterialName = splitLine.front();
 			}
 
@@ -83,37 +85,46 @@ namespace ObjLoader
 			{
 				DirectX::XMFLOAT2 texcoord;
 				texcoord.x = std::stof(splitLine.at(0));
-				texcoord.y = std::stof(splitLine.at(1));
+				texcoord.y = 1 - std::stof(splitLine.at(1));
 				s_TempMesh.Texcoord.emplace_back(texcoord);
 			}
 
-			//if(header == L"vn")
-			//{
-			//	DirectX::XMFLOAT3 normal;
-			//	normal.x = std::stof(splitLine.at(0));
-			//	normal.y = std::stof(splitLine.at(1));
-			//	normal.z = std::stof(splitLine.at(2));
-			//	s_TempMesh.Normal.emplace_back(normal);
-			//}
+			if(header == L"vn")
+			{
+				DirectX::XMFLOAT3 normal;
+				normal.x = std::stof(splitLine.at(0));
+				normal.y = std::stof(splitLine.at(1));
+				normal.z = std::stof(splitLine.at(2));
+				s_TempMesh.Normal.emplace_back(normal);
+			}
 
 			if(header == L"f")
 			{
 				// まだ三角形頂点以外に対応していない
-				EXPECTS(splitLine.size() == 3);
+				//EXPECTS(splitLine.size() == 3);
 
-				FaceIndex face{};
-				for(auto i = 0u; i < splitLine.size(); ++i)
+				// 四角形頂点以上なら複数のFaceを作る
+				for(auto aaa = 0u; aaa < splitLine.size() - 2; ++aaa)
 				{
-					std::vector<std::wstring> faceIndex;
-					boost::algorithm::split(faceIndex, splitLine.at(i), boost::is_any_of("/"));
+					// Face1個分
+					FaceIndex face{};
+					for(auto i = 0u; i < 3; ++i)
+					{
+						std::vector<std::wstring> faceIndex;
+						const uint32_t connectVertexIndex = (i == 0) ? (0) : (i + aaa);
+						boost::algorithm::split(faceIndex, splitLine.at(connectVertexIndex), boost::is_any_of("/"));
 
-					gsl::at(face.PositionIndex, i) = std::stoul(faceIndex.at(0)) - 1;
-					gsl::at(face.TexcoordIndex, i) = std::stoul(faceIndex.at(1)) - 1;
-					gsl::at(face.NormalIndex, i) = std::stoul(faceIndex.at(2)) - 1;
+						face.PositionIndex.emplace_back(std::stoul(faceIndex.at(0)) - 1);
+						if(faceIndex.at(1) != L"")
+							face.TexcoordIndex.emplace_back(std::stoul(faceIndex.at(1)) - 1);
+						face.NormalIndex.emplace_back(std::stoul(faceIndex.at(2)) - 1);
+					}
+					s_TempMesh.Faces.emplace_back(face);
 				}
-				s_TempMesh.Faces.emplace_back(face);
 			}
 		}
+
+		file.Close();
 
 		s_LoadMesh.emplace_back(s_TempMesh);
 
@@ -124,11 +135,13 @@ namespace ObjLoader
 			ModelMesh modelMesh;
 			for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
 			{
+				const auto meshFace = mesh.Faces.at(faceIndex);
 				for(auto vertexNum = 0u; vertexNum < 3; ++vertexNum)
 				{
 					ModelMeshVertex modelMeshVertex;
-					modelMeshVertex.Position = mesh.Position.at(gsl::at(mesh.Faces.at(faceIndex).PositionIndex, vertexNum));
-					modelMeshVertex.TexCoord = mesh.Texcoord.at(gsl::at(mesh.Faces.at(faceIndex).TexcoordIndex, vertexNum));
+					modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
+					if(meshFace.TexcoordIndex.size() > 0)
+						modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
 					//modelMeshVertex.Position = mesh.Position.at(mesh.Faces.at(faceIndex).PositionIndex[vertexNum]);
 					//modelMeshVertex.TexCoord = mesh.Texcoord.at(mesh.Faces.at(faceIndex).TexcoordIndex[vertexNum]);
 					//modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
@@ -139,8 +152,6 @@ namespace ObjLoader
 			}
 			model.ModelMeshes.emplace_back(modelMesh);
 		}
-
-		file.Close();
 
 		return model;
 	}

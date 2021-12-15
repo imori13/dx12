@@ -32,21 +32,28 @@ void App::Startup(void)
 
 	ResourceManager::LoadTexture(L"Textures/neko.jpg");
 	ResourceManager::LoadTexture(L"Textures/neko2.jpg");
+	ResourceManager::LoadTexture(L"Textures/umaru.jpg");
 
 	ResourceManager::LoadShader(L"SimpleTexVS.cso");
 	ResourceManager::LoadShader(L"SimpleTexPS.cso");
 
+	ResourceManager::LoadObjModel(L"Models/umaru.obj");
 	ResourceManager::LoadObjModel(L"Models/Cube.obj");
 
 	PipelineInitializer::Initialize();
 
-	model.OnInit(L"Cube.obj");
-	model.SetTexture(L"neko.jpg");
+	model.OnInit(L"umaru.obj");
+	model.SetTexture(L"umaru.jpg");
 	model2.OnInit(L"Cube.obj");
-	model2.SetTexture(L"neko2.jpg");
+	model2.SetTexture(L"neko.jpg");
 
-	model.m_X = 1.0f;
-	model2.m_X = -1.0f;
+	model.m_Position = { 1.0f,-0.9f ,0 };
+	model2.m_Position = { -1.0f,0 ,0 };
+
+	float scale = 0.02f;
+	model.m_Scale = { scale,scale ,scale };
+	scale = 0.5f;
+	model2.m_Scale = { scale,scale ,scale };
 }
 
 void App::Cleanup(void)
@@ -63,8 +70,8 @@ void App::Update(float deltaT)
 
 	deltaT++;
 
-	model.m_RotateAngle += 1.f * Timer::g_FrameTime;
-	model2.m_RotateAngle += 2.f * Timer::g_FrameTime;
+	model.m_Rotate.y += 1.f * Timer::g_FrameTime;
+	model2.m_Rotate.y += 1.f * Timer::g_FrameTime;
 
 	model.Update();
 	model2.Update();

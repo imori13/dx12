@@ -7,8 +7,6 @@
 
 bool TestModel::OnInit(std::wstring_view modelName)
 {
-	m_RotateAngle = static_cast<float>(rand());
-
 	// 頂点データ生成
 	{
 		const std::vector<ModelMeshVertex> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Vertices;
@@ -24,6 +22,8 @@ bool TestModel::OnInit(std::wstring_view modelName)
 	{
 		const std::vector<uint32_t> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Indices;
 		const auto span = gsl::make_span(data);
+
+		m_IndexCount = span.size();
 
 		m_IndexData.Create(span.size_bytes(), sizeof(uint32_t));
 		void* ptr = m_IndexData.Map();
@@ -68,11 +68,11 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 void TestModel::Update() noexcept
 {
 	m_pTransform->World = DirectX::XMMatrixIdentity();
-	m_pTransform->World *= DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
-	m_pTransform->World *= DirectX::XMMatrixRotationZ(m_RotateAngle);
-	m_pTransform->World *= DirectX::XMMatrixRotationY(m_RotateAngle);
-	m_pTransform->World *= DirectX::XMMatrixRotationX(m_RotateAngle);
-	m_pTransform->World *= DirectX::XMMatrixTranslation(m_X,m_Y,m_Z);
+	m_pTransform->World *= DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+	m_pTransform->World *= DirectX::XMMatrixRotationZ(m_Rotate.z);
+	m_pTransform->World *= DirectX::XMMatrixRotationY(m_Rotate.y);
+	m_pTransform->World *= DirectX::XMMatrixRotationX(m_Rotate.x);
+	m_pTransform->World *= DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
 	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
 	m_pTransform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
@@ -94,7 +94,7 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.m_HandleGPU);
 
-	cmdList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }
 
 void TestModel::OnTerm() noexcept
