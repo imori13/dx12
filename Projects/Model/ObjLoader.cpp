@@ -3,7 +3,7 @@
 #include "FileInput.h"
 
 #include <boost/algorithm/string.hpp>
-#include <map>
+#include <deque>
 
 namespace
 {
@@ -24,8 +24,6 @@ namespace
 		std::vector<DirectX::XMFLOAT3> Normal;
 		std::vector<FaceIndex> Faces;
 	};
-
-	std::vector<LoadMesh> s_LoadMesh;
 }
 
 namespace ObjLoader
@@ -35,13 +33,13 @@ namespace ObjLoader
 		File::Exists(name);
 		const auto& path = File::LoadPath(name);
 
+		EXPECTS(path.Extension == L".obj");
+
 		// ファイルを開く
 		FileInput file;
 		file.Open(path.AbsolutePath);
 
-		// クリア
-		s_LoadMesh.clear();
-
+		// ロード用
 		LoadMesh s_TempMesh;
 
 		while(!file.EndOfFile())
@@ -50,28 +48,26 @@ namespace ObjLoader
 			std::wstring line = file.ReadLine();
 
 			// コメントの行を無視
-			if(line.empty() || line.at(0) == L'#')
+			if(line.empty() || line.front() == L'#')
 			{ continue; }
 
 			// 行split
-			std::vector<std::wstring> splitLine;
-			boost::algorithm::split(splitLine, line, boost::is_space());
+			std::deque<std::wstring> splitLine;
+			boost::algorithm::split(splitLine, line, boost::is_space(), boost::token_compress_on);
 
 			// ヘッダー
-			std::wstring header = splitLine.at(0);
+			std::wstring header = splitLine.front();
 			// 先頭を除去
-			splitLine.erase(splitLine.begin());
-
-			// スペースが2個あるとき用 (仮
-			for(auto i = 0u; i < splitLine.size(); ++i)
-			{
-				if(splitLine.at(i) == L"") splitLine.erase(splitLine.begin() + i);
-			}
+			splitLine.pop_front();
+			// 末尾に""があればpop
+			if(splitLine.back() == L"") 
+			{ splitLine.pop_back(); }
 
 			// マテリアル
 			if(header == L"mtllib")
 			{
 				s_TempMesh.MaterialName = splitLine.front();
+				continue;
 			}
 
 			if(header == L"v")
@@ -81,16 +77,18 @@ namespace ObjLoader
 				pos.y = std::stof(splitLine.at(1));
 				pos.z = std::stof(splitLine.at(2));
 				s_TempMesh.Position.emplace_back(pos);
+				continue;
 			}
-
+			
 			if(header == L"vt")
 			{
 				DirectX::XMFLOAT2 texcoord;
 				texcoord.x = std::stof(splitLine.at(0));
 				texcoord.y = 1 - std::stof(splitLine.at(1));
 				s_TempMesh.Texcoord.emplace_back(texcoord);
+				continue;
 			}
-
+			
 			if(header == L"vn")
 			{
 				DirectX::XMFLOAT3 normal;
@@ -98,8 +96,9 @@ namespace ObjLoader
 				normal.y = std::stof(splitLine.at(1));
 				normal.z = std::stof(splitLine.at(2));
 				s_TempMesh.Normal.emplace_back(normal);
+				continue;
 			}
-
+			
 			if(header == L"f")
 			{
 				// 4頂点以上なら複数のFaceを作る
@@ -113,57 +112,58 @@ namespace ObjLoader
 						const uint32_t connectVertexIndex = (i == 0) ? (0) : (i + faceCount);
 						boost::algorithm::split(faceIndex, splitLine.at(connectVertexIndex), boost::is_any_of("/"));
 
+						constexpr uint32_t OFFSET = 1;
+
 						// positionインデックス
-						face.PositionIndex.emplace_back(std::stoul(faceIndex.at(0)) - 1);
+						face.PositionIndex.emplace_back(std::stoul(faceIndex.at(0)) - OFFSET);
 						// texcoordインデックス
 						if(faceIndex.at(1) != L"")
-							face.TexcoordIndex.emplace_back(std::stoul(faceIndex.at(1)) - 1);
+							face.TexcoordIndex.emplace_back(std::stoul(faceIndex.at(1)) - OFFSET);
 						// normalインデックス
-						face.NormalIndex.emplace_back(std::stoul(faceIndex.at(2)) - 1);
+						face.NormalIndex.emplace_back(std::stoul(faceIndex.at(2)) - OFFSET);
 					}
 					s_TempMesh.Faces.emplace_back(face);
 				}
+				continue;
 			}
 		}
 
 		file.Close();
 
-		s_LoadMesh.emplace_back(s_TempMesh);
-
+		// 出力用
 		Model model;
-		for(const auto& mesh : s_LoadMesh)
+
+		const auto& mesh = s_TempMesh;
+		ModelMesh modelMesh;
+		uint32_t indices = 0;
+
+		for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
 		{
-			ModelMesh modelMesh;
-
-			uint32_t indices = 0;
-			for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
+			const auto meshFace = mesh.Faces.at(faceIndex);
+			for(auto vertexNum = 0u; vertexNum < VERTEX_NUM; ++vertexNum)
 			{
-				const auto meshFace = mesh.Faces.at(faceIndex);
-				for(auto vertexNum = 0u; vertexNum < VERTEX_NUM; ++vertexNum)
+				// 頂点の読み込み
 				{
-					// 頂点の読み込み
-					{
-						ModelMeshVertex modelMeshVertex;
-						modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
+					ModelMeshVertex modelMeshVertex;
+					modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
 
-						if(meshFace.TexcoordIndex.size() > 0)
-							modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
+					if(meshFace.TexcoordIndex.size() > 0)
+						modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
 
-						//if(meshFace.NormalIndex.size() > 0)
-						//	modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
+					//if(meshFace.NormalIndex.size() > 0)
+					//	modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
 
-						modelMesh.Vertices.emplace_back(modelMeshVertex);
-					}
+					modelMesh.Vertices.emplace_back(modelMeshVertex);
+				}
 
-					// インデックスの設定
-					{
-						modelMesh.Indices.emplace_back(indices);
-						++indices;
-					}
+				// インデックスの設定
+				{
+					modelMesh.Indices.emplace_back(indices);
+					++indices;
 				}
 			}
-			model.ModelMeshes.emplace_back(modelMesh);
 		}
+		model.ModelMeshes.emplace_back(modelMesh);
 
 		return model;
 	}

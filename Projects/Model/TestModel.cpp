@@ -23,7 +23,7 @@ bool TestModel::OnInit(std::wstring_view modelName)
 		const std::vector<uint32_t> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Indices;
 		const auto span = gsl::make_span(data);
 
-		m_IndexCount = span.size();
+		m_IndexCount = gsl::narrow<uint32_t>(span.size());
 
 		m_IndexData.Create(span.size_bytes(), sizeof(uint32_t));
 		void* ptr = m_IndexData.Map();

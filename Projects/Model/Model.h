@@ -21,7 +21,7 @@ struct ModelMesh	// モデル用メッシュ
 {
 	std::vector<ModelMeshVertex> Vertices;
 	std::vector<uint32_t> Indices;
-	uint32_t MaterialId;
+	uint32_t MaterialId{};
 };
 
 struct Model	// モデル

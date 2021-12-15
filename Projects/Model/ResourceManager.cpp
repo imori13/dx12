@@ -1,6 +1,7 @@
 ﻿#include "ResourceManager.h"
 #include "File.h"
 #include "ObjLoader.h"
+#include "TimeStamp.h"
 
 namespace
 {
@@ -30,8 +31,13 @@ namespace ResourceManager
 
 	void LoadObjModel(const std::wstring_view modelName)
 	{
+		TimeStamp::Begin();
+
 		const auto& path = File::LoadPath(modelName);
 		s_Models[path.FileName] = ObjLoader::LoadFile(path.RelativePath.c_str());
+
+		const auto time = TimeStamp::End();
+		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
 	}
 
 	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
