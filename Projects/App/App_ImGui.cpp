@@ -30,7 +30,7 @@ namespace App_ImGui
 		ImPlot::GetStyle().AntiAliasedLines = true;
 
 		auto& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
@@ -63,14 +63,6 @@ namespace App_ImGui
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
-		ImGui::Begin("DebugWindow");
-		ImGui::Text("Hello World!");
-		ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
-		ImGui::Text("AppSize    : W %d  H %d", Display::g_AppWidth, Display::g_AppHeight);
-
-		ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
-		ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
-
 		static double update{};
 		static double render{};
 		static double present{};
@@ -79,28 +71,43 @@ namespace App_ImGui
 		render = DataAverage::Get(L"Render");
 		present = DataAverage::Get(L"Present");
 		gpuWait = DataAverage::Get(L"GPUwait");
-		ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"更新時間"), update + render + present + gpuWait);
-		{
-			ImGui::Indent();
-			ImGui::Text("Update  : %.2fms", update);
-			ImGui::Text("Render  : %.2fms", render);
-			ImGui::Text("Present : %.2fms", present);
-			ImGui::Text("GPUwait : %.2fms", gpuWait);
-			ImGui::Unindent();
-		}
-		ImGui::Checkbox("Sync", &GameCore::g_IsSync);
 
+		ImGui::Begin("DebugWindow");
+		{
+			ImGui::Text("Hello World!");
+			ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
+			ImGui::Text("AppSize    : W %d  H %d", Display::g_AppWidth, Display::g_AppHeight);
+
+			ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
+			ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
+
+			ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"更新時間"), update + render + present + gpuWait);
+			{
+				ImGui::Indent();
+				ImGui::Text("Update  : %.2fms", update);
+				ImGui::Text("Render  : %.2fms", render);
+				ImGui::Text("Present : %.2fms", present);
+				ImGui::Text("GPUwait : %.2fms", gpuWait);
+				ImGui::Unindent();
+			}
+			ImGui::Checkbox("Sync", &GameCore::g_IsSync);
+
+			{
+				static std::vector<float> fps;
+				fps.emplace_back(DataAverage::Get(L"FPS"));
+				constexpr uint32_t size = 1000;
+				if(!fps.empty() && fps.size() > size) { fps.erase(fps.begin()); }
+
+				ImPlot::SetNextPlotLimits(0, 1000, 0, 0.02f, ImGuiCond_Always);
+				if(ImPlot::BeginPlot("LineGraph"), NULL, NULL, ImVec2(50, 50), 0, ImPlotAxisFlags_Time)
+				{
+					ImPlot::PlotLine("FPS", fps.data(), gsl::narrow<int>(fps.size()));
+					ImPlot::EndPlot();
+				}
+			}
+		}
 		ImGui::End();
 
-		static std::vector<float> fps{};
-		fps.emplace_back(DataAverage::Get(L"FPS"));
-		constexpr uint32_t size = 1000;
-		if(!fps.empty() && fps.size() > size)
-		{
-			fps.erase(fps.begin());
-		}
-
-		static bool normalize = false;
 		static std::array< const char*, 4> label = { "Update" ,"Render" ,"Present", "GPUwait" };
 		static std::vector<double> datas = { 0,0,0,0 };
 		datas.at(0) = update;
@@ -108,37 +115,47 @@ namespace App_ImGui
 		datas.at(2) = present;
 		datas.at(3) = gpuWait;
 
-		{
-			ImPlot::SetNextPlotFormatY("formatY", ImPlotYAxis_1);
-		}
-
 		ImGui::Begin("AAAAA");
-		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2)));
-		if(ImPlot::BeginPlot("##Pie1"))
 		{
-			//ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-			//ImPlot::SetupAxesLimits(0, 1, 0, 1);
-			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size() - 1), 0.5, 0.5, 0.4, normalize, "%.1f");
-			ImPlot::EndPlot();
-		}
+			ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
 
-		ImGui::Text("%.1lf ms", (datas.at(0) + datas.at(1) + datas.at(2) + datas.at(3)));
-		if(ImPlot::BeginPlot("##Pie2"))
-		{
-			//ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-			//ImPlot::SetupAxesLimits(0, 1, 0, 1);
-			ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size()), 0.5, 0.5, 0.4, normalize, "%.1f");
-			ImPlot::EndPlot();
-		}
-		ImGui::End();
+			ImPlot::SetNextPlotLimits(0, 1, 0, 1, ImGuiCond_Always);
+			if(ImPlot::BeginPlot("##Pie2"))
+			{
+				ImPlot::PlotPieChart(label.data(), datas.data(), gsl::narrow<int>(datas.size()), 0.5, 0.5, 0.4, false, "%.1f");
+				ImPlot::EndPlot();
+			}
 
+			static std::vector<double> updateTimes;
+			static std::vector<double> renderTimes;
+			static std::vector<double> presentTimes;
+			static std::vector<double> waitGpuTimes;
+			const uint32_t FillModeLimit = std::min(1000u, static_cast<uint32_t>(waitGpuTimes.size()) + 1);
+			updateTimes.emplace_back(update);
+			renderTimes.emplace_back(render + update);
+			presentTimes.emplace_back(present + render + update);
+			waitGpuTimes.emplace_back(gpuWait + present + render + update);
+			if(!updateTimes.empty() && updateTimes.size() > FillModeLimit) { updateTimes.erase(updateTimes.begin()); }
+			if(!renderTimes.empty() && renderTimes.size() > FillModeLimit) { renderTimes.erase(renderTimes.begin()); }
+			if(!presentTimes.empty() && presentTimes.size() > FillModeLimit) { presentTimes.erase(presentTimes.begin()); }
+			if(!waitGpuTimes.empty() && waitGpuTimes.size() > FillModeLimit) { waitGpuTimes.erase(waitGpuTimes.begin()); }
 
-		ImGui::Begin("LineGraphWindow");
-		if(ImPlot::BeginPlot("LineGraph"))
-		{
-			//ImPlot::SetupAxesLimits(0, size, 0, 0.02f);
-			ImPlot::PlotLine("FPS", fps.data(), gsl::narrow<int>(fps.size()));
-			ImPlot::EndPlot();
+			ImPlot::SetNextPlotLimitsX(0u, 1000u, ImGuiCond_Always);
+			ImPlot::SetNextPlotLimitsY(0u, 20u, ImGuiCond_Always);
+			if(ImPlot::BeginPlot("FillMode"))
+			{
+				ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.1f);
+				ImPlot::PlotShaded("Update_", updateTimes.data(), FillModeLimit);
+				ImPlot::PlotShaded("Render_", renderTimes.data(), FillModeLimit);
+				ImPlot::PlotShaded("Present_", presentTimes.data(), FillModeLimit);
+				ImPlot::PlotShaded("Gpuwait_", waitGpuTimes.data(), FillModeLimit);
+				ImPlot::PopStyleVar();
+				ImPlot::PlotLine("Update_", updateTimes.data(), FillModeLimit);
+				ImPlot::PlotLine("Render_", renderTimes.data(), FillModeLimit);
+				ImPlot::PlotLine("Present_", presentTimes.data(), FillModeLimit);
+				ImPlot::PlotLine("Gpuwait_", waitGpuTimes.data(), FillModeLimit);
+				ImPlot::EndPlot();
+			}
 		}
 		ImGui::End();
 

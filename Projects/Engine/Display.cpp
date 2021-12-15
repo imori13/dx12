@@ -10,6 +10,7 @@ namespace
 	ResourceHeap s_RenderTargetHeap;
 	ResourceHeap s_DepthStencilHeap;
 	bool s_IsFullscreen = false;
+	bool s_TearingSupport = false;
 }
 
 namespace Display
@@ -37,6 +38,18 @@ namespace Display
 			hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
 			ENSURES(hr, "DXGIFactory生成");
 
+			BOOL allowTearing = FALSE;
+			if(SUCCEEDED(hr))
+			{
+				Microsoft::WRL::ComPtr<IDXGIFactory5> factory5;
+				hr = pFactory.As(&factory5);
+				if(SUCCEEDED(hr))
+				{
+					hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allowTearing, sizeof(allowTearing));
+				}
+			}
+			s_TearingSupport = SUCCEEDED(hr) && allowTearing;
+
 			g_AppWidth = Window::g_Width;
 			g_AppHeight = Window::g_Height;
 
@@ -45,7 +58,7 @@ namespace Display
 			desc.Windowed = !s_IsFullscreen;
 			desc.BufferDesc.Width = g_AppWidth;
 			desc.BufferDesc.Height = g_AppHeight;
-			desc.BufferDesc.RefreshRate.Numerator = 60;		// リフレッシュレート
+			desc.BufferDesc.RefreshRate.Numerator = 120;		// リフレッシュレート
 			desc.BufferDesc.RefreshRate.Denominator = 1;
 			desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -56,8 +69,9 @@ namespace Display
 			desc.BufferCount = FRAME_COUNT;
 			desc.OutputWindow = Window::g_hWnd;
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-			desc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-			//desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			//desc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+			desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			desc.Flags |= s_TearingSupport ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0;
 
 			// スワップチェインの生成
 			Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
@@ -91,8 +105,10 @@ namespace Display
 
 	void Present(uint32_t interval)
 	{
+		const uint32_t presentFlags = (interval == 0 && s_TearingSupport && !s_IsFullscreen) ? DXGI_PRESENT_ALLOW_TEARING : 0;
+
 		// 画面に表示
-		const auto hr = s_pSwapChain->Present(interval, 0);
+		const auto hr = s_pSwapChain->Present(interval, presentFlags);
 		ENSURES(hr);
 	}
 

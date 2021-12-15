@@ -16,7 +16,6 @@ struct alignas(256) Transform
 	DirectX::XMMATRIX View;		// ビュー行列
 	DirectX::XMMATRIX Proj;		// 射影行列
 };
-#pragma warning (default : 4324)
 
 struct alignas(256) Light
 {
@@ -24,6 +23,7 @@ struct alignas(256) Light
 	DirectX::XMFLOAT4 Color;
 	DirectX::XMFLOAT4 CameraPosition;
 };
+#pragma warning (default : 4324)
 
 class TestModel
 {

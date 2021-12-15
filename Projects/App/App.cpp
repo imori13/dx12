@@ -24,7 +24,7 @@ private:
 	TestModel model2;
 };
 
-CREATE_APPLICATION(App, 1280, 720);
+CREATE_APPLICATION(App, 1600, 900);
 
 void App::Startup(void)
 {
@@ -98,7 +98,7 @@ void App::RenderScene(void)
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 	// クリアカラー
-	const float clearColor[4] = { 0.0f,0.0f,1.0f,1.0f };
+	const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
 
 	// RTVをクリア
 	cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);

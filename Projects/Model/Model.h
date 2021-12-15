@@ -8,6 +8,7 @@ struct ModelMeshVertex	// メッシュ用頂点
 	DirectX::XMFLOAT3 Tangent;
 };
 
+#pragma warning (disable : 4324)
 struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
 	DirectX::XMFLOAT3 Ambient;
@@ -17,6 +18,7 @@ struct alignas(256) ModelMaterial	// モデル用マテリアル
 	DirectX::XMFLOAT3 Specular;
 	float Shininess;
 };
+#pragma warning (default : 4324)
 
 struct ModelMesh	// モデル用メッシュ
 {
