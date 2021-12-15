@@ -1,14 +1,13 @@
 #include "ObjLoader.h"
 #include "File.h"
-#include "File.h"
+#include "FileInput.h"
 
 #include <boost/algorithm/string.hpp>
 #include <map>
 
 namespace
 {
-	constexpr uint32_t VERTEX_NUM = 3;
-	constexpr uint32_t UV_NUM = 2;
+#define FaceVertexNum
 
 	struct FaceIndex
 	{
@@ -37,7 +36,7 @@ namespace ObjLoader
 		const auto& path = File::LoadPath(name);
 
 		// ファイルを開く
-		File::FileInput file;
+		FileInput file;
 		file.Open(path.AbsolutePath);
 
 		// クリア
@@ -58,9 +57,7 @@ namespace ObjLoader
 			std::vector<std::wstring> splitLine;
 			boost::algorithm::split(splitLine, line, boost::is_space());
 
-			// ヘッダー
 			std::wstring header = splitLine.at(0);
-			// 先頭を除去
 			splitLine.erase(splitLine.begin());
 
 			// スペースが2個あるとき用 (仮
@@ -103,23 +100,23 @@ namespace ObjLoader
 
 			if(header == L"f")
 			{
-				// 4頂点以上なら複数のFaceを作る
-				for(auto faceCount = 0u; faceCount <= splitLine.size() - VERTEX_NUM; ++faceCount)
+				// まだ三角形頂点以外に対応していない
+				//EXPECTS(splitLine.size() == 3);
+
+				// 四角形頂点以上なら複数のFaceを作る
+				for(auto aaa = 0u; aaa < splitLine.size() - 2; ++aaa)
 				{
 					// Face1個分
 					FaceIndex face{};
-					for(auto i = 0u; i < VERTEX_NUM; ++i)
+					for(auto i = 0u; i < 3; ++i)
 					{
 						std::vector<std::wstring> faceIndex;
-						const uint32_t connectVertexIndex = (i == 0) ? (0) : (i + faceCount);
+						const uint32_t connectVertexIndex = (i == 0) ? (0) : (i + aaa);
 						boost::algorithm::split(faceIndex, splitLine.at(connectVertexIndex), boost::is_any_of("/"));
 
-						// positionインデックス
 						face.PositionIndex.emplace_back(std::stoul(faceIndex.at(0)) - 1);
-						// texcoordインデックス
 						if(faceIndex.at(1) != L"")
 							face.TexcoordIndex.emplace_back(std::stoul(faceIndex.at(1)) - 1);
-						// normalインデックス
 						face.NormalIndex.emplace_back(std::stoul(faceIndex.at(2)) - 1);
 					}
 					s_TempMesh.Faces.emplace_back(face);
@@ -132,35 +129,25 @@ namespace ObjLoader
 		s_LoadMesh.emplace_back(s_TempMesh);
 
 		Model model;
+		uint32_t iii = 0;
 		for(const auto& mesh : s_LoadMesh)
 		{
 			ModelMesh modelMesh;
-
-			uint32_t indices = 0;
 			for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
 			{
 				const auto meshFace = mesh.Faces.at(faceIndex);
 				for(auto vertexNum = 0u; vertexNum < 3; ++vertexNum)
 				{
-					// 頂点の読み込み
-					{
-						ModelMeshVertex modelMeshVertex;
-						modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
-
-						if(meshFace.TexcoordIndex.size() > 0)
-							modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
-
-						//if(meshFace.NormalIndex.size() > 0)
-						//	modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
-
-						modelMesh.Vertices.emplace_back(modelMeshVertex);
-					}
-
-					// インデックスの設定
-					{
-						modelMesh.Indices.emplace_back(indices);
-						++indices;
-					}
+					ModelMeshVertex modelMeshVertex;
+					modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
+					if(meshFace.TexcoordIndex.size() > 0)
+						modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
+					//modelMeshVertex.Position = mesh.Position.at(mesh.Faces.at(faceIndex).PositionIndex[vertexNum]);
+					//modelMeshVertex.TexCoord = mesh.Texcoord.at(mesh.Faces.at(faceIndex).TexcoordIndex[vertexNum]);
+					//modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
+					modelMesh.Vertices.emplace_back(modelMeshVertex);
+					modelMesh.Indices.emplace_back(iii);
+					++iii;
 				}
 			}
 			model.ModelMeshes.emplace_back(modelMesh);

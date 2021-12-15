@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="File.h" />
+    <ClInclude Include="FileInput.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PipelineInitializer.h" />
@@ -92,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="PipelineInitializer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

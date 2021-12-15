@@ -2,14 +2,8 @@
 
 #include <boost/filesystem.hpp>
 
-namespace
-{
-	boost::filesystem::wifstream m_ReadingFile;
-}
-
 namespace File
 {
-
 	const bool Exists(std::wstring_view name)
 	{
 		const bool flag = boost::filesystem::exists(name.data());
@@ -30,34 +24,5 @@ namespace File
 		path.Extension = boostPath.filename().extension().generic_wstring();
 
 		return path;
-	}
-
-	void FileInput::Open(std::wstring_view path)
-	{
-		File::Exists(path);
-
-		m_ReadingFile.open(path.data(), std::ios::in);
-		ENSURES(m_ReadingFile.is_open(), L"File Open [ %s ]", path.data());
-	}
-
-	bool FileInput::EndOfFile()
-	{
-		return m_ReadingFile.eof();
-	}
-
-	std::wstring FileInput::ReadLine()
-	{
-		EXPECTS(!EndOfFile());
-
-		std::wstring line;
-		std::getline(m_ReadingFile, line);
-
-		return line;
-	}
-
-	void FileInput::Close()
-	{
-		m_ReadingFile.close();
-		LOGLINE(L"File Closed")
 	}
 }

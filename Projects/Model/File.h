@@ -12,14 +12,4 @@ namespace File
 {
 	const bool Exists(std::wstring_view name);
 	const Path LoadPath(std::wstring_view name);
-
-	class FileInput
-	{
-	public:
-		void Open(std::wstring_view path);
-		bool EndOfFile();
-		std::wstring ReadLine();
-		void Close();
-	private:
-	};
 }
