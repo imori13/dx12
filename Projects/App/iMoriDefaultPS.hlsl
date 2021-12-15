@@ -6,12 +6,16 @@ PSOutput main(VSOutput input)
     
     float3 N = normalize(input.Normal);
     float3 L = normalize(LightPosition - input.WorldPos.xyz);
+    float3 V = normalize(CameraPosition - input.WorldPos.xyz);
+    
+    float3 R = normalize(-reflect(V, N));
     
     float4 color = ColorMap.Sample(ColorSmp, input.TexCoord);
-    //float3 diffuse = LightColor * Diffuse * saturate(dot(L, N));
-    float3 diffuse = LightColor * 1 * saturate(dot(L, N));
+    float3 ambient = 0.5882;
+    float3 diffuse = LightColor * Diffuse * saturate(dot(L, N));
+    float3 specular = LightColor * Specular * pow(saturate(dot(L, R)), Shininess);
     
-    output.Color = float4(color.rgb * diffuse, color.a * Alpha);
+    output.Color = float4(color.rgb * max(ambient, (diffuse + specular)), color.a * Alpha);
 
     return output;
 }

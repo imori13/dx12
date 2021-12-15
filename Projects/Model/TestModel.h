@@ -22,6 +22,7 @@ struct alignas(256) Light
 {
 	DirectX::XMFLOAT4 LightPosition;
 	DirectX::XMFLOAT4 Color;
+	DirectX::XMFLOAT4 CameraPosition;
 };
 
 class TestModel

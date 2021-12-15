@@ -42,6 +42,7 @@ cbuffer LightBuffer : register(b1)
 {
     float3 LightPosition : packoffset(c0);
     float3 LightColor : packoffset(c1);
+    float3 CameraPosition : packoffset(c2);
 }
 
 // Material (b2)
@@ -49,6 +50,8 @@ cbuffer MaterialBuffer : register(b2)
 {
     float3 Diffuse : packoffset(c0);    // ŠgŽU”½ŽË—¦
     float Alpha : packoffset(c0.w);     // “§‰ß—¦
+    float3 Specular : packoffset(c1);   // ‹¾–Ê”½ŽË—¦
+    float Shininess : packoffset(c1.w); // ‹¾–Ê”½ŽË‹­“x
 }
 
 SamplerState ColorSmp : register(s0);

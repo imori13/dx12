@@ -229,17 +229,17 @@ namespace ObjLoader
 				material.Diffuse.z = std::stof(splitLine.at(2));
 			}
 
-			//if(header == L"Ks")
-			//{
-			//	material.Specular.x = std::stof(splitLine.at(0));
-			//	material.Specular.y = std::stof(splitLine.at(1));
-			//	material.Specular.z = std::stof(splitLine.at(2));
-			//}
+			if(header == L"Ks")
+			{
+				material.Specular.x = std::stof(splitLine.at(0));
+				material.Specular.y = std::stof(splitLine.at(1));
+				material.Specular.z = std::stof(splitLine.at(2));
+			}
 
-			//if(header == L"Ns")
-			//{
-			//	material.Shininess = std::stof(splitLine.at(0));
-			//}
+			if(header == L"Ns")
+			{
+				material.Shininess = std::stof(splitLine.at(0));
+			}
 
 			//if(header == L"map_Kd")
 			//{

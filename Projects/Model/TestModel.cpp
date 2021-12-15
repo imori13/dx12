@@ -46,6 +46,7 @@ bool TestModel::OnInit(std::wstring_view modelName)
 		Light light;
 		light.LightPosition = { 0.0f,50.0f,100.0f,0.0f };
 		light.Color = { 1.0f,1.0f,1.0f,0.0f };
+		light.CameraPosition = { 0.0f,1.0f,2.0f,0.0f };
 
 		void* ptr = m_LightData.Map();
 		memcpy(ptr, &light, sizeof(light));

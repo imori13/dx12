@@ -11,9 +11,9 @@ struct ModelMeshVertex	// メッシュ用頂点
 struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
 	DirectX::XMFLOAT3 Diffuse;
-	//DirectX::XMFLOAT3 Specular;
+	DirectX::XMFLOAT3 Specular;
 	float Alpha;
-	//float Shininess;
+	float Shininess;
 	//std::wstring DiffuseMap;
 };
 
