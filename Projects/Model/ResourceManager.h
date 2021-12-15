@@ -12,5 +12,5 @@ namespace ResourceManager
 
 	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName);
 	const Texture& GetTexture(const std::wstring_view texutreName);
-	const Model& GetModel(const std::wstring_view modelName);
+	const Model& GetModel(const std::wstring_view fileName);
 };

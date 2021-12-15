@@ -13,6 +13,7 @@ void FileInput::Open(std::wstring_view path)
 {
 	File::Exists(path);
 
+	m_ReadingFile.clear();
 	m_ReadingFile.open(path.data(), std::ios::in);
 	ENSURES(m_ReadingFile.is_open(), L"File Open [ %s ]", path.data());
 }

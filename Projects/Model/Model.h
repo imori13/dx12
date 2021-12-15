@@ -3,25 +3,25 @@
 struct ModelMeshVertex	// メッシュ用頂点
 {
 	DirectX::XMFLOAT3 Position;
-	//DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexCoord;
-	//DirectX::XMFLOAT3 Tangent;
+	DirectX::XMFLOAT3 Tangent;
 };
 
-struct ModelMaterial	// モデル用マテリアル
+struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
 	DirectX::XMFLOAT3 Diffuse;
-	DirectX::XMFLOAT3 Specular;
+	//DirectX::XMFLOAT3 Specular;
 	float Alpha;
-	float Shininess;
-	std::wstring DiffuseMap;
+	//float Shininess;
+	//std::wstring DiffuseMap;
 };
 
 struct ModelMesh	// モデル用メッシュ
 {
 	std::vector<ModelMeshVertex> Vertices;
 	std::vector<uint32_t> Indices;
-	uint32_t MaterialId{};
+	std::wstring MaterialName;
 };
 
 struct Model	// モデル

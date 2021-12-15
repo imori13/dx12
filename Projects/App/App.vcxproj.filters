@@ -17,16 +17,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SimpleTexPS.hlsl">
+    <FxCompile Include="iMoriDefaultVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="SimpleTexVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="SimpleVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="SimplePS.hlsl">
+    <FxCompile Include="iMoriDefaultPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -34,5 +28,10 @@
     <ClInclude Include="App_ImGui.h">
       <Filter>SourceFile</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="iMoriDefaultHeader.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

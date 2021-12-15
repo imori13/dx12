@@ -18,6 +18,12 @@ struct alignas(256) Transform
 };
 #pragma warning (default : 4324)
 
+struct alignas(256) Light
+{
+	DirectX::XMFLOAT4 LightPosition;
+	DirectX::XMFLOAT4 Color;
+};
+
 class TestModel
 {
 public:
@@ -44,7 +50,9 @@ private:
 	ResourceHeap m_CBV_SRVHeap;
 	UploadBuffer m_VertexData;
 	UploadBuffer m_IndexData;
-	UploadBuffer m_ConstantData;
+	UploadBuffer m_TransformData;
+	UploadBuffer m_LightData;
+	UploadBuffer m_MaterialData;
 	Texture m_Texture;
 	uint32_t m_IndexCount;
 

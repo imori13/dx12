@@ -10,14 +10,14 @@ namespace
 	std::map<std::wstring, PipelineStateObject> s_Pipelines = {};
 }
 
-const PipelineStateObject CreateDefault();
+const PipelineStateObject CreateDefault(std::wstring_view vsName, std::wstring_view psName);
 
 
 namespace PipelineInitializer
 {
-	void Initialize()
+	void Initialize(std::wstring_view vsName, std::wstring_view psName)
 	{
-		s_Pipelines[L"DefaultPipeline"] = CreateDefault();
+		s_Pipelines[L"DefaultPipeline"] = CreateDefault(vsName, psName);
 	}
 
 	const PipelineStateObject& GetPipeline(std::wstring_view pipelineName)
@@ -27,14 +27,16 @@ namespace PipelineInitializer
 	}
 }
 
-const PipelineStateObject CreateDefault()
+const PipelineStateObject CreateDefault(std::wstring_view vsName, std::wstring_view psName)
 {
 	InputElement inputElement;
 	inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	inputElement.SetElement("TANGENT", DXGI_FORMAT_R32G32B32_FLOAT);
 
-	const auto vsShader = ResourceManager::GetShader(L"SimpleTexVS.cso");
-	const auto psShader = ResourceManager::GetShader(L"SimpleTexPS.cso");
+	const auto vsShader = ResourceManager::GetShader(vsName);
+	const auto psShader = ResourceManager::GetShader(psName);
 
 	// ルートシグネチャ読み込み
 	Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob = nullptr;

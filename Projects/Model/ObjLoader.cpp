@@ -28,10 +28,24 @@ namespace
 
 namespace ObjLoader
 {
-	Model LoadFile(std::wstring_view name)
+	std::vector<ModelMesh> LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName);
+	std::vector<ModelMaterial> LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath);
+
+	Model LoadFile(std::wstring_view fileName, std::wstring_view filePath)
 	{
-		File::Exists(name);
-		const auto& path = File::LoadPath(name);
+		Model model;
+
+		model.ModelMeshes = LoadModel(model.ModelMeshes, filePath.data() + std::wstring(fileName.data()));
+		LOGLINE(L"%s", model.ModelMeshes.at(0).MaterialName.c_str());
+		model.ModelMaterials = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
+
+		return model;
+	}
+
+	std::vector<ModelMesh> LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName)
+	{
+		File::Exists(fileName);
+		const auto& path = File::LoadPath(fileName);
 
 		EXPECTS(path.Extension == L".obj");
 
@@ -60,7 +74,7 @@ namespace ObjLoader
 			// 先頭を除去
 			splitLine.pop_front();
 			// 末尾に""があればpop
-			if(splitLine.back() == L"") 
+			if(splitLine.back() == L"")
 			{ splitLine.pop_back(); }
 
 			// マテリアル
@@ -79,16 +93,16 @@ namespace ObjLoader
 				s_TempMesh.Position.emplace_back(pos);
 				continue;
 			}
-			
+
 			if(header == L"vt")
 			{
 				DirectX::XMFLOAT2 texcoord;
 				texcoord.x = std::stof(splitLine.at(0));
-				texcoord.y = 1 - std::stof(splitLine.at(1));
+				texcoord.y = 1 - std::stof(splitLine.at(1));	// UVのV反転
 				s_TempMesh.Texcoord.emplace_back(texcoord);
 				continue;
 			}
-			
+
 			if(header == L"vn")
 			{
 				DirectX::XMFLOAT3 normal;
@@ -98,7 +112,7 @@ namespace ObjLoader
 				s_TempMesh.Normal.emplace_back(normal);
 				continue;
 			}
-			
+
 			if(header == L"f")
 			{
 				// 4頂点以上なら複数のFaceを作る
@@ -130,13 +144,14 @@ namespace ObjLoader
 
 		file.Close();
 
-		// 出力用
-		Model model;
+		// 参照
+		auto& modelMesh = vec.emplace_back();
 
+		// マテリアル名
 		const auto& mesh = s_TempMesh;
-		ModelMesh modelMesh;
-		uint32_t indices = 0;
+		modelMesh.MaterialName = mesh.MaterialName;
 
+		uint32_t indices = 0;
 		for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
 		{
 			const auto meshFace = mesh.Faces.at(faceIndex);
@@ -150,8 +165,8 @@ namespace ObjLoader
 					if(meshFace.TexcoordIndex.size() > 0)
 						modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
 
-					//if(meshFace.NormalIndex.size() > 0)
-					//	modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
+					if(meshFace.NormalIndex.size() > 0)
+						modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
 
 					modelMesh.Vertices.emplace_back(modelMeshVertex);
 				}
@@ -163,8 +178,77 @@ namespace ObjLoader
 				}
 			}
 		}
-		model.ModelMeshes.emplace_back(modelMesh);
 
-		return model;
+		return vec;
+	}
+
+	std::vector<ModelMaterial> LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath)
+	{
+		const auto FILEPATH = std::wstring(filePath.data()) + std::wstring(fileName.data());
+
+		File::Exists(FILEPATH);
+		const auto& path = File::LoadPath(FILEPATH);
+
+		EXPECTS(path.Extension == L".mtl");
+
+		// ファイルを開く
+		FileInput file;
+		file.Open(path.AbsolutePath);
+
+		// ロード用
+		LoadMesh s_TempMesh;
+
+		auto& material = vec.emplace_back();
+		material.Alpha = 1;
+
+		while(!file.EndOfFile())
+		{
+			// 1行読み込む
+			std::wstring line = file.ReadLine();
+
+			// コメントの行を無視
+			if(line.empty() || line.front() == L'#')
+			{ continue; }
+
+			// 行split
+			std::deque<std::wstring> splitLine;
+			boost::algorithm::split(splitLine, line, boost::is_space(), boost::token_compress_on);
+
+			// ヘッダー
+			std::wstring header = splitLine.front();
+			// 先頭を除去
+			splitLine.pop_front();
+			// 末尾に""があればpop
+			if(splitLine.back() == L"")
+			{ splitLine.pop_back(); }
+
+			if(header == L"Kd")
+			{
+				material.Diffuse.x = std::stof(splitLine.at(0));
+				material.Diffuse.y = std::stof(splitLine.at(1));
+				material.Diffuse.z = std::stof(splitLine.at(2));
+			}
+
+			//if(header == L"Ks")
+			//{
+			//	material.Specular.x = std::stof(splitLine.at(0));
+			//	material.Specular.y = std::stof(splitLine.at(1));
+			//	material.Specular.z = std::stof(splitLine.at(2));
+			//}
+
+			//if(header == L"Ns")
+			//{
+			//	material.Shininess = std::stof(splitLine.at(0));
+			//}
+
+			//if(header == L"map_Kd")
+			//{
+			//	material.DiffuseMap = splitLine.at(0);
+			//}
+		}
+
+		file.Close();
+
+		return vec;
 	}
 }

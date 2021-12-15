@@ -7,9 +7,11 @@
 
 bool TestModel::OnInit(std::wstring_view modelName)
 {
+	const Model& model = ResourceManager::GetModel(modelName);
+
 	// 頂点データ生成
 	{
-		const std::vector<ModelMeshVertex> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Vertices;
+		const std::vector<ModelMeshVertex> data = model.ModelMeshes.at(0).Vertices;
 		const auto span = gsl::make_span(data);
 
 		m_VertexData.Create(span.size_bytes(), sizeof(ModelMeshVertex));
@@ -31,16 +33,53 @@ bool TestModel::OnInit(std::wstring_view modelName)
 		m_IndexData.UnMap();
 	}
 
-	// 定数バッファ生成
+	// Transform生成
 	{
-		m_ConstantData.Create(sizeof(Transform), sizeof(Transform));
-		m_pTransform = static_cast<Transform*>(m_ConstantData.Map());
+		m_TransformData.Create(sizeof(Transform), sizeof(Transform));
+		m_pTransform = static_cast<Transform*>(m_TransformData.Map());
 	}
 
-	m_CBV_SRVHeap.Create(2, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-	const auto& handle = m_CBV_SRVHeap.GetNextHandle();
-	const auto constView = m_ConstantData.GetConstantView();
-	Graphics::g_pDevice->CreateConstantBufferView(&constView, handle.CPU);
+	// Light生成
+	{
+		m_LightData.Create(sizeof(Light), sizeof(Light));
+
+		Light light;
+		light.LightPosition = { 0.0f,50.0f,100.0f,0.0f };
+		light.Color = { 1.0f,1.0f,1.0f,0.0f };
+
+		void* ptr = m_LightData.Map();
+		memcpy(ptr, &light, sizeof(light));
+		m_LightData.UnMap();
+	}
+
+	// Material生成
+	{
+		m_MaterialData.Create(sizeof(ModelMaterial), sizeof(ModelMaterial));
+
+		const ModelMaterial material = model.ModelMaterials.at(0);
+
+		void* ptr = m_MaterialData.Map();
+		memcpy(ptr, &material, sizeof(material));
+		m_MaterialData.UnMap();
+	}
+
+	m_CBV_SRVHeap.Create(4, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+
+	// TransformのBufferView
+	auto handle = m_CBV_SRVHeap.GetNextHandle();
+	const auto transformView = m_TransformData.GetConstantView();
+	Graphics::g_pDevice->CreateConstantBufferView(&transformView, handle.CPU);
+
+	// LightのBufferView
+	handle = m_CBV_SRVHeap.GetNextHandle();
+	const auto lightView = m_LightData.GetConstantView();
+	Graphics::g_pDevice->CreateConstantBufferView(&lightView, handle.CPU);
+
+	// MaterialのBufferView
+	handle = m_CBV_SRVHeap.GetNextHandle();
+	const auto materialView = m_MaterialData.GetConstantView();
+	Graphics::g_pDevice->CreateConstantBufferView(&materialView, handle.CPU);
+
 
 	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 	auto targetPos = DirectX::XMVectorZero();
@@ -91,8 +130,10 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->IASetIndexBuffer(&indexView);
 
 	cmdList->SetDescriptorHeaps(1, m_CBV_SRVHeap.GetAddress());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_ConstantData.GetConstantView().BufferLocation);
-	cmdList->SetGraphicsRootDescriptorTable(1, m_Texture.m_HandleGPU);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_TransformData.GetConstantView().BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_LightData.GetConstantView().BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialData.GetConstantView().BufferLocation);
+	cmdList->SetGraphicsRootDescriptorTable(3, m_Texture.m_HandleGPU);
 
 	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }

@@ -4,6 +4,7 @@ struct Path
 {
 	std::wstring AbsolutePath;	// 絶対パス
 	std::wstring RelativePath;	// 相対パス
+	std::wstring ParentPath;
 	std::wstring FileName;		// ファイルパス
 	std::wstring Extension;		// 拡張子
 };

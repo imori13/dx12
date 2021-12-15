@@ -34,7 +34,7 @@ namespace ResourceManager
 		TimeStamp::Begin();
 
 		const auto& path = File::LoadPath(modelName);
-		s_Models[path.FileName] = ObjLoader::LoadFile(path.RelativePath.c_str());
+		s_Models[path.FileName] = ObjLoader::LoadFile(path.FileName, path.ParentPath);
 
 		const auto time = TimeStamp::End();
 		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
@@ -52,9 +52,9 @@ namespace ResourceManager
 		return texture;
 	}
 
-	const Model& GetModel(const std::wstring_view modelName)
+	const Model& GetModel(const std::wstring_view fileName)
 	{
-		const auto& model = s_Models[modelName.data()];
+		const auto& model = s_Models[fileName.data()];
 		return model;
 	}
 }

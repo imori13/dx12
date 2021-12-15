@@ -34,13 +34,13 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(L"Textures/neko2.jpg");
 	ResourceManager::LoadTexture(L"Textures/umaru.jpg");
 
-	ResourceManager::LoadShader(L"SimpleTexVS.cso");
-	ResourceManager::LoadShader(L"SimpleTexPS.cso");
+	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
+	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
 	ResourceManager::LoadObjModel(L"Models/umaru.obj");
 	ResourceManager::LoadObjModel(L"Models/Cube.obj");
 
-	PipelineInitializer::Initialize();
+	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
 	model.OnInit(L"umaru.obj");
 	model.SetTexture(L"umaru.jpg");
