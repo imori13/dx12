@@ -11,7 +11,7 @@ PSOutput main(VSOutput input)
     float3 R = normalize(-reflect(V, N));
     
     float4 color = ColorMap.Sample(ColorSmp, input.TexCoord);
-    float3 ambient = 0.5882;
+    float3 ambient = LightColor * Ambient;
     float3 diffuse = LightColor * Diffuse * saturate(dot(L, N));
     float3 specular = LightColor * Specular * pow(saturate(dot(L, R)), Shininess);
     

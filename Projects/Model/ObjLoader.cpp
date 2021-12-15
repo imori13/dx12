@@ -36,7 +36,6 @@ namespace ObjLoader
 		Model model;
 
 		model.ModelMeshes = LoadModel(model.ModelMeshes, filePath.data() + std::wstring(fileName.data()));
-		LOGLINE(L"%s", model.ModelMeshes.at(0).MaterialName.c_str());
 		model.ModelMaterials = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
 
 		return model;
@@ -199,7 +198,6 @@ namespace ObjLoader
 		LoadMesh s_TempMesh;
 
 		auto& material = vec.emplace_back();
-		material.Alpha = 1;
 
 		while(!file.EndOfFile())
 		{
@@ -214,6 +212,9 @@ namespace ObjLoader
 			std::deque<std::wstring> splitLine;
 			boost::algorithm::split(splitLine, line, boost::is_space(), boost::token_compress_on);
 
+			// 先頭にスペースがある場合
+			if(splitLine.front() == L"")
+			{ splitLine.pop_front(); }
 			// ヘッダー
 			std::wstring header = splitLine.front();
 			// 先頭を除去
@@ -221,6 +222,13 @@ namespace ObjLoader
 			// 末尾に""があればpop
 			if(splitLine.back() == L"")
 			{ splitLine.pop_back(); }
+
+			if(header == L"Ka")
+			{
+				material.Ambient.x = std::stof(splitLine.at(0));
+				material.Ambient.y = std::stof(splitLine.at(1));
+				material.Ambient.z = std::stof(splitLine.at(2));
+			}
 
 			if(header == L"Kd")
 			{
@@ -241,10 +249,10 @@ namespace ObjLoader
 				material.Shininess = std::stof(splitLine.at(0));
 			}
 
-			//if(header == L"map_Kd")
-			//{
-			//	material.DiffuseMap = splitLine.at(0);
-			//}
+			if(header == L"d")
+			{
+				material.Alpha = std::stof(splitLine.at(0));
+			}
 		}
 
 		file.Close();

@@ -44,15 +44,15 @@ void App::Startup(void)
 
 	model.OnInit(L"umaru.obj");
 	model.SetTexture(L"umaru.jpg");
-	model2.OnInit(L"Cube.obj");
-	model2.SetTexture(L"neko.jpg");
+	model2.OnInit(L"umaru.obj");
+	model2.SetTexture(L"umaru.jpg");
 
 	model.m_Position = { 1.0f,-0.9f ,0 };
-	model2.m_Position = { -1.0f,0 ,0 };
+	model2.m_Position = { -1.0f,-0.9f ,0 };
 
 	float scale = 0.02f;
 	model.m_Scale = { scale,scale ,scale };
-	scale = 0.5f;
+	scale = 0.02f;
 	model2.m_Scale = { scale,scale ,scale };
 }
 

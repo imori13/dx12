@@ -14,7 +14,7 @@ struct alignas(256) ModelMaterial	// モデル用マテリアル
 	DirectX::XMFLOAT3 Specular;
 	float Alpha;
 	float Shininess;
-	//std::wstring DiffuseMap;
+	DirectX::XMFLOAT3 Ambient;
 };
 
 struct ModelMesh	// モデル用メッシュ

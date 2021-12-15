@@ -52,6 +52,7 @@ cbuffer MaterialBuffer : register(b2)
     float Alpha : packoffset(c0.w);     // “§‰ß—¦
     float3 Specular : packoffset(c1);   // ‹¾–Ê”½ŽË—¦
     float Shininess : packoffset(c1.w); // ‹¾–Ê”½ŽË‹­“x
+    float3 Ambient : packoffset(c2);    // ŠÂ‹«”½ŽË—¦
 }
 
 SamplerState ColorSmp : register(s0);
