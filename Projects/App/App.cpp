@@ -30,6 +30,7 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
+	ResourceManager::LoadTexture(L"Textures/pixel.png");
 	ResourceManager::LoadTexture(L"Textures/neko.jpg");
 	ResourceManager::LoadTexture(L"Textures/neko2.jpg");
 	ResourceManager::LoadTexture(L"Textures/umaru.jpg");
@@ -39,18 +40,19 @@ void App::Startup(void)
 
 	ResourceManager::LoadObjModel(L"Models/umaru.obj");
 	ResourceManager::LoadObjModel(L"Models/Cube.obj");
+	ResourceManager::LoadObjModel(L"Models/Monkey.obj");
 
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
-	model.OnInit(L"umaru.obj");
-	model.SetTexture(L"umaru.jpg");
+	model.OnInit(L"Monkey.obj");
+	model.SetTexture(L"pixel.png");
 	model2.OnInit(L"umaru.obj");
 	model2.SetTexture(L"umaru.jpg");
 
-	model.m_Position = { 1.0f,-0.9f ,0 };
-	model2.m_Position = { -1.0f,-0.9f ,0 };
+	model.m_Position = { -1.0f,0 ,0 };
+	model2.m_Position = { 1.0f,-0.9f ,0 };
 
-	float scale = 0.02f;
+	float scale = 0.5f;
 	model.m_Scale = { scale,scale ,scale };
 	scale = 0.02f;
 	model2.m_Scale = { scale,scale ,scale };

@@ -165,7 +165,7 @@ namespace ObjLoader
 						modelMeshVertex.TexCoord = mesh.Texcoord.at(meshFace.TexcoordIndex.at(vertexNum));
 
 					if(meshFace.NormalIndex.size() > 0)
-						modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex[vertexNum]);
+						modelMeshVertex.Normal = mesh.Normal.at(mesh.Faces.at(faceIndex).NormalIndex.at(vertexNum));
 
 					modelMesh.Vertices.emplace_back(modelMeshVertex);
 				}
@@ -247,6 +247,11 @@ namespace ObjLoader
 			if(header == L"Ns")
 			{
 				material.Shininess = std::stof(splitLine.at(0));
+			}
+
+			if(header == L"Ni")
+			{
+				material.Ni = std::stof(splitLine.at(0));
 			}
 
 			if(header == L"d")

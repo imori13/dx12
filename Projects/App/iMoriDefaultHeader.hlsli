@@ -48,11 +48,12 @@ cbuffer LightBuffer : register(b1)
 // Material (b2)
 cbuffer MaterialBuffer : register(b2)
 {
-    float3 Diffuse : packoffset(c0);    // ŠgŽU”½ŽË—¦
-    float Alpha : packoffset(c0.w);     // “§‰ß—¦
-    float3 Specular : packoffset(c1);   // ‹¾–Ê”½ŽË—¦
-    float Shininess : packoffset(c1.w); // ‹¾–Ê”½ŽË‹­“x
-    float3 Ambient : packoffset(c2);    // ŠÂ‹«”½ŽË—¦
+    float3 Ambient : packoffset(c0);  // ŠÂ‹«”½ŽË—¦
+    float3 Diffuse : packoffset(c1);  // ŠgŽU”½ŽË—¦
+    float3 Specular : packoffset(c2); // ‹¾–Ê”½ŽË—¦ 
+    float Alpha : packoffset(c0.w);
+    float Ni : packoffset(c1.w);
+    float Shininess : packoffset(c2.w);
 }
 
 SamplerState ColorSmp : register(s0);
