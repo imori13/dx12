@@ -14,7 +14,7 @@ namespace File
 
 	const Path LoadPath(std::wstring_view name)
 	{
-		Exists(name);
+		Exists(name.data());
 
 		boost::filesystem::wpath boostPath = name.data();
 

@@ -2,6 +2,6 @@
 #include "Model.h"
 
 namespace AssimpTest {
-	bool LoadMesh(std::wstring_view fileName, std::vector<ModelMesh>& meshes, std::vector<ModelMaterial>& materials);
+	bool LoadMesh(Model& model, std::wstring_view fileName);
 }
 

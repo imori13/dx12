@@ -30,21 +30,23 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	ResourceManager::LoadTexture(L"Textures/pixel.png");
-	ResourceManager::LoadTexture(L"Textures/neko.jpg");
-	ResourceManager::LoadTexture(L"Textures/neko2.jpg");
-	ResourceManager::LoadTexture(L"Textures/umaru.jpg");
+	std::wstring path = L"Textures/";
+	ResourceManager::LoadTexture(path + L"pixel.png");
+	ResourceManager::LoadTexture(path + L"neko.jpg");
+	ResourceManager::LoadTexture(path + L"neko2.jpg");
+	ResourceManager::LoadTexture(path + L"umaru.jpg");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
-	//ResourceManager::LoadObjModel(L"Models/umaru.obj");
-	//ResourceManager::LoadObjModel(L"Models/Cube.obj");
-	//ResourceManager::LoadObjModel(L"Models/Monkey.obj");
+	path = L"Models/";
+	//ResourceManager::LoadObjModel(path + L"umaru.obj");
+	//ResourceManager::LoadObjModel(path + L"Cube.obj");
+	//ResourceManager::LoadObjModel(path + L"Monkey.obj");
 
-	ResourceManager::LoadMesh(L"Models/umaru.obj");
-	ResourceManager::LoadMesh(L"Models/Cube.obj");
-	ResourceManager::LoadMesh(L"Models/Monkey.obj");
+	ResourceManager::LoadMesh(path + L"umaru.obj");
+	ResourceManager::LoadMesh(path + L"Cube.obj");
+	ResourceManager::LoadMesh(path + L"Monkey.obj");
 
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 

@@ -28,25 +28,27 @@ namespace
 
 namespace ObjLoader
 {
-	std::vector<ModelMesh> LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName);
-	std::vector<ModelMaterial> LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath);
+	bool LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName);
+	bool LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath);
 
-	Model LoadFile(std::wstring_view fileName, std::wstring_view filePath)
+	bool LoadFile(Model& model, std::wstring_view fileName, std::wstring_view filePath)
 	{
-		Model model;
+		bool flag = LoadModel(model.ModelMeshes, filePath.data() + std::wstring(fileName.data()));
+		if(!flag) { return false; }
 
-		model.ModelMeshes = LoadModel(model.ModelMeshes, filePath.data() + std::wstring(fileName.data()));
-		model.ModelMaterials = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
+		flag = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
+		if(!flag) { return false; }
 
-		return model;
+		return true;
 	}
 
-	std::vector<ModelMesh> LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName)
+	bool LoadModel(std::vector<ModelMesh>& vec, std::wstring_view fileName)
 	{
 		File::Exists(fileName);
 		const auto& path = File::LoadPath(fileName);
 
-		EXPECTS(path.Extension == L".obj");
+		if(path.Extension != L".obj")
+		{ return false; }
 
 		// ファイルを開く
 		FileInput file;
@@ -178,17 +180,18 @@ namespace ObjLoader
 			}
 		}
 
-		return vec;
+		return true;
 	}
 
-	std::vector<ModelMaterial> LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath)
+	bool LoadMaterial(std::vector<ModelMaterial>& vec, std::wstring_view fileName, std::wstring_view filePath)
 	{
 		const auto FILEPATH = std::wstring(filePath.data()) + std::wstring(fileName.data());
 
 		File::Exists(FILEPATH);
 		const auto& path = File::LoadPath(FILEPATH);
 
-		EXPECTS(path.Extension == L".mtl");
+		if(path.Extension != L".mtl")
+		{ return false; }
 
 		// ファイルを開く
 		FileInput file;
@@ -262,6 +265,6 @@ namespace ObjLoader
 
 		file.Close();
 
-		return vec;
+		return true;
 	}
 }

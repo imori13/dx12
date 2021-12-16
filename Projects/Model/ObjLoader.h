@@ -3,6 +3,6 @@
 
 namespace ObjLoader
 {
-	Model LoadFile(std::wstring_view filePath, std::wstring_view fileName);
+	bool LoadFile(Model& model, std::wstring_view filePath, std::wstring_view fileName);
 };
 
