@@ -105,6 +105,7 @@ IF %ERRORLEVEL% LSS 8 EXIT 0</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_ImGui.h" />
+    <ClInclude Include="App_ImGui_Method.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="iMoriDefaultPS.hlsl">

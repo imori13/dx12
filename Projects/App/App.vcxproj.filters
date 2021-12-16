@@ -28,6 +28,9 @@
     <ClInclude Include="App_ImGui.h">
       <Filter>SourceFile</Filter>
     </ClInclude>
+    <ClInclude Include="App_ImGui_Method.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="iMoriDefaultHeader.hlsli">
