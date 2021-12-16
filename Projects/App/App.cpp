@@ -35,30 +35,30 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(path + L"neko.jpg");
 	ResourceManager::LoadTexture(path + L"neko2.jpg");
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
+	ResourceManager::LoadTexture(path + L"spot_texture.png");
+	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
+
+	path = L"Models/";
+	ResourceManager::LoadMesh(path + L"umaru.obj");
+	ResourceManager::LoadMesh(path + L"Cube.obj");
+	ResourceManager::LoadMesh(path + L"Monkey.obj");
+	ResourceManager::LoadMesh(path + L"spot_triangulated.obj");
+	ResourceManager::LoadMesh(path + L"g36.obj");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
-	path = L"Models/";
-	//ResourceManager::LoadObjModel(path + L"umaru.obj");
-	//ResourceManager::LoadObjModel(path + L"Cube.obj");
-	//ResourceManager::LoadObjModel(path + L"Monkey.obj");
-
-	ResourceManager::LoadMesh(path + L"umaru.obj");
-	ResourceManager::LoadMesh(path + L"Cube.obj");
-	ResourceManager::LoadMesh(path + L"Monkey.obj");
-
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
-	model.OnInit(L"Monkey.obj");
-	model.SetTexture(L"pixel.png");
+	model.OnInit(L"g36.obj");
+	model.SetTexture(L"gf_g36_dif_04.png");
 	model2.OnInit(L"umaru.obj");
 	model2.SetTexture(L"umaru.jpg");
 
-	model.m_Position = { -1.0f,0 ,0 };
+	model.m_Position = { -1.0f,-0.7f ,0 };
 	model2.m_Position = { 1.0f,-0.9f ,0 };
 
-	float scale = 0.5f;
+	float scale = 8.0f;
 	model.m_Scale = { scale,scale ,scale };
 	scale = 0.02f;
 	model2.m_Scale = { scale,scale ,scale };

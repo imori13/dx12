@@ -17,7 +17,7 @@ void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE t
 	const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(m_pHeap.GetAddressOf()));
-	ENSURES(hr, L"PixelHeap¶¬");
+	ENSURES(hr, "PixelHeap¶¬");
 
 	// ƒnƒ“ƒhƒ‹Ý’è
 	m_Handle.CPU = m_pHeap->GetCPUDescriptorHandleForHeapStart();

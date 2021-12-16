@@ -15,7 +15,7 @@ void FileInput::Open(std::wstring_view path)
 
 	m_ReadingFile.clear();
 	m_ReadingFile.open(path.data(), std::ios::in);
-	ENSURES(m_ReadingFile.is_open(), L"File Open [ %s ]", path.data());
+	ENSURES(m_ReadingFile.is_open(), "File Open [ %s ]", path.data());
 }
 
 bool FileInput::EndOfFile()
@@ -36,5 +36,5 @@ std::wstring FileInput::ReadLine()
 void FileInput::Close()
 {
 	m_ReadingFile.close();
-	LOGLINE(L"File Closed")
+	LOGLINE("File Closed")
 }

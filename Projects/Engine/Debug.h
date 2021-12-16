@@ -45,6 +45,15 @@ namespace Debug
 	inline void LogResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
 	inline void LogResult(bool flag) noexcept { flag; }
 
+	inline wchar_t const* GetFileName(std::wstring_view path) noexcept
+	{
+#pragma warning( push )
+#pragma warning (disable : 26481)
+		const auto str = wcsrchr(path.data(), '\\');
+		return (str != nullptr) ? (str + 1) : (str);
+#pragma warning( pop )
+	}
+
 	inline char const* GetFileName(std::string_view path) noexcept
 	{
 #pragma warning( push )
@@ -57,9 +66,9 @@ namespace Debug
 #define STRINGIFY(x) #x
 #define STRINGIFY_BUILTIN(x) STRINGIFY(x)
 #define FILE_POS_LOG(...) \
-		LOG(_T("[%2s]%-20s : "), STRINGIFY_BUILTIN(__LINE__), Debug::GetFileName(__FILE__)); \
+		LOG("[%2s]%-20s : ", _T(STRINGIFY_BUILTIN(__LINE__)), Debug::GetFileName(_T(__FILE__))); \
 		Debug::Printf(__VA_ARGS__); \
-		Debug::Print(_T("\n"));
+		Debug::Print("\n");
 
 	constexpr inline bool HAVESTRING(std::string_view format, ...) noexcept { return format.size() > 0; }
 	constexpr inline bool HAVESTRING(std::wstring_view format, ...) noexcept { return format.size() > 0; }
@@ -67,31 +76,38 @@ namespace Debug
 
 	// ログ(改行なし)
 #define LOG( msg, ... ) \
-    Debug::Printf( msg , ##__VA_ARGS__ );
+    Debug::Printf(_T(msg), ##__VA_ARGS__ );
 	// ログ(改行あり)
 #define LOGLINE( msg, ... ) \
-    Debug::Printf(msg _T("\n"), ##__VA_ARGS__ );
+    Debug::Printf(_T(msg) "\n", ##__VA_ARGS__ );
 
+	namespace
+	{
 #define ASSERT( FLAG, ... ) \
 	if (Debug::Check(FLAG)) \
 		{ \
 			if(Debug::HAVESTRING(__VA_ARGS__)) \
 			{ \
-				Debug::Print(_T("SUCCEEDED: ")); \
+				Debug::Print("SUCCEEDED: "); \
 				FILE_POS_LOG(__VA_ARGS__); \
 			} \
 		} else { \
-			Debug::Print(_T("FAILED: ")); \
+			Debug::Print("FAILED: "); \
 			FILE_POS_LOG(__VA_ARGS__); \
 			Debug::LogResult(FLAG); \
 			__debugbreak(); \
 			std::terminate(); \
 		}
+	}
 
 #elif _RELEASE
 
 	// 事前確認
+	namespace
+	{
 #define ASSERT(FLAG, ... ) (FLAG) ? (static_cast<void>(0)) : (std::terminate())
+	}
+
 #define LOG( msg, ... ) {}
 #define LOGLINE( msg, ... ) {}
 

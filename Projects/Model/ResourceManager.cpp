@@ -22,7 +22,7 @@ namespace ResourceManager
 		auto& shader = s_Shaders[path.FileName];
 
 		const auto hr = D3DReadFileToBlob(path.RelativePath.c_str(), shader.GetAddressOf());
-		ENSURES(L"Shader読み込み [ %s ]", path.RelativePath);
+		ENSURES("Shader読み込み [ %s ]", path.RelativePath);
 	}
 
 	void LoadTexture(const std::wstring_view textureName)
@@ -47,10 +47,14 @@ namespace ResourceManager
 		//else
 			flag = AssimpTest::LoadMesh(model, path.RelativePath);
 
-		ENSURES(flag, L"読み込み[ %s ] : %d", path.FileName.c_str(), flag);
+		LOGLINE("%s 読み込み[ %s ] 頂点数[ %d ] インデックス数[ %d ]",
+				path.FileName.c_str(),
+				(flag)?(L"成功"):(L"失敗"),
+				model.ModelMeshes.at(0).Vertices.size(),
+				model.ModelMeshes.at(0).Indices.size());
 
 		const auto time = TimeStamp::End();
-		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
+		LOGLINE("モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
 	}
 
 	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
