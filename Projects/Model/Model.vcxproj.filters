@@ -22,6 +22,9 @@
     <ClInclude Include="Model.h">
       <Filter>SourceFile\Model</Filter>
     </ClInclude>
+    <ClInclude Include="AssimpTest.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -40,6 +43,9 @@
       <Filter>SourceFile</Filter>
     </ClCompile>
     <ClCompile Include="ObjLoader.cpp">
+      <Filter>SourceFile\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpTest.cpp">
       <Filter>SourceFile\Model</Filter>
     </ClCompile>
   </ItemGroup>

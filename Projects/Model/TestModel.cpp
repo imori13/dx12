@@ -7,7 +7,7 @@
 
 bool TestModel::OnInit(std::wstring_view modelName)
 {
-	const Model& model = ResourceManager::GetModel(modelName);
+	const Model& model = ResourceManager::GetMesh(modelName);
 
 	// 頂点データ生成
 	{
@@ -22,8 +22,7 @@ bool TestModel::OnInit(std::wstring_view modelName)
 
 	// インデックスデータ生成
 	{
-		const std::vector<uint32_t> data = ResourceManager::GetModel(modelName).ModelMeshes.at(0).Indices;
-		const auto span = gsl::make_span(data);
+		const auto span = gsl::make_span(model.ModelMeshes.at(0).Indices);
 
 		m_IndexCount = gsl::narrow<uint32_t>(span.size());
 

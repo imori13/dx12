@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AssimpTest.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileInput.h" />
     <ClInclude Include="Model.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="TestModel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssimpTest.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="ObjLoader.cpp" />

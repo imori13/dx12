@@ -38,9 +38,13 @@ void App::Startup(void)
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
-	ResourceManager::LoadObjModel(L"Models/umaru.obj");
-	ResourceManager::LoadObjModel(L"Models/Cube.obj");
-	ResourceManager::LoadObjModel(L"Models/Monkey.obj");
+	//ResourceManager::LoadObjModel(L"Models/umaru.obj");
+	//ResourceManager::LoadObjModel(L"Models/Cube.obj");
+	//ResourceManager::LoadObjModel(L"Models/Monkey.obj");
+
+	ResourceManager::LoadMesh(L"Models/umaru.obj");
+	ResourceManager::LoadMesh(L"Models/Cube.obj");
+	ResourceManager::LoadMesh(L"Models/Monkey.obj");
 
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
