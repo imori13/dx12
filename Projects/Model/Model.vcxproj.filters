@@ -25,6 +25,12 @@
     <ClInclude Include="AssimpTest.h">
       <Filter>SourceFile\Model</Filter>
     </ClInclude>
+    <ClInclude Include="RenderObject.h">
+      <Filter>SourceFile\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>SourceFile\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -48,6 +54,12 @@
     <ClCompile Include="AssimpTest.cpp">
       <Filter>SourceFile\Model</Filter>
     </ClCompile>
+    <ClCompile Include="RenderObject.cpp">
+      <Filter>SourceFile\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>SourceFile\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SourceFile">
@@ -58,6 +70,9 @@
     </Filter>
     <Filter Include="SourceFile\File">
       <UniqueIdentifier>{532a16f1-d338-47a8-baed-9b7794d79cab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\Render">
+      <UniqueIdentifier>{dbd7dfc8-9064-40fb-8810-31480d322af1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

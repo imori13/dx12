@@ -98,10 +98,10 @@ void TestModel::SetTexture(const std::wstring_view textureName)
 	m_Texture = ResourceManager::GetTexture(textureName);
 
 	const auto& handle = m_CBV_SRVHeap.GetNextHandle();
-	m_Texture.m_HandleCPU = handle.CPU;
-	m_Texture.m_HandleGPU = handle.GPU;
+	m_TextureGpuHandle = handle.GPU;
 
-	Graphics::g_pDevice->CreateShaderResourceView(m_Texture.Get(), &m_Texture.m_View, m_Texture.m_HandleCPU);
+	const auto view = m_Texture.GetView();
+	Graphics::g_pDevice->CreateShaderResourceView(m_Texture.Get(), &view, handle.CPU);
 }
 
 void TestModel::Update() noexcept
@@ -133,7 +133,7 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(0, m_TransformData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootConstantBufferView(1, m_LightData.GetConstantView().BufferLocation);
 	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialData.GetConstantView().BufferLocation);
-	cmdList->SetGraphicsRootDescriptorTable(3, m_Texture.m_HandleGPU);
+	cmdList->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }

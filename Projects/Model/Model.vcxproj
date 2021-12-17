@@ -89,6 +89,8 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PipelineInitializer.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderObject.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="TestModel.h" />
   </ItemGroup>
@@ -98,6 +100,8 @@
     <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="PipelineInitializer.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TestModel.cpp" />
   </ItemGroup>

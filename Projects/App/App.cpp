@@ -9,6 +9,7 @@
 #include "ResourceManager.h"
 #include "PipelineInitializer.h"
 #include "ObjLoader.h"
+#include "Renderer.h"
 
 class App : public GameCore::IGameApp
 {
@@ -20,8 +21,8 @@ public:
 	void Update(float deltaT) override;
 	void RenderScene(void) override;
 private:
-	TestModel model;
-	TestModel model2;
+	//TestModel model;
+	//TestModel model2;
 };
 
 CREATE_APPLICATION(App, 1600, 900);
@@ -31,45 +32,47 @@ void App::Startup(void)
 	App_ImGui::Initialize();
 
 	std::wstring path = L"Textures/";
-	ResourceManager::LoadTexture(path + L"pixel.png");
+	//ResourceManager::LoadTexture(path + L"pixel.png");
 	ResourceManager::LoadTexture(path + L"neko.jpg");
-	ResourceManager::LoadTexture(path + L"neko2.jpg");
+	//ResourceManager::LoadTexture(path + L"neko2.jpg");
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
-	ResourceManager::LoadTexture(path + L"spot_texture.png");
-	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
+	//ResourceManager::LoadTexture(path + L"spot_texture.png");
+	//ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
-	ResourceManager::LoadMesh(path + L"Monkey.obj");
-	ResourceManager::LoadMesh(path + L"spot_triangulated.obj");
-	ResourceManager::LoadMesh(path + L"g36.obj");
+	//ResourceManager::LoadMesh(path + L"Monkey.obj");
+	//ResourceManager::LoadMesh(path + L"spot_triangulated.obj");
+	//ResourceManager::LoadMesh(path + L"g36.obj");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
-	model.OnInit(L"g36.obj");
-	model.SetTexture(L"gf_g36_dif_04.png");
-	model2.OnInit(L"umaru.obj");
-	model2.SetTexture(L"umaru.jpg");
+	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 
-	model.m_Position = { -1.0f,-0.7f ,0 };
-	model2.m_Position = { 1.0f,-0.9f ,0 };
+	//model.OnInit(L"umaru.obj");
+	//model.SetTexture(L"umaru.jpg");
+	//model2.OnInit(L"g36.obj");
+	//model2.SetTexture(L"gf_g36_dif_04.png");
 
-	float scale = 8.0f;
-	model.m_Scale = { scale,scale ,scale };
-	scale = 0.02f;
-	model2.m_Scale = { scale,scale ,scale };
+	//model.m_Position = { 1.0f,-0.9f ,0 };
+	//model2.m_Position = { -1.0f,-0.7f ,0 };
+
+	//constexpr float scale = 0.02f;
+	//model.m_Scale = { scale,scale ,scale };
+	//scale = 8.0f;
+	//model2.m_Scale = { scale,scale ,scale };
 }
 
 void App::Cleanup(void)
 {
 	App_ImGui::Terminate();
 
-	model.OnTerm();
-	model2.OnTerm();
+	//model.OnTerm();
+	//model2.OnTerm();
 }
 
 void App::Update(float deltaT)
@@ -78,11 +81,11 @@ void App::Update(float deltaT)
 
 	deltaT++;
 
-	model.m_Rotate.y += 1.f * Timer::g_FrameTime;
-	model2.m_Rotate.y += 1.f * Timer::g_FrameTime;
+	//model.m_Rotate.y += 1.f * Timer::g_FrameTime;
+	//model2.m_Rotate.y += 1.f * Timer::g_FrameTime;
 
-	model.Update();
-	model2.Update();
+	//model.Update();
+	//model2.Update();
 }
 
 void App::RenderScene(void)
@@ -114,8 +117,10 @@ void App::RenderScene(void)
 	cmdList->RSSetViewports(1, &Display::g_Viewport);
 	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
 
-	model.Render(cmdList.Get());
-	model2.Render(cmdList.Get());
+	//model.Render(cmdList.Get());
+	//model2.Render(cmdList.Get());
+
+	Renderer::Draw(cmdList.Get(), L"umaru");
 
 	App_ImGui::Render(cmdList.Get());
 

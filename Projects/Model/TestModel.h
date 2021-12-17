@@ -2,28 +2,7 @@
 #include "ResourceHeap.h"
 #include "UploadBuffer.h"
 #include "Texture.h"
-
-//struct Vertex
-//{
-//	DirectX::XMFLOAT3 Position;
-//	DirectX::XMFLOAT2 Texcoord;
-//};
-
-#pragma warning (disable : 4324)
-struct alignas(256) Transform
-{
-	DirectX::XMMATRIX World;		// ワールド行列
-	DirectX::XMMATRIX View;		// ビュー行列
-	DirectX::XMMATRIX Proj;		// 射影行列
-};
-
-struct alignas(256) Light
-{
-	DirectX::XMFLOAT4 LightPosition;
-	DirectX::XMFLOAT4 Color;
-	DirectX::XMFLOAT4 CameraPosition;
-};
-#pragma warning (default : 4324)
+#include "Model.h"
 
 class TestModel
 {
@@ -33,6 +12,7 @@ public:
 		, m_Position{}
 		, m_Scale{}
 		, m_Rotate{}
+		, m_TextureGpuHandle{}
 		, m_IndexCount(0)
 	{
 
@@ -56,6 +36,7 @@ private:
 	UploadBuffer m_MaterialData;
 	Texture m_Texture;
 	uint32_t m_IndexCount;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 
 	Transform* m_pTransform;	// UploadBufferのメモリを参照しているので、デストラクタで破棄される
 };
