@@ -10,11 +10,31 @@ namespace
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename)
 {
-	auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-
 	auto model = ResourceManager::GetMesh(modelName);
+
 	auto texture = ResourceManager::GetTexture(texturename);
-	renderObject.Create(model.ModelMeshes.at(0), model.ModelMaterials.at(0), texture, 100);
+
+	for(const auto& mesh : model.ModelMeshes)
+	{
+		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
+		renderObject.Create(mesh, model.ModelMaterials.at(mesh.MaterialId), texture, 100);
+	}
+}
+
+void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName)
+{
+	auto model = ResourceManager::GetMesh(modelName);
+
+	for(const auto& mesh : model.ModelMeshes)
+	{
+		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
+
+		auto textureName = (!material.DiffuseMap.empty())?(material.DiffuseMap):(L"body_tex.tga");
+		auto texture = ResourceManager::GetTexture(textureName);
+
+		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
+		renderObject.Create(mesh, material, texture, 100);
+	}
 }
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()

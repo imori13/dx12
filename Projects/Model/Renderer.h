@@ -7,6 +7,7 @@
 namespace Renderer
 {
 	void Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename);
+	void Load(std::wstring_view assetName, std::wstring_view modelName);
 
 	gsl::not_null<ID3D12GraphicsCommandList*> Begin();
 

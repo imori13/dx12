@@ -12,19 +12,21 @@ struct ModelMesh	// モデル用メッシュ
 {
 	std::vector<ModelMeshVertex> Vertices;
 	std::vector<uint32_t> Indices;
-	std::wstring MaterialName;
+	uint32_t MaterialId;
 };
 
 #pragma warning (disable : 4324)
 
 struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
-	DirectX::XMFLOAT3 Ambient;
+	DirectX::XMFLOAT3 Ambient = { 0.1f,0.1f,0.1f };
 	float Alpha;
-	DirectX::XMFLOAT3 Diffuse;
+	DirectX::XMFLOAT3 Diffuse = { 0.5f,0.5f,0.5f };
 	float Ni;
-	DirectX::XMFLOAT3 Specular;
+	DirectX::XMFLOAT3 Specular = { 0.1f,0.1f,0.1f };
 	float Shininess;
+
+	std::wstring DiffuseMap;
 };
 
 #pragma warning (default : 4324)
