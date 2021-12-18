@@ -8,10 +8,10 @@
 
 // vcpkg
 #include <gsl/gsl>
+#include <DirectXTex.h>
 #include <DirectXTK12/DDSTextureLoader.h>
 #include <DirectXTK12/WICTextureLoader.h>
 #include <DirectXTK12/ResourceUploadBatch.h>
-#include <DirectXMath/DirectXMath.h>
 
 // WindowsSDK
 #pragma comment(lib, "d3d12.lib")

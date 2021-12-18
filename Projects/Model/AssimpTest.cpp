@@ -15,11 +15,32 @@ namespace
 
 namespace AssimpTest
 {
+	// 文字コード変換
+	std::string ToString(std::wstring_view value)
+	{
+		const auto length = WideCharToMultiByte(CP_ACP, 0u, value.data(), -1, nullptr, 0, nullptr, nullptr);
+		std::vector<char> buffer = std::vector<char>(length);
+		WideCharToMultiByte(CP_UTF8, 0u, value.data(), -1, buffer.data(), length, nullptr, nullptr);
+
+		std::string result(buffer.data());
+		return result;
+	}
+
+	std::wstring ToWstring(std::string_view value)
+	{
+		const auto length = MultiByteToWideChar(CP_UTF8, 0, value.data(), -1, nullptr, 0);
+		std::vector<wchar_t> buffer = std::vector<wchar_t>(length);
+		MultiByteToWideChar(CP_UTF8, 0, value.data(), -1, buffer.data(), length);
+
+		std::wstring result(buffer.data());
+		return result;
+	}
+
 	// メッシュ変換
 	void ParseMesh(ModelMesh& destMesh, const gsl::not_null<const aiMesh*> pSourceMesh)
 	{
 		// マテリアル番号
-		//destMesh.MaterialId = pSourceMesh->mMaterialIndex;
+		destMesh.MaterialId = pSourceMesh->mMaterialIndex;
 
 		aiVector3D zero3D(0.0f, 0.0f, 0.0f);
 
@@ -63,6 +84,15 @@ namespace AssimpTest
 	// マテリアル変換
 	void ParseMaterial(ModelMaterial& destMaterial, const gsl::not_null<const aiMaterial*> pSourceMaterial)
 	{
+		// テクスチャ名
+		{
+			aiString textureName;
+			if(pSourceMaterial->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), textureName) == AI_SUCCESS)
+			{
+				destMaterial.DiffuseMap = ToWstring(textureName.C_Str());
+			}
+		}
+
 		// 環境反射成分
 		{
 			aiColor3D color(0.0f, 0.0f, 0.0f);
@@ -107,26 +137,16 @@ namespace AssimpTest
 		}
 	}
 
-	// 文字コード変換
-	std::string ToUTF8(std::wstring_view value)
-	{
-		const auto length = WideCharToMultiByte(CP_UTF8, 0u, value.data(), -1, nullptr, 0, nullptr, nullptr);
-		std::vector<char> buffer = std::vector<char>(length);
-		WideCharToMultiByte(CP_UTF8, 0u, value.data(), -1, buffer.data(), length, nullptr, nullptr);
-
-		std::string result(buffer.data());
-		return result;
-	}
-
 	bool AssimpTest::LoadMesh(Model& model, std::wstring_view fileName)
 	{
 		if(fileName.empty())
 		{ return false; }
 
-		std::string path = ToUTF8(fileName);
+		std::string path = ToString(fileName);
 
 		Assimp::Importer importer;
 		uint32_t flag = 0u;
+		flag |= aiProcessPreset_TargetRealtime_Fast;
 		flag |= aiProcess_Triangulate;			// 三角頂点
 		flag |= aiProcess_FlipUVs;				// UV上下反転
 		flag |= aiProcess_PreTransformVertices;	// ノードグラフなしで調整

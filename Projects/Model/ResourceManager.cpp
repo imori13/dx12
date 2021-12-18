@@ -30,7 +30,11 @@ namespace ResourceManager
 		const auto& path = File::LoadPath(textureName);
 
 		auto& texture = s_Textures[path.FileName];
-		texture.CreateWIC(path.RelativePath);
+
+		if(path.Extension == L".tga")
+			texture.CreateTGA(path.RelativePath);
+		else
+			texture.CreateWIC(path.RelativePath);
 	}
 
 	void LoadMesh(const std::wstring_view modelName)
@@ -45,16 +49,16 @@ namespace ResourceManager
 		//if(path.Extension == L".obj")
 		//	flag = ObjLoader::LoadFile(model, path.FileName, path.ParentPath);
 		//else
-			flag = AssimpTest::LoadMesh(model, path.RelativePath);
+		flag = AssimpTest::LoadMesh(model, path.RelativePath);
 
-		LOGLINE("%s 読み込み[ %s ] 頂点数[ %d ] インデックス数[ %d ]",
+		LOGLINE(L"%s 読み込み[ %s ] 頂点数[ %d ] インデックス数[ %d ]",
 				path.FileName.c_str(),
-				(flag)?(L"成功"):(L"失敗"),
+				(flag) ? (L"成功") : (L"失敗"),
 				model.ModelMeshes.at(0).Vertices.size(),
 				model.ModelMeshes.at(0).Indices.size());
 
 		const auto time = TimeStamp::End();
-		LOGLINE("モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
+		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
 	}
 
 	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)

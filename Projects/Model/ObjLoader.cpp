@@ -36,8 +36,8 @@ namespace ObjLoader
 		bool flag = LoadModel(model.ModelMeshes, filePath.data() + std::wstring(fileName.data()));
 		if(!flag) { return false; }
 
-		flag = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
-		if(!flag) { return false; }
+		//flag = LoadMaterial(model.ModelMaterials, model.ModelMeshes.at(0).MaterialName.c_str(), filePath.data());
+		//if(!flag) { return false; }
 
 		return true;
 	}
@@ -150,7 +150,7 @@ namespace ObjLoader
 
 		// ƒ}ƒeƒŠƒAƒ‹–¼
 		const auto& mesh = s_TempMesh;
-		modelMesh.MaterialName = mesh.MaterialName;
+		//modelMesh.MaterialName = mesh.MaterialName;
 
 		uint32_t indices = 0;
 		for(auto faceIndex = 0u; faceIndex < mesh.Faces.size(); ++faceIndex)
