@@ -5,6 +5,8 @@
 
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount)
 {
+	m_ObjectCount = objectCount;
+
 	// ヒープ生成
 	{
 		constexpr uint32_t materialCount = 1;
@@ -22,9 +24,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		void* ptr = m_VertexBuffer.Map();
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_VertexBuffer.UnMap();
-
-		// ビュー設定
-		m_VertexView = m_VertexBuffer.GetVertexView();
 	}
 
 	// Index情報Map
@@ -37,35 +36,36 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		void* ptr = m_IndexBuffer.Map();
 		memcpy(ptr, span.data(), span.size_bytes());
 		m_IndexBuffer.UnMap();
-
-		// ビュー設定
-		m_IndexView = m_IndexBuffer.GetIndexView();
 	}
 
 	// Transform生成
 	{
-		m_TransformBuffer.Create(sizeof(Transform) * objectCount, sizeof(Transform));
-		Transform* transform = static_cast<Transform*>(m_TransformBuffer.Map());
 
 		const auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 		const auto targetPos = DirectX::XMVectorZero();
 		const auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 		constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
 
+		m_TransformBuffers.resize(objectCount);
+
 		for(auto i = 0u; i < objectCount; ++i)
 		{
+			auto& buffer = m_TransformBuffers.at(i);
+
+			buffer.Create(sizeof(Transform), sizeof(Transform));
+			Transform* transform = static_cast<Transform*>(buffer.Map());
+
 			m_Transforms.emplace_back(transform);
+
 			transform->World = DirectX::XMMatrixIdentity();
 			transform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
 			transform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
 
 			transform += sizeof(Transform);
-		}
 
-		// ビュー設定
-		const auto handle = m_ResourceHeap.GetNextHandle();
-		m_TransformView = m_TransformBuffer.GetConstantView();
-		Graphics::g_pDevice->CreateConstantBufferView(&m_TransformView, handle.CPU);
+			// ビュー設定
+			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
+		}
 	}
 
 	// Light生成
@@ -81,10 +81,8 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		memcpy(ptr, &light, sizeof(light));
 		m_LightBuffer.UnMap();
 
-		// LightのBufferView
-		const auto handle = m_ResourceHeap.GetNextHandle();
-		m_LightView = m_LightBuffer.GetConstantView();
-		Graphics::g_pDevice->CreateConstantBufferView(&m_LightView, handle.CPU);
+		// ビュー設定
+		m_LightBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 	}
 
 	// Material生成
@@ -96,9 +94,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_MaterialBuffer.UnMap();
 
 		// ビュー設定
-		const auto handle = m_ResourceHeap.GetNextHandle();
-		m_MaterialView = m_MaterialBuffer.GetConstantView();
-		Graphics::g_pDevice->CreateConstantBufferView(&m_MaterialView, handle.CPU);
+		m_MaterialBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 	}
 
 	// Textureビュー設定
@@ -111,21 +107,60 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	}
 }
 
-void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+void RenderObject::Initialize()
+{
+	m_DrawIndex = 0;
+
+	for(const auto& drawed : m_WaitDraw)
+	{
+		m_Transforms.emplace_back(drawed);
+	}
+	m_WaitDraw.clear();
+}
+
+void RenderObject::Draw(
+	DirectX::XMFLOAT3 pos,
+	DirectX::XMFLOAT3 rotate,
+	DirectX::XMFLOAT3 scale)
+{
+	if(m_DrawIndex >= m_ObjectCount)
+	{
+		LOGLINE(L"WARNING 描画呼び出し制限に達したので、描画を無視しました");
+		return;
+	}
+
+	auto instance = m_Transforms.at(m_DrawIndex);
+
+	instance->World = DirectX::XMMatrixIdentity();
+	instance->World *= DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+	instance->World *= DirectX::XMMatrixRotationRollPitchYaw(rotate.x, rotate.y, rotate.z);
+	instance->World *= DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
+	instance->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
+
+	++m_DrawIndex;
+}
+
+void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
 	cmdList->SetGraphicsRootSignature(pipeline.GetSignature());
 	cmdList->SetPipelineState(pipeline.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	cmdList->IASetVertexBuffers(0, 1, &m_VertexView);
-	cmdList->IASetIndexBuffer(&m_IndexView);
+	cmdList->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
+	cmdList->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
 
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_TransformView.BufferLocation);
-	cmdList->SetGraphicsRootConstantBufferView(1, m_LightView.BufferLocation);
-	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialView.BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
+	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
 	cmdList->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
-	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
+	for(auto i = 0u; i < m_DrawIndex; ++i)
+	{
+		cmdList->SetGraphicsRootConstantBufferView(0, m_TransformBuffers.at(i).GetConstantLocation());
+
+		cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
+	}
 }

@@ -39,7 +39,12 @@ void UploadBuffer::Create(size_t bufferSize, size_t strideSize)
 	ENSURES(hr, "Buffer生成");
 
 	// アドレスを取得
-	m_GpuVirtualAddress = m_pResource->GetGPUVirtualAddress();
+	m_GpuAddress = m_pResource->GetGPUVirtualAddress();
+
+	// ビュー設定
+	m_VertexView = { m_GpuAddress,  m_BufferSize, m_StrideSize };
+	m_IndexView = { m_GpuAddress, m_BufferSize, DXGI_FORMAT_R32_UINT };
+	m_ConstantView = { m_GpuAddress , m_BufferSize };
 }
 
 void* UploadBuffer::Map()
@@ -52,4 +57,10 @@ void* UploadBuffer::Map()
 void UploadBuffer::UnMap()
 {
 	m_pResource->Unmap(0, nullptr);
+}
+
+void UploadBuffer::CreateConstantView(Handle_CPU_GPU handle)
+{
+	m_Handle = handle;
+	Graphics::g_pDevice->CreateConstantBufferView(&m_ConstantView, handle.CPU);
 }

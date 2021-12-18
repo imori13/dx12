@@ -37,14 +37,14 @@ void App::Startup(void)
 	//ResourceManager::LoadTexture(path + L"neko2.jpg");
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
 	//ResourceManager::LoadTexture(path + L"spot_texture.png");
-	//ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
+	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
 	//ResourceManager::LoadMesh(path + L"Monkey.obj");
 	//ResourceManager::LoadMesh(path + L"spot_triangulated.obj");
-	//ResourceManager::LoadMesh(path + L"g36.obj");
+	ResourceManager::LoadMesh(path + L"g36.obj");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
@@ -52,19 +52,7 @@ void App::Startup(void)
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
 	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
-
-	//model.OnInit(L"umaru.obj");
-	//model.SetTexture(L"umaru.jpg");
-	//model2.OnInit(L"g36.obj");
-	//model2.SetTexture(L"gf_g36_dif_04.png");
-
-	//model.m_Position = { 1.0f,-0.9f ,0 };
-	//model2.m_Position = { -1.0f,-0.7f ,0 };
-
-	//constexpr float scale = 0.02f;
-	//model.m_Scale = { scale,scale ,scale };
-	//scale = 8.0f;
-	//model2.m_Scale = { scale,scale ,scale };
+	Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png");
 }
 
 void App::Cleanup(void)
@@ -80,20 +68,11 @@ void App::Update(float deltaT)
 	App_ImGui::Update();
 
 	deltaT++;
-
-	//model.m_Rotate.y += 1.f * Timer::g_FrameTime;
-	//model2.m_Rotate.y += 1.f * Timer::g_FrameTime;
-
-	//model.Update();
-	//model2.Update();
 }
 
 void App::RenderScene(void)
 {
-	using namespace Graphics;
-	auto cmdList = Command::Begin(Display::g_FrameIndex);
-
-	EXPECTS(cmdList != nullptr);
+	auto cmdList = Renderer::Begin();
 
 	{
 		// リソースバリア
@@ -117,12 +96,26 @@ void App::RenderScene(void)
 	cmdList->RSSetViewports(1, &Display::g_Viewport);
 	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
 
-	//model.Render(cmdList.Get());
-	//model2.Render(cmdList.Get());
+	float timer = Timer::g_ElapsedTime;
 
-	Renderer::Draw(cmdList.Get(), L"umaru");
+	for(auto i = 0u; i < 100; ++i)
+	{
+		Renderer::Draw(L"umaru",
+				   { -1 + (float)cos(timer + i * 0.5f) * i * 0.2f,
+				   -1 + (float)sin(timer + i * 0.5f) * i * 0.2f,
+				   i * -3.f },
+				   { timer + i,timer + i,timer + i },
+				   { 0.01f + i * 0.001f,0.01f + i * 0.001f,0.01f + i * 0.001f });
+	}
 
-	App_ImGui::Render(cmdList.Get());
+	for(auto i = 0u; i < 5; ++i)
+	{
+		Renderer::Draw(L"g36", { i - 2.f,0,-10}, {timer + i,timer + i,timer + i}, {5,5,5});
+	}
+
+	Renderer::SendCommand(cmdList);
+
+	App_ImGui::Render(cmdList);
 
 	{
 		// リソースバリア
@@ -130,8 +123,7 @@ void App::RenderScene(void)
 		cmdList->ResourceBarrier(1, &barrier);
 	}
 
+	Renderer::End();
 
-	Command::End();
-
-	App_ImGui::UpdateAdditionalPlatformWindows(cmdList.Get());
+	App_ImGui::UpdateAdditionalPlatformWindows(cmdList);
 }

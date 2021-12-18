@@ -7,5 +7,15 @@
 namespace Renderer
 {
 	void Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename);
-	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstring_view assetName);
+
+	gsl::not_null<ID3D12GraphicsCommandList*> Begin();
+
+	void Draw(
+	std::wstring_view assetName,
+	DirectX::XMFLOAT3 position,
+	DirectX::XMFLOAT3 rotation,
+	DirectX::XMFLOAT3 scale);
+
+	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
+	void End();
 }

@@ -5,11 +5,12 @@ class GpuResource
 public:
 	GpuResource() noexcept
 		: m_pResource(nullptr)
-		, m_GpuVirtualAddress{}
+		, m_GpuAddress{}
 	{
+
 	}
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pResource;
-	D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress;
+	D3D12_GPU_VIRTUAL_ADDRESS m_GpuAddress;
 };

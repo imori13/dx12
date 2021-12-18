@@ -66,20 +66,13 @@ bool TestModel::OnInit(std::wstring_view modelName)
 	m_CBV_SRVHeap.Create(4, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 	// Transform‚ÌBufferView
-	auto handle = m_CBV_SRVHeap.GetNextHandle();
-	const auto transformView = m_TransformData.GetConstantView();
-	Graphics::g_pDevice->CreateConstantBufferView(&transformView, handle.CPU);
+	m_TransformData.CreateConstantView(m_CBV_SRVHeap.GetNextHandle());
 
 	// Light‚ÌBufferView
-	handle = m_CBV_SRVHeap.GetNextHandle();
-	const auto lightView = m_LightData.GetConstantView();
-	Graphics::g_pDevice->CreateConstantBufferView(&lightView, handle.CPU);
+	m_LightData.CreateConstantView(m_CBV_SRVHeap.GetNextHandle());
 
 	// Material‚ÌBufferView
-	handle = m_CBV_SRVHeap.GetNextHandle();
-	const auto materialView = m_MaterialData.GetConstantView();
-	Graphics::g_pDevice->CreateConstantBufferView(&materialView, handle.CPU);
-
+	m_MaterialData.CreateConstantView(m_CBV_SRVHeap.GetNextHandle());
 
 	auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
 	auto targetPos = DirectX::XMVectorZero();
@@ -130,9 +123,9 @@ void TestModel::Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->IASetIndexBuffer(&indexView);
 
 	cmdList->SetDescriptorHeaps(1, m_CBV_SRVHeap.GetAddress());
-	cmdList->SetGraphicsRootConstantBufferView(0, m_TransformData.GetConstantView().BufferLocation);
-	cmdList->SetGraphicsRootConstantBufferView(1, m_LightData.GetConstantView().BufferLocation);
-	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialData.GetConstantView().BufferLocation);
+	cmdList->SetGraphicsRootConstantBufferView(0, m_TransformData.GetConstantLocation());
+	cmdList->SetGraphicsRootConstantBufferView(1, m_LightData.GetConstantLocation());
+	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialData.GetConstantLocation());
 	cmdList->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);

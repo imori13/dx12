@@ -4,6 +4,7 @@ struct Handle_CPU_GPU
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE CPU = {};
 	D3D12_GPU_DESCRIPTOR_HANDLE GPU = {};
+	uint32_t IncrementSize = 0;
 };
 
 class ResourceHeap
@@ -32,6 +33,7 @@ public:
 
 		rtVal.CPU.ptr += gsl::narrow<uint64_t>(m_IncrementSize * m_Index);
 		rtVal.GPU.ptr += gsl::narrow<uint64_t>(m_IncrementSize * m_Index);
+		rtVal.IncrementSize = m_IncrementSize;
 
 		++m_Index;
 
