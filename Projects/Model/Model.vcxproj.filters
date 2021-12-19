@@ -34,6 +34,9 @@
     <ClInclude Include="Vector3.h">
       <Filter>SourceFile\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>SourceFile\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -62,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>SourceFile\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>SourceFile\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

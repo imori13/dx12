@@ -86,6 +86,7 @@
     <ClInclude Include="AssimpTest.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileInput.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PipelineInitializer.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="AssimpTest.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileInput.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="PipelineInitializer.cpp" />
     <ClCompile Include="Renderer.cpp" />
