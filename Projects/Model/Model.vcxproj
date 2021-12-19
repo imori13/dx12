@@ -93,6 +93,7 @@
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="TestModel.h" />
+    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpTest.cpp" />
