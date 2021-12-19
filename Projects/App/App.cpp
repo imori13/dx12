@@ -60,8 +60,6 @@ void App::Startup(void)
 	//Renderer::Load(L"005", L"005.obj", L"pixel.png");
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png");
-
-	auto hoge = Vector3(1, 0, 0);
 }
 
 void App::Cleanup(void)

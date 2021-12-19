@@ -6,6 +6,12 @@
 class RenderObject
 {
 public:
+	RenderObject() noexcept
+		: m_TextureGpuHandle{}
+		, m_IndexCount(0)
+		, m_ObjectCount(0)
+		, m_DrawIndex(0)
+	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize();
 	void Draw(DirectX::XMFLOAT3 pos,

@@ -25,8 +25,8 @@ public:
 
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexView() const noexcept { return m_VertexView; }
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexView() const noexcept { return m_IndexView; }
-	const D3D12_GPU_VIRTUAL_ADDRESS& GetConstantLocation(uint32_t index = 0) const noexcept { return m_GpuAddress + m_StrideSize * index; }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPU(uint32_t index = 0) const noexcept { return { m_Handle.GPU.ptr + m_Handle.IncrementSize * index }; }
+	const D3D12_GPU_VIRTUAL_ADDRESS& GetConstantLocation() const noexcept { return m_GpuAddress; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPU() const noexcept { return m_Handle.GPU; }
 private:
 	D3D12_VERTEX_BUFFER_VIEW m_VertexView;
 	D3D12_INDEX_BUFFER_VIEW m_IndexView;

@@ -61,8 +61,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 			transform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
 			transform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
 
-			transform += sizeof(Transform);
-
 			// ƒrƒ…[İ’è
 			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 		}
