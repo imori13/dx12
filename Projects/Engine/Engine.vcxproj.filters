@@ -147,5 +147,8 @@
     <ClInclude Include="TranslationBarrirUtil.h">
       <Filter>Source File</Filter>
     </ClInclude>
+    <ClInclude Include="MyMath.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

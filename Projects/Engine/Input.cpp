@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "WinApp.h"
 
 struct MouseState
 {
@@ -74,8 +75,11 @@ namespace Input
 
 	LRESULT CALLBACK ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) noexcept(false)
 	{
-		s_MousePos.x() = LOWORD(lParam);
-		s_MousePos.y() = HIWORD(lParam);
+		const float x = LOWORD(lParam);
+		const float y = HIWORD(lParam);
+		constexpr float limit = 10000;
+		s_MousePos.x() = (x >= limit) ? (0) : (x);
+		s_MousePos.y() = (y >= limit) ? (0) : (y);
 
 		switch(message)
 		{

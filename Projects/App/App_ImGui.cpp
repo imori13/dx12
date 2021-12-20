@@ -9,10 +9,6 @@
 #include "App_ImGui_Method.h"
 #include "Input.h"
 
-#include <imgui.h>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_dx12.h>
-#include <implot.h>
 
 namespace
 {

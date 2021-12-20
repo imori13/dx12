@@ -11,7 +11,7 @@ public:
 		, m_FarZ(0)
 	{
 	}
-	void Create(float fovDeg, float nearZ, float farZ);
+	void Create(float fovDeg, float nearZ, float farZ) noexcept;
 	void Update();
 
 	const Matrix4x4& GetViewMatrix() const noexcept { return m_ViewMatrix; }
@@ -30,5 +30,7 @@ private:
 	Vector2 prevMousePos;
 	float m_Longitude = 1.5f;
 	float m_Latitude = 0;
+	float m_DestLongitude = 1.5f;
+	float m_DestLatitude = 0;
 };
 

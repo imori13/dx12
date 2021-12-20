@@ -126,6 +126,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputElement.h" />
     <ClInclude Include="DataAverage.h" />
+    <ClInclude Include="MyMath.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="PipelineStateObject.h" />
     <ClInclude Include="ResourceHeap.h" />
