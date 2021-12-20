@@ -16,18 +16,21 @@ public:
 
 	const Matrix4x4& GetViewMatrix() const noexcept { return m_ViewMatrix; }
 	const Matrix4x4& GetProjMatrix() const noexcept { return m_ProjMatrix; }
-
-	Vector3 Position;
-	Vector3 Rotation;
-	Vector3 Foward;
 private:
+	void MouseRotate(const Vector2& mousePos);
+	void MouseMove(const Vector2& mousePos);
+
 	Matrix4x4 m_ViewMatrix;
 	Matrix4x4 m_ProjMatrix;
 	float m_Fov;
 	float m_NearZ;
 	float m_FarZ;
 
-	Vector2 prevMousePos;
+	Vector3 m_DestPosition;
+	Vector3 m_Position;
+	Vector3 m_Rotation;
+
+	Vector2 m_PrevMousePos;
 	float m_Longitude = 1.5f;
 	float m_Latitude = 0;
 	float m_DestLongitude = 1.5f;

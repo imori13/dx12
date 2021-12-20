@@ -134,6 +134,8 @@ LRESULT CALLBACK WinApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	if(ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{ return true; }
 
+	Input::SetWheelValue(GET_WHEEL_DELTA_WPARAM(wParam));
+
 	switch(message)
 	{
 		case WM_DESTROY:

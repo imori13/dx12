@@ -1,23 +1,24 @@
 #pragma once
+#include "MyMath.h"
 
 #include <Eigen/Eigen>
 
 struct Vector3
 {
-	Vector3::Vector3() noexcept(false)
+	explicit Vector3::Vector3() noexcept(false)
 		: vec(0, 0, 0)
 	{
 	}
 
-	Vector3::Vector3(float value) noexcept(false)
+	explicit Vector3::Vector3(float value) noexcept(false)
 		: vec(value, value, value)
 	{
 	}
 
-	Vector3::Vector3(float value_x, float value_y, float value_z) noexcept(false)
+	explicit Vector3::Vector3(float value_x, float value_y, float value_z) noexcept(false)
 		: vec(value_x, value_y, value_z)
 	{
-		
+
 	}
 
 	Vector3 operator-() const;
@@ -60,6 +61,13 @@ struct Vector3
 	static Vector3 Foward();
 	static Vector3 Backward();
 
+
+	static Vector3 Lerp(const Vector3& a, const Vector3& b, float t)
+	{
+		return Vector3(Math::Lerp(a.x(), b.x(), t),
+					   Math::Lerp(a.y(), b.y(), t),
+					   Math::Lerp(a.z(), b.z(), t));
+	}
 private:
 	Vector3::Vector3(const Eigen::Vector3f& vector)
 		: vec(0, 0, 0)

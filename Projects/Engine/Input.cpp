@@ -88,6 +88,16 @@ namespace Input
 		return !s_CurrentMouseState.RightButton && s_PrevMouseState.RightButton;
 	}
 
+	void SetWheelValue(float value) noexcept
+	{
+		s_State.WheelValue = value;
+	}
+
+	float GetWheelValue() noexcept
+	{
+		return s_CurrentMouseState.WheelValue / WHEEL_DELTA;
+	}
+
 	bool IsWheel() noexcept
 	{
 		return s_CurrentMouseState.WheelButton;
@@ -154,7 +164,7 @@ namespace Input
 			// ÉzÉCÅ[Éã
 			case WM_MOUSEWHEEL:
 			{
-				s_State.WheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
+				//s_State.WheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
 				break;
 			}
 

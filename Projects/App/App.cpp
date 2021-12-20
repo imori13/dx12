@@ -47,8 +47,6 @@ void App::Startup(void)
 	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 
 	camera.Create(90, 0.01f, 1000.0f);
-	camera.Position = Vector3(0, 0, 0);
-	camera.Foward = Matrix4x4::LookAt(camera.Position, Vector3::Zero(), Vector3::Up()) * Vector3::One();
 }
 
 void App::Cleanup(void)
@@ -81,8 +79,8 @@ void App::Update(float deltaT)
 	Renderer::Draw(L"umaru", world * Matrix4x4::Translate(Vector3(0, -6, 0)), camera);
 
 	App_ImGui::Begin("Parameter");
-	App_ImGui::DragSlider("camera pos", &camera.Position);
-	App_ImGui::DragSlider("camera rot", &camera.Rotation);
+	//App_ImGui::DragSlider("camera pos", &camera.m_Position);
+	//App_ImGui::DragSlider("camera rot", &camera.m_Rotation);
 	//App_ImGui::DragSlider("obj pos", &position);
 	App_ImGui::DragSlider("obj rot", &rotation);
 	App_ImGui::DragSlider("obj sca", &scale);
