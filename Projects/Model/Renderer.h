@@ -1,6 +1,7 @@
 #pragma once
 #include "UploadBuffer.h"
 #include "RenderObject.h"
+#include "Camera.h"
 
 #include <map>
 
@@ -11,8 +12,8 @@ namespace Renderer
 
 	gsl::not_null<ID3D12GraphicsCommandList*> Begin();
 
-	void Draw(
-	std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
+	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
+	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera);
 
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void End();

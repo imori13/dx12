@@ -134,9 +134,14 @@ Matrix4x4 Matrix4x4::RotateRollPitchYaw(float x, float y, float z)
 
 Matrix4x4 Matrix4x4::LookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward)
 {
-	Vector3 Z = (targetPos - cameraPos).Normalized();
-	Vector3 X = upward.Cross(Z).Normalized();
-	Vector3 Y = Z.Cross(X).Normalized();
+	Vector3 Z = (targetPos - cameraPos);
+	Z = (Z != Vector3::Zero()) ? (Z.Normalized()) : (Vector3::Zero());
+
+	Vector3 X = upward.Cross(Z);
+	Vector3 Y = Z.Cross(X);
+
+	X = (X != Vector3::Zero()) ? (X.Normalized()) : (Vector3::Zero());
+	Y = (Y != Vector3::Zero()) ? (Y.Normalized()) : (Vector3::Zero());
 
 	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
 

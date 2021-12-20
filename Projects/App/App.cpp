@@ -1,16 +1,13 @@
 #include "GameCore.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
-#include "TestModel.h"
-#include "WinApp.h"
 #include "Command.h"
 #include "App_ImGui.h"
-#include "Timer.h"
 #include "ResourceManager.h"
 #include "PipelineInitializer.h"
-#include "ObjLoader.h"
 #include "Renderer.h"
 #include "Vector3.h"
+#include "Timer.h"
 
 class App : public GameCore::IGameApp
 {
@@ -21,6 +18,8 @@ public:
 	void Cleanup(void) override;
 	void Update(float deltaT) override;
 	void RenderScene(void) override;
+
+	Camera camera;
 };
 
 CREATE_APPLICATION(App, 1600, 900);
@@ -29,37 +28,24 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/face_tex.tga");
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/hair_tex.tga");
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/pistol_tex.tga");
-	//ResourceManager::LoadTexture(L"Models/ArmoredMaiden/sword_tex.tga");
-
 	std::wstring path = L"Textures/";
 	ResourceManager::LoadTexture(path + L"pixel.png");
 	ResourceManager::LoadTexture(path + L"neko.jpg");
 	ResourceManager::LoadTexture(path + L"neko2.jpg");
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
-	//ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"umaru.obj");
-	//ResourceManager::LoadMesh(path + L"ArmoredMaiden/ArmoredMaiden.fbx");
-	//ResourceManager::LoadMesh(path + L"Cube.obj");
-	//ResourceManager::LoadMesh(path + L"g36.obj");
-	//ResourceManager::LoadMesh(path + L"005.obj");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
 	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
-	//Renderer::Load(L"ArmoredMaiden", L"ArmoredMaiden.fbx", L"body_tex.tga");
 	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
-	//Renderer::Load(L"005", L"005.obj", L"pixel.png");
-	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
-	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png");
+
+	camera.Create(90, 0.01f, 1000.0f);
+	camera.Position = Vector3(0, 0, -5);
 }
 
 void App::Cleanup(void)
@@ -70,6 +56,8 @@ void App::Cleanup(void)
 void App::Update(float deltaT)
 {
 	App_ImGui::Update();
+
+	camera.Update();
 
 	deltaT++;
 }
@@ -109,12 +97,7 @@ void App::RenderScene(void)
 	world *= Matrix4x4::RotateRollPitchYaw(rotation);
 	world *= Matrix4x4::Translate(position);
 
-	constexpr float fov = 90.f * 3.14f / 180.0f;
-
-	const auto view = Matrix4x4::LookAt(Vector3(0, 0, -5), Vector3(0), Vector3(0, 1, 0));
-	const auto proj = Matrix4x4::PerspectiveProjection(fov, Display::g_Aspect, 0.01f, 1000);
-
-	Renderer::Draw(L"umaru", world, view, proj);
+	Renderer::Draw(L"umaru", world, camera);
 
 	Renderer::SendCommand(cmdList);
 

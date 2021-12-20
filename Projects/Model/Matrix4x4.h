@@ -6,6 +6,11 @@
 class Matrix4x4
 {
 public:
+	Matrix4x4() noexcept
+	{
+
+	}
+
 	Matrix4x4& operator+=(const Matrix4x4& m);
 	Matrix4x4 operator+(const Matrix4x4& m) const;
 	Matrix4x4& operator-=(const Matrix4x4& m);

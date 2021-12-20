@@ -85,6 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AssimpTest.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileInput.h" />
     <ClInclude Include="Matrix4x4.h" />
@@ -99,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpTest.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />

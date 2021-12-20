@@ -29,7 +29,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName)
 	{
 		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
 
-		auto textureName = (!material.DiffuseMap.empty())?(material.DiffuseMap):(L"body_tex.tga");
+		auto textureName = (!material.DiffuseMap.empty()) ? (material.DiffuseMap) : (L"body_tex.tga");
 		auto texture = ResourceManager::GetTexture(textureName);
 
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
@@ -58,6 +58,11 @@ void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const M
 	{
 		mesh.Draw(world, view, projection);
 	}
+}
+
+void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera)
+{
+	Draw(assetName, world, camera.GetViewMatrix(), camera.GetProjMatrix());
 }
 
 void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

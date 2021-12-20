@@ -72,6 +72,15 @@ struct Vector3
 	inline constexpr float Dot(const Vector3& vector) const noexcept;
 	inline constexpr Vector3 Cross(const Vector3& vector) const noexcept;
 	inline constexpr DirectX::XMFLOAT3 XMFloat() const noexcept;
+
+	inline constexpr static Vector3 Zero() noexcept;
+	inline constexpr static Vector3 One() noexcept;
+	inline constexpr static Vector3 Up() noexcept;
+	inline constexpr static Vector3 Down() noexcept;
+	inline constexpr static Vector3 Right() noexcept;
+	inline constexpr static Vector3 Left() noexcept;
+	inline constexpr static Vector3 Foward() noexcept;
+	inline constexpr static Vector3 Backward() noexcept;
 };
 
 inline constexpr Vector3 operator-(const Vector3& vector) noexcept;
@@ -143,13 +152,13 @@ inline constexpr Vector3 operator*(const float scaler, const Vector3& vector) no
 
 inline constexpr Vector3 operator/(const Vector3& vector, const float scaler) noexcept
 {
-	EXPECTS(scaler != 0, L"É[ÉçèúéZ");
+	EXPECTS(scaler != 0);
 	return Vector3(vector.x / scaler, vector.y / scaler, vector.z / scaler);
 }
 
 inline constexpr Vector3 operator/(const float scaler, const Vector3& vector) noexcept
 {
-	EXPECTS(scaler != 0, L"É[ÉçèúéZ");
+	EXPECTS(scaler != 0);
 	return Vector3(scaler / vector.x, scaler / vector.y, scaler / vector.z);
 }
 
@@ -161,4 +170,37 @@ inline constexpr bool operator==(const Vector3& vector_A, const Vector3& vector_
 inline constexpr bool operator!=(const Vector3& vector_A, const Vector3& vector_B) noexcept
 {
 	return vector_A.x != vector_B.x || vector_A.y != vector_B.y || vector_A.z != vector_B.z;
+}
+
+inline constexpr Vector3 Vector3::Zero() noexcept
+{
+	return Vector3(0);
+}
+inline constexpr Vector3 Vector3::One() noexcept
+{
+	return Vector3(1);
+}
+inline constexpr Vector3 Vector3::Up() noexcept
+{
+	return Vector3(0,1,0);
+}
+inline constexpr Vector3 Vector3::Down() noexcept
+{
+	return Vector3(0, -1, 0);
+}
+inline constexpr Vector3 Vector3::Right() noexcept
+{
+	return Vector3(1, 0, 0);
+}
+inline constexpr Vector3 Vector3::Left() noexcept
+{
+	return Vector3(-1, 0, 0);
+}
+inline constexpr Vector3 Vector3::Foward() noexcept
+{
+	return Vector3(0, 0, 1);
+}
+inline constexpr Vector3 Vector3::Backward() noexcept
+{
+	return Vector3(0, 0, -1);
 }
