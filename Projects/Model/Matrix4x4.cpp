@@ -39,6 +39,12 @@ Matrix4x4 Matrix4x4::operator*(float s) const
 	return matrix * s;
 }
 
+Vector3 Matrix4x4::operator*(const Vector3& vec) const
+{
+	Eigen::Vector4f vec4 = matrix.transpose() * Eigen::Vector4f(vec.x(), vec.y(), vec.z(), 1);
+	return Vector3(vec4.x(), vec4.y(), vec4.z());
+}
+
 DirectX::XMMATRIX Matrix4x4::Data() const
 {
 	return DirectX::XMMATRIX(matrix.data());
@@ -61,7 +67,7 @@ Matrix4x4 Matrix4x4::Identity()
 
 Matrix4x4 Matrix4x4::Scale(const Vector3& vec)
 {
-	return Scale(vec.x, vec.y, vec.z);
+	return Scale(vec.x(), vec.y(), vec.z());
 }
 
 Matrix4x4 Matrix4x4::Scale(float x, float y, float z)
@@ -107,9 +113,35 @@ Matrix4x4 Matrix4x4::RotateZ(float radian)
 	return m;
 }
 
+Matrix4x4 Matrix4x4::RotateAxis(const Vector3& vector, float radian)
+{
+	float X = vector.x();
+	float Y = vector.y();
+	float Z = vector.z();
+
+	float Cos = cos(radian);
+	float Sin = sin(radian);
+	float A = 1 - Cos;
+
+	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
+	m(0, 0) = X * X * A + Cos;
+	m(0, 1) = X * Y * A - Z * Sin;
+	m(0, 2) = Z * X * A + Y * Sin;
+
+	m(1, 0) = X * Y * A + Z * Sin;
+	m(1, 1) = Y * Y * A + Cos;
+	m(1, 2) = Y * Z * A - X * Sin;
+
+	m(2, 0) = Z * X * A - Y * Sin;
+	m(2, 1) = Y * Z * A + X * Sin;
+	m(2, 2) = Z * Z * A + Cos;
+
+	return m;
+}
+
 Matrix4x4 Matrix4x4::Translate(const Vector3& vec)
 {
-	return Translate(vec.x, vec.y, vec.z);
+	return Translate(vec.x(), vec.y(), vec.z());
 }
 
 Matrix4x4 Matrix4x4::Translate(float x, float y, float z)
@@ -124,7 +156,7 @@ Matrix4x4 Matrix4x4::Translate(float x, float y, float z)
 
 Matrix4x4 Matrix4x4::RotateRollPitchYaw(const Vector3& vec)
 {
-	return RotateRollPitchYaw(vec.x, vec.y, vec.z);
+	return RotateRollPitchYaw(vec.x(), vec.y(), vec.z());
 }
 
 Matrix4x4 Matrix4x4::RotateRollPitchYaw(float x, float y, float z)
@@ -145,19 +177,19 @@ Matrix4x4 Matrix4x4::LookAt(const Vector3& cameraPos, const Vector3& targetPos, 
 
 	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
 
-	m(0, 0) = X.x;
-	m(1, 0) = X.y;
-	m(2, 0) = X.z;
+	m(0, 0) = X.x();
+	m(1, 0) = X.y();
+	m(2, 0) = X.z();
 	m(3, 0) = -X.Dot(cameraPos);
 
-	m(0, 1) = Y.x;
-	m(1, 1) = Y.y;
-	m(2, 1) = Y.z;
+	m(0, 1) = Y.x();
+	m(1, 1) = Y.y();
+	m(2, 1) = Y.z();
 	m(3, 1) = -Y.Dot(cameraPos);
 
-	m(0, 2) = Z.x;
-	m(1, 2) = Z.y;
-	m(2, 2) = Z.z;
+	m(0, 2) = Z.x();
+	m(1, 2) = Z.y();
+	m(2, 2) = Z.z();
 	m(3, 2) = -Z.Dot(cameraPos);
 
 	return m;

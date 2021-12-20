@@ -42,7 +42,7 @@ namespace GameCore
 		{
 			TimeStamp::Begin();
 
-			game.Update(0);
+			game.Update(Timer::g_FrameTime);
 
 			DataAverage::Set(L"Update", TimeStamp::End(), Average::VeryLow);
 		}

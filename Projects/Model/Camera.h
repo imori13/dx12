@@ -11,15 +11,15 @@ public:
 	{
 	}
 	void Create(float fovDeg, float nearZ, float farZ);
+	void LookAt(const Vector3& target);
 	void Update();
 
 	const Matrix4x4& GetViewMatrix() const noexcept { return m_ViewMatrix; }
 	const Matrix4x4& GetProjMatrix() const noexcept { return m_ProjMatrix; }
 
 	Vector3 Position;
+	Vector3 Rotation;
 private:
-	void CalcMatrix();
-
 	Matrix4x4 m_ViewMatrix;
 	Matrix4x4 m_ProjMatrix;
 	float m_Fov;

@@ -9,7 +9,7 @@ namespace
 
 namespace Timer
 {
-	double g_ElapsedTime;
+	float g_ElapsedTime;
 	float g_FrameTime;
 
 	void Initialize()
@@ -21,8 +21,8 @@ namespace Timer
 	void Update()
 	{
 		QueryPerformanceCounter(&s_EndTimer);
-		const double NewElapsed = static_cast<double>(s_EndTimer.QuadPart - s_StartTimer.QuadPart) / static_cast<double>(s_Frequency.QuadPart);
-		g_FrameTime = gsl::narrow_cast<float>(NewElapsed - g_ElapsedTime);
+		const float NewElapsed = static_cast<float>(s_EndTimer.QuadPart - s_StartTimer.QuadPart) / static_cast<float>(s_Frequency.QuadPart);
+		g_FrameTime = NewElapsed - g_ElapsedTime;
 		g_ElapsedTime = NewElapsed;
 	}
 }

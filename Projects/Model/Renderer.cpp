@@ -40,14 +40,6 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName)
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 {
-	for(auto& model : s_RenderObjects)
-	{
-		for(auto& mesh : model.second)
-		{
-			mesh.Initialize();
-		}
-	}
-
 	auto cmdList = Command::Begin();
 
 	// リソースバリア
@@ -92,6 +84,7 @@ void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 		for(auto& mesh : model.second)
 		{
 			mesh.SendCommand(cmdList);
+			mesh.Initialize();
 		}
 	}
 }

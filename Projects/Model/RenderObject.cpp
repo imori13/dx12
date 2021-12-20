@@ -104,7 +104,7 @@ void RenderObject::Initialize()
 	m_WaitDraw.clear();
 }
 
-void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection)
+void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection)
 {
 	if(m_DrawIndex >= m_ObjectCount)
 	{

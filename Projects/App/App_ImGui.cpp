@@ -63,16 +63,16 @@ namespace App_ImGui
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
+
+		//AppGui::DebugViewEnable();
+		AppGui::FillEnable();
+		AppGui::FramePieEnable();
+		//AppGui::FrameViewrEnable();
 	}
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
 		if(!s_GUI_ENABLE) { return; }
-		
-		AppGui::DebugViewEnable();
-		AppGui::FillEnable();
-		AppGui::FramePieEnable();
-		AppGui::FrameViewrEnable();
 
 		ImGui::Render();
 
@@ -97,6 +97,35 @@ namespace App_ImGui
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault(nullptr, static_cast<void*>(cmdList));
 		}
+	}
+
+	void Begin(std::string_view name)
+	{
+		ImGui::Begin(name.data());
+	}
+
+	void CreateSlider(std::string_view name, gsl::not_null<float*> value)
+	{
+		ImGui::SliderFloat(name.data(), value, -10, 10);
+	}
+
+	void CreateSlider(std::string_view name, gsl::not_null<Vector3*> vec)
+	{
+		ImGui::SliderFloat3(name.data(), vec->data(), -10, 10);
+	}
+
+	void DragSlider(std::string_view name, gsl::not_null<float*> value)
+	{
+		ImGui::DragFloat(name.data(), value);
+	}
+	void DragSlider(std::string_view name, gsl::not_null<Vector3*> vec)
+	{
+		ImGui::DragFloat3(name.data(), vec->data());
+	}
+
+	void End()
+	{
+		ImGui::End();
 	}
 }
 

@@ -18,6 +18,7 @@ public:
 	Matrix4x4& operator*=(const Matrix4x4& m);
 	Matrix4x4 operator*(const Matrix4x4& m) const;
 	Matrix4x4 operator*(float s) const;
+	Vector3 operator*(const Vector3& vec) const;
 
 	DirectX::XMMATRIX Data() const;
 	Matrix4x4 Transpose() const;
@@ -34,6 +35,7 @@ public:
 	static Matrix4x4 RotateX(float radian);
 	static Matrix4x4 RotateY(float radian);
 	static Matrix4x4 RotateZ(float radian);
+	static Matrix4x4 RotateAxis(const Vector3& vector, float radian);
 	// ビュー行列
 	static Matrix4x4 LookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward);
 	// プロジェクション行列

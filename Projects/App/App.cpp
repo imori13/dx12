@@ -19,6 +19,7 @@ public:
 	void RenderScene(void) override;
 
 	Camera camera;
+	Matrix4x4 world;
 };
 
 CREATE_APPLICATION(App, 1600, 900);
@@ -54,30 +55,40 @@ void App::Cleanup(void)
 
 void App::Update(float deltaT)
 {
+	deltaT++;	// åxçêâÒîóp
+
 	App_ImGui::Update();
 
-	camera.Update();
+	camera.LookAt(Vector3(0, 0, 0));
 
-	deltaT++;
+	static Vector3 position(0, -1, 0);
+	static Vector3 scale(0.02f);
+	static Vector3 rotation(0, 1, 0);
+
+	world = Matrix4x4::Identity();
+	world *= Matrix4x4::Scale(scale);
+	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
+	world *= Matrix4x4::Translate(position);
+
+	Renderer::Draw(L"umaru", world, camera);
+
+	App_ImGui::Begin("Parameter");
+	App_ImGui::DragSlider("camera pos", &camera.Position);
+	App_ImGui::DragSlider("obj pos", &position);
+	App_ImGui::DragSlider("obj rot", &rotation);
+	App_ImGui::DragSlider("obj sca", &scale);
+	App_ImGui::End();
+
+	rotation.Normalize();
 }
 
 void App::RenderScene(void)
 {
 	auto cmdList = Renderer::Begin();
 
-	constexpr Vector3 position(0, -1, 0);
-	constexpr Vector3 scale(0.02f);
-	const Vector3 rotation(0, static_cast<float>(Timer::g_ElapsedTime) * 0.1f, 0);
-
-	auto world = Matrix4x4::Identity();
-	world *= Matrix4x4::Scale(scale);
-	world *= Matrix4x4::RotateRollPitchYaw(rotation);
-	world *= Matrix4x4::Translate(position);
-
-	Renderer::Draw(L"umaru", world, camera);
 	Renderer::SendCommand(cmdList);
-
 	App_ImGui::Render(cmdList);
 	Renderer::End(cmdList);
+
 	App_ImGui::UpdateAdditionalPlatformWindows(cmdList);
 }

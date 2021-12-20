@@ -15,7 +15,7 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize();
-	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
+	void Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	ResourceHeap m_ResourceHeap;

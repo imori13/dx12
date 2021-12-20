@@ -2,7 +2,7 @@
 
 namespace Timer
 {
-	extern double g_ElapsedTime;
+	extern float g_ElapsedTime;
 	extern float g_FrameTime;
 
 	void Initialize() noexcept(false);

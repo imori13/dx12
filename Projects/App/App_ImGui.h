@@ -1,5 +1,6 @@
 #pragma once
 #include "ResourceHeap.h"
+#include "Vector3.h"
 
 namespace App_ImGui
 {
@@ -10,5 +11,12 @@ namespace App_ImGui
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void Terminate();
 	void UpdateAdditionalPlatformWindows(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
+
+	void Begin(std::string_view name);
+	void CreateSlider(std::string_view name, gsl::not_null<float*> value);
+	void CreateSlider(std::string_view name, gsl::not_null<Vector3*> vec);
+	void DragSlider(std::string_view name, gsl::not_null<float*> value);
+	void DragSlider(std::string_view name, gsl::not_null<Vector3*> vec);
+	void End();
 };
 

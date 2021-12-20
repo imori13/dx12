@@ -65,6 +65,9 @@
       <Filter>SourceFile\Math</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Vector3.cpp">
+      <Filter>SourceFile\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SourceFile">
