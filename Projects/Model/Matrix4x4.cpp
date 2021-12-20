@@ -132,6 +132,32 @@ Matrix4x4 Matrix4x4::RotateRollPitchYaw(float x, float y, float z)
 	return Identity() * RotateZ(z) * RotateX(x) * RotateY(y);
 }
 
+Matrix4x4 Matrix4x4::LookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward)
+{
+	Vector3 Z = (targetPos - cameraPos).Normalized();
+	Vector3 X = upward.Cross(Z).Normalized();
+	Vector3 Y = Z.Cross(X).Normalized();
+
+	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
+
+	m(0, 0) = X.x;
+	m(1, 0) = X.y;
+	m(2, 0) = X.z;
+	m(3, 0) = -X.Dot(cameraPos);
+
+	m(0, 1) = Y.x;
+	m(1, 1) = Y.y;
+	m(2, 1) = Y.z;
+	m(3, 1) = -Y.Dot(cameraPos);
+
+	m(0, 2) = Z.x;
+	m(1, 2) = Z.y;
+	m(2, 2) = Z.z;
+	m(3, 2) = -Z.Dot(cameraPos);
+
+	return m;
+}
+
 Matrix4x4 Matrix4x4::ParrallelProjection(float top, float bottom, float right, float left, float Near, float Far)
 {
 	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
@@ -148,15 +174,17 @@ Matrix4x4 Matrix4x4::ParrallelProjection(float top, float bottom, float right, f
 
 Matrix4x4 Matrix4x4::PerspectiveProjection(float fovRad, float aspect, float Near, float Far)
 {
-	float height = 1.0f / tanf(fovRad / 2.0f);
-	float width = height / aspect;
+	float Height = 1.0f / tanf(fovRad / 2.0f);
+	float Width = Height / aspect;
+	float fRange = Far / (Far - Near);
 
-	Eigen::Matrix4f m;
-	m(0, 0) = width;
-	m(1, 1) = height;
-	m(2, 2) = Far / (Far - Near);
-	m(2, 3) = -1;
-	m(3, 2) = -Far * Near / (Far - Near);
+	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
+	m(0, 0) = Width;
+	m(1, 1) = Height;
+	m(2, 2) = fRange;
+	m(2, 3) = 1;
+	m(3, 2) = -fRange * Near;
+	m(3, 3) = 0;
 
 	return m;
 }

@@ -1,7 +1,4 @@
 #include "RenderObject.h"
-#include "Matrix4x4.h"
-
-#include <Display.h>	// å„Ç≈è¡Ç∑
 #include "PipelineInitializer.h"
 
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount)
@@ -41,12 +38,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 
 	// Transformê∂ê¨
 	{
-
-		const auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
-		const auto targetPos = DirectX::XMVectorZero();
-		const auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-
 		m_TransformBuffers.resize(objectCount);
 
 		for(auto i = 0u; i < objectCount; ++i)
@@ -57,17 +48,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 			Transform* transform = static_cast<Transform*>(buffer.Map());
 
 			m_Transforms.emplace_back(transform);
-
-			transform->World = DirectX::XMMatrixIdentity();
-
-			auto view = Matrix4x4::Identity();
-			view *= Matrix4x4::Translate(0, 0, -5);
-			transform->View = view.Transpose().Data();
-
-			transform->Proj = Matrix4x4::PerspectiveProjection(fovY, Display::g_Aspect, 1.0f, 1000.0f).Transpose().Data();
-
-			//transform->View = DirectX::XMMatrixLookAtRH(eyePos, targetPos, upward);
-			//transform->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
 
 			// ÉrÉÖÅ[ê›íË
 			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
@@ -124,10 +104,7 @@ void RenderObject::Initialize()
 	m_WaitDraw.clear();
 }
 
-void RenderObject::Draw(
-	DirectX::XMFLOAT3 pos,
-	DirectX::XMFLOAT3 rotate,
-	DirectX::XMFLOAT3 scale)
+void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection)
 {
 	if(m_DrawIndex >= m_ObjectCount)
 	{
@@ -136,15 +113,9 @@ void RenderObject::Draw(
 	}
 
 	auto instance = m_Transforms.at(m_DrawIndex);
-
-	auto world = Matrix4x4::Identity();
-	world *= Matrix4x4::Scale(scale.x, scale.y, scale.z);
-	world *= Matrix4x4::RotateRollPitchYaw(rotate.x, rotate.y, rotate.z);
-	world *= Matrix4x4::Translate(pos.x, pos.y, pos.z);
-	instance->World = world.Transpose().Data();
-
-	constexpr auto fovY = DirectX::XMConvertToRadians(37.5f);
-	instance->Proj = DirectX::XMMatrixPerspectiveFovRH(fovY, Display::g_Aspect, 1.0f, 1000.0f);
+	instance->World = world.Data();
+	instance->View = view.Data();
+	instance->Proj = projection.Data();
 
 	++m_DrawIndex;
 }

@@ -1,3 +1,7 @@
+
+// HLSLを行メジャーに変更
+#pragma pack_matrix(row_major)
+
 struct VSInput
 {
     float3 Position : POSITION; // 位置ベクトル

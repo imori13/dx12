@@ -50,17 +50,13 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 	return Command::Begin(Display::g_FrameIndex).Get();
 }
 
-void Renderer::Draw(
-	std::wstring_view assetName,
-	DirectX::XMFLOAT3 position,
-	DirectX::XMFLOAT3 rotation,
-	DirectX::XMFLOAT3 scale)
+void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection)
 {
 	auto& meshVec = s_RenderObjects[assetName.data()];
 
 	for(auto& mesh : meshVec)
 	{
-		mesh.Draw(position, rotation, scale);
+		mesh.Draw(world, view, projection);
 	}
 }
 

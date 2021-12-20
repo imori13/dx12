@@ -102,11 +102,19 @@ void App::RenderScene(void)
 
 	constexpr Vector3 position(0, -1, 0);
 	constexpr Vector3 scale(0.02f);
+	const Vector3 rotation(0, static_cast<float>(Timer::g_ElapsedTime) * 0.1f, 0);
 
-	Vector3 rotation;
-	rotation.y = static_cast<float>(Timer::g_ElapsedTime)*0.1f;
+	auto world = Matrix4x4::Identity();
+	world *= Matrix4x4::Scale(scale);
+	world *= Matrix4x4::RotateRollPitchYaw(rotation);
+	world *= Matrix4x4::Translate(position);
 
-	Renderer::Draw(L"umaru", position.XMFloat(), rotation.XMFloat(), scale.XMFloat());
+	constexpr float fov = 90.f * 3.14f / 180.0f;
+
+	const auto view = Matrix4x4::LookAt(Vector3(0, 0, -5), Vector3(0), Vector3(0, 1, 0));
+	const auto proj = Matrix4x4::PerspectiveProjection(fov, Display::g_Aspect, 0.01f, 1000);
+
+	Renderer::Draw(L"umaru", world, view, proj);
 
 	Renderer::SendCommand(cmdList);
 

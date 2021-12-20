@@ -146,6 +146,7 @@ namespace AssimpTest
 
 		Assimp::Importer importer;
 		uint32_t flag = 0u;
+		flag |= aiProcess_ConvertToLeftHanded;
 		flag |= aiProcess_Triangulate;			// 三角頂点
 		flag |= aiProcess_FlipUVs;				// UV上下反転
 		flag |= aiProcess_PreTransformVertices;	// ノードグラフなしで調整

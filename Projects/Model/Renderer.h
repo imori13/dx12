@@ -12,10 +12,7 @@ namespace Renderer
 	gsl::not_null<ID3D12GraphicsCommandList*> Begin();
 
 	void Draw(
-	std::wstring_view assetName,
-	DirectX::XMFLOAT3 position,
-	DirectX::XMFLOAT3 rotation,
-	DirectX::XMFLOAT3 scale);
+	std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
 
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void End();

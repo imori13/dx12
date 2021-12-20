@@ -2,6 +2,7 @@
 #include "UploadBuffer.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Matrix4x4.h"
 
 class RenderObject
 {
@@ -14,9 +15,7 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize();
-	void Draw(DirectX::XMFLOAT3 pos,
-			  DirectX::XMFLOAT3 rotate,
-			  DirectX::XMFLOAT3 scale);
+	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	ResourceHeap m_ResourceHeap;

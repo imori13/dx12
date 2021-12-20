@@ -30,6 +30,8 @@ public:
 	static Matrix4x4 RotateY(float radian);
 	static Matrix4x4 RotateZ(float radian);
 	// ビュー行列
+	static Matrix4x4 LookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward);
+	// プロジェクション行列
 	static Matrix4x4 ParrallelProjection(float top, float bottom, float right, float left, float Near, float Far);
 	static Matrix4x4 PerspectiveProjection(float fovRad, float aspect, float Near, float Far);
 private:
