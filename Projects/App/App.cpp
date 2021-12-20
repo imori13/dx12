@@ -1,6 +1,5 @@
 #include "GameCore.h"
 #include "Display.h"
-#include "TranslationBarrirUtil.h"
 #include "Command.h"
 #include "App_ImGui.h"
 #include "ResourceManager.h"
@@ -66,28 +65,6 @@ void App::RenderScene(void)
 {
 	auto cmdList = Renderer::Begin();
 
-	{
-		// リソースバリア
-		auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		cmdList->ResourceBarrier(1, &barrier);
-	}
-
-	// レンダーターゲットの設定
-	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
-
-	// クリアカラー
-	const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
-
-	// RTVをクリア
-	cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
-	// DSVをクリア
-	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	cmdList->RSSetViewports(1, &Display::g_Viewport);
-	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
-
 	constexpr Vector3 position(0, -1, 0);
 	constexpr Vector3 scale(0.02f);
 	const Vector3 rotation(0, static_cast<float>(Timer::g_ElapsedTime) * 0.1f, 0);
@@ -98,18 +75,9 @@ void App::RenderScene(void)
 	world *= Matrix4x4::Translate(position);
 
 	Renderer::Draw(L"umaru", world, camera);
-
 	Renderer::SendCommand(cmdList);
 
 	App_ImGui::Render(cmdList);
-
-	{
-		// リソースバリア
-		auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		cmdList->ResourceBarrier(1, &barrier);
-	}
-
-	Renderer::End();
-
+	Renderer::End(cmdList);
 	App_ImGui::UpdateAdditionalPlatformWindows(cmdList);
 }

@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "Command.h"
 #include "Display.h"
+#include "TranslationBarrirUtil.h"
 
 namespace
 {
@@ -47,7 +48,26 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 		}
 	}
 
-	return Command::Begin(Display::g_FrameIndex).Get();
+	auto cmdList = Command::Begin();
+
+	// リソースバリア
+	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	cmdList->ResourceBarrier(1, &barrier);
+
+	// レンダーターゲットの設定
+	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+
+	// クリア
+	const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
+	cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
+	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+	cmdList->RSSetViewports(1, &Display::g_Viewport);
+	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
+
+	return cmdList;
 }
 
 void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection)
@@ -76,7 +96,11 @@ void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	}
 }
 
-void Renderer::End()
+void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
+	// リソースバリア
+	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	cmdList->ResourceBarrier(1, &barrier);
+
 	Command::End();
 }

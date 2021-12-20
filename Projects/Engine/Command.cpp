@@ -78,15 +78,15 @@ namespace Command
 		return s_pCmdQueue.Get();
 	}
 
-	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& Begin(uint32_t SwapIndex)
+	const gsl::not_null<ID3D12GraphicsCommandList*> Begin()
 	{
 		// コマンドの記録を開始
-		auto hr = s_pCmdAllocators.at(SwapIndex)->Reset();
+		auto hr = s_pCmdAllocators.at(Display::g_FrameIndex)->Reset();
 		ENSURES(hr);
-		hr = s_pCmdList->Reset(s_pCmdAllocators.at(SwapIndex).Get(), nullptr);
+		hr = s_pCmdList->Reset(s_pCmdAllocators.at(Display::g_FrameIndex).Get(), nullptr);
 		ENSURES(hr);
 
-		return s_pCmdList;
+		return s_pCmdList.Get();
 	}
 
 	void End()

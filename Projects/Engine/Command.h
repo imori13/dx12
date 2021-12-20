@@ -6,7 +6,7 @@ namespace Command
 	void Initialize();
 
 	// •`‰æŠJn
-	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& Begin(uint32_t SwapIndex);
+	const gsl::not_null<ID3D12GraphicsCommandList*> Begin();
 	// •`‰æI—¹
 	void End();
 

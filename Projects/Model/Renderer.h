@@ -16,5 +16,5 @@ namespace Renderer
 	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera);
 
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
-	void End();
+	void End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 }
