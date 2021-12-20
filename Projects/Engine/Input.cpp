@@ -11,22 +11,55 @@ struct MouseState
 
 namespace
 {
+	// マウス用
 	Vector2 s_MousePos;
 	MouseState s_State;
 	MouseState s_PrevMouseState;
 	MouseState s_CurrentMouseState;
+
+	// キーボード用
+	IDirectInputDevice8* devkeyboard;
+	std::array<BYTE, 256> currentKey;
+	std::array<BYTE, 256> prevKey;
 }
 
 namespace Input
 {
 	void Initialize() noexcept
 	{
+		IDirectInput8* dinput = nullptr;
+		auto result = DirectInput8Create(
+			WinApp::g_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&dinput), nullptr);
+		result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, nullptr);
+		result = devkeyboard->SetDataFormat(&c_dfDIKeyboard);
+		result = devkeyboard->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	}
 
 	void Update() noexcept
 	{
 		s_PrevMouseState = s_CurrentMouseState;
 		s_CurrentMouseState = s_State;
+
+		// 1フレーム前のキー状態を保存
+		for(int i = 0; i < currentKey.size(); i++)
+		{
+			prevKey.at(i) = currentKey.at(i);
+		}
+		auto result = devkeyboard->Acquire();
+		result = devkeyboard->GetDeviceState(currentKey.size() * sizeof(BYTE), currentKey.data());
+	}
+
+	bool IsKey(KeyCode keycode) noexcept
+	{
+		return currentKey.at(static_cast<uint8_t>(keycode));
+	}
+	bool IsKeyDown(KeyCode keycode) noexcept
+	{
+		return currentKey.at(static_cast<uint8_t>(keycode)) && !prevKey.at(static_cast<uint8_t>(keycode));
+	}
+	bool IsKeyUp(KeyCode keycode) noexcept
+	{
+		return !currentKey.at(static_cast<uint8_t>(keycode)) && prevKey.at(static_cast<uint8_t>(keycode));
 	}
 
 	bool IsLeft() noexcept
@@ -35,11 +68,11 @@ namespace Input
 	}
 	bool IsLeftDown() noexcept
 	{
-		return (s_CurrentMouseState.LeftButton == true && s_PrevMouseState.LeftButton == false);
+		return s_CurrentMouseState.LeftButton && !s_PrevMouseState.LeftButton;
 	}
 	bool IsLeftUp() noexcept
 	{
-		return (s_CurrentMouseState.LeftButton == false && s_PrevMouseState.LeftButton == true);
+		return !s_CurrentMouseState.LeftButton && s_PrevMouseState.LeftButton;
 	}
 
 	bool IsRight() noexcept
@@ -48,11 +81,11 @@ namespace Input
 	}
 	bool IsRightDown() noexcept
 	{
-		return (s_CurrentMouseState.RightButton == true && s_PrevMouseState.RightButton == false);
+		return s_CurrentMouseState.RightButton && !s_PrevMouseState.RightButton;
 	}
 	bool IsRightUp() noexcept
 	{
-		return (s_CurrentMouseState.RightButton == false && s_PrevMouseState.RightButton == true);
+		return !s_CurrentMouseState.RightButton && s_PrevMouseState.RightButton;
 	}
 
 	bool IsWheel() noexcept
@@ -61,11 +94,11 @@ namespace Input
 	}
 	bool IsWheelDown() noexcept
 	{
-		return (s_CurrentMouseState.WheelButton == true && s_PrevMouseState.WheelButton == false);
+		return s_CurrentMouseState.WheelButton && !s_PrevMouseState.WheelButton;
 	}
 	bool IsWheelUp() noexcept
 	{
-		return (s_CurrentMouseState.WheelButton == false && s_PrevMouseState.WheelButton == true);
+		return !s_CurrentMouseState.WheelButton && s_PrevMouseState.WheelButton;
 	}
 
 	const Vector2& MousePos() noexcept

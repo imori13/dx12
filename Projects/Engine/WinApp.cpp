@@ -2,7 +2,6 @@
 
 namespace
 {
-	HINSTANCE s_hInst = nullptr;
 	std::wstring s_windowName;
 }
 
@@ -11,13 +10,14 @@ namespace WinApp
 	uint32_t g_Width = 0;
 	uint32_t g_Height = 0;
 	HWND g_hWnd = nullptr;
+	HINSTANCE g_hInst = nullptr;
 
 	void InitWnd(HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
 		if(hInstance != nullptr)
 			hInstance = ::GetModuleHandle(nullptr);
 
-		s_hInst = hInstance;
+		g_hInst = hInstance;
 		g_Width = width;
 		g_Height = height;
 		s_windowName = L"iMoriEngine";
@@ -73,10 +73,10 @@ namespace WinApp
 	void TermWnd() noexcept
 	{
 		// ウィンドウの登録を解除
-		if(s_hInst != nullptr)
-		{ UnregisterClassW(s_windowName.c_str(), s_hInst); }
+		if(g_hInst != nullptr)
+		{ UnregisterClassW(s_windowName.c_str(), g_hInst); }
 
-		s_hInst = nullptr;
+		g_hInst = nullptr;
 		g_hWnd = nullptr;
 	}
 }

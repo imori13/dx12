@@ -41,7 +41,7 @@ void Texture::CreateWIC(const std::wstring_view path)
 void Texture::CreateTGA(const std::wstring_view path)
 {
 	// 持ってきた
-https://github.com/boxerprogrammer/directx12_samples/blob/master/Chapter9_Refactored2/Dx12Wrapper.cpp
+	// https://github.com/boxerprogrammer/directx12_samples/blob/master/Chapter9_Refactored2/Dx12Wrapper.cpp
 
 	DirectX::TexMetadata meta;
 	DirectX::ScratchImage image;
@@ -52,7 +52,12 @@ https://github.com/boxerprogrammer/directx12_samples/blob/master/Chapter9_Refact
 
 	//WriteToSubresourceで転送する用のヒープ設定
 	const auto texHeapProp = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
-	const auto resDesc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format, meta.width, meta.height, meta.arraySize, meta.mipLevels);
+	const auto resDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		meta.format,
+		gsl::narrow<uint64_t>(meta.width),
+		gsl::narrow<uint32_t>(meta.height),
+		gsl::narrow<uint16_t>(meta.arraySize),
+		gsl::narrow<uint16_t>(meta.mipLevels));
 
 	hr = Graphics::g_pDevice->CreateCommittedResource(
 		&texHeapProp,
@@ -64,10 +69,10 @@ https://github.com/boxerprogrammer/directx12_samples/blob/master/Chapter9_Refact
 	ENSURES(hr, L"TGAファイルの読み込み");
 
 	hr = m_pResource->WriteToSubresource(0,
-	nullptr,//全領域へコピー
-	img->pixels,//元データアドレス
-	img->rowPitch,//1ラインサイズ
-	img->slicePitch//全サイズ
+	nullptr,
+	img->pixels,
+	gsl::narrow<uint32_t>(img->rowPitch),
+	gsl::narrow<uint32_t>(img->slicePitch)
 	);
 	ENSURES(hr, L"TGAファイルWriteToSubresource");
 

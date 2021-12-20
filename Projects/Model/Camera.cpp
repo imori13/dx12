@@ -12,6 +12,22 @@ void Camera::Create(float fovDeg, float nearZ, float farZ) noexcept
 
 void Camera::Update()
 {
+	constexpr float moveSpeed = 0.1f;
+	if(Input::IsKey(KeyCode::W))
+	{ Position.z() += moveSpeed; }
+	else if(Input::IsKey(KeyCode::S))
+	{ Position.z() -= moveSpeed; }
+
+	if(Input::IsKey(KeyCode::D))
+	{ Position.x() += moveSpeed; }
+	else if(Input::IsKey(KeyCode::A))
+	{ Position.x() -= moveSpeed; }
+
+	if(Input::IsKey(KeyCode::R))
+	{ Position.y() += moveSpeed; }
+	else if(Input::IsKey(KeyCode::F))
+	{ Position.y() -= moveSpeed; }
+
 	// ‰æ–Êƒhƒ‰ƒbƒO‚ÅˆÚ“®—Ê‚ð‚Æ‚é
 	const Vector2 mousePos = Input::MousePos();
 

@@ -28,7 +28,9 @@
     <ClInclude Include="Renderer.h">
       <Filter>SourceFile\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -55,7 +57,9 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>SourceFile\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SourceFile">
