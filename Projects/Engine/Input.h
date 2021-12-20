@@ -72,7 +72,6 @@ namespace Input
 	bool IsRightDown() noexcept;
 	bool IsRightUp() noexcept;
 
-	void SetWheelValue(float value) noexcept;
 	float GetWheelValue() noexcept;
 	bool IsWheel() noexcept;
 	bool IsWheelDown() noexcept;

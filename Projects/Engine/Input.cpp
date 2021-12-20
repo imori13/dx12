@@ -88,11 +88,6 @@ namespace Input
 		return !s_CurrentMouseState.RightButton && s_PrevMouseState.RightButton;
 	}
 
-	void SetWheelValue(float value) noexcept
-	{
-		s_State.WheelValue = value;
-	}
-
 	float GetWheelValue() noexcept
 	{
 		return s_CurrentMouseState.WheelValue / WHEEL_DELTA;
@@ -123,6 +118,7 @@ namespace Input
 		constexpr float limit = 10000;
 		s_MousePos.x() = (x >= limit) ? (0) : (x);
 		s_MousePos.y() = (y >= limit) ? (0) : (y);
+		s_State.WheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
 
 		switch(message)
 		{

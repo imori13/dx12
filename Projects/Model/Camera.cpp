@@ -57,7 +57,7 @@ void Camera::MouseRotate(const Vector2& mousePos)
 	{
 		if(mousePos != m_PrevMousePos && m_PrevMousePos != Vector2::Zero())
 		{
-			constexpr float speed = 1.0f;
+			constexpr float speed = 2.0f;
 			constexpr float speedX = 1.0f;
 			constexpr float speedY = 1.5f;
 
@@ -75,7 +75,7 @@ void Camera::MouseMove(const Vector2& mousePos)
 {
 	if(Input::IsRight())
 	{
-		constexpr float speedXY = 0.1f;
+		constexpr float speedXY = 0.05f;
 		if(mousePos != m_PrevMousePos && m_PrevMousePos != Vector2::Zero())
 		{
 			const auto mouseDir = (mousePos - m_PrevMousePos) * speedXY;
