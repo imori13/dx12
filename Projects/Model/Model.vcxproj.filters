@@ -28,12 +28,6 @@
     <ClInclude Include="Renderer.h">
       <Filter>SourceFile\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>SourceFile\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix4x4.h">
-      <Filter>SourceFile\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
@@ -61,13 +55,7 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>SourceFile\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix4x4.cpp">
-      <Filter>SourceFile\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Vector3.cpp">
-      <Filter>SourceFile\Math</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SourceFile">
@@ -81,9 +69,6 @@
     </Filter>
     <Filter Include="SourceFile\Render">
       <UniqueIdentifier>{dbd7dfc8-9064-40fb-8810-31480d322af1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceFile\Math">
-      <UniqueIdentifier>{04f48de6-a899-4b2b-978b-4590136ce46c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

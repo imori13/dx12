@@ -11,6 +11,7 @@
 #include "TimeStamp.h"
 #include "Timer.h"
 #include "DataAverage.h"
+#include "Input.h"
 
 namespace GameCore
 {
@@ -18,6 +19,7 @@ namespace GameCore
 
 	void InitializeApplication(IGameApp& game)
 	{
+		Input::Initialize();
 		Timer::Initialize();
 		TimeStamp::Initialize();
 
@@ -33,7 +35,9 @@ namespace GameCore
 
 	bool UpdateApplication(IGameApp& game)
 	{
+		Input::Update();
 		Timer::Update();
+
 		DataAverage::Set(L"FPS", Timer::g_FrameTime, Average::Low);
 
 		TimeStamp::Begin();
@@ -101,7 +105,7 @@ namespace GameCore
 		//_CrtSetBreakAlloc(266);
 #endif
 		// ウィンドウ初期化
-		Window::InitWnd(hInstance, width, height);
+		WinApp::InitWnd(hInstance, width, height);
 
 		// アプリ初期化
 		InitializeApplication(game);
@@ -111,7 +115,7 @@ namespace GameCore
 		do
 		{
 			// ウィンドウ更新
-			const auto flag = Window::Update();
+			const auto flag = WinApp::Update();
 
 			// ウィンドウがfalseで終了
 			if(flag) { break; }
@@ -122,7 +126,7 @@ namespace GameCore
 		// アプリ終了
 		TerminateApplication(game);
 		// ウィンドウ終了
-		Window::TermWnd();
+		WinApp::TermWnd();
 
 		LOGLINE("■■■ 終了処理 ■■■");
 

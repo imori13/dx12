@@ -100,6 +100,8 @@
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="DataAverage.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="PipelineStateObject.cpp" />
     <ClCompile Include="ResourceHeap.cpp" />
     <ClCompile Include="pch.cpp">
@@ -110,6 +112,8 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeStamp.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
+    <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -119,8 +123,10 @@
     <ClInclude Include="GameCore.h" />
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="InputElement.h" />
     <ClInclude Include="DataAverage.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="PipelineStateObject.h" />
     <ClInclude Include="ResourceHeap.h" />
     <ClInclude Include="pch.h" />
@@ -131,6 +137,8 @@
     <ClInclude Include="TranslationBarrirUtil.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector3.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

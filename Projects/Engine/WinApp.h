@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Window
+namespace WinApp
 {
 	// global
 	extern uint32_t g_Width;

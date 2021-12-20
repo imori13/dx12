@@ -50,8 +50,8 @@ namespace Display
 			}
 			s_TearingSupport = SUCCEEDED(hr) && allowTearing;
 
-			g_AppWidth = Window::g_Width;
-			g_AppHeight = Window::g_Height;
+			g_AppWidth = WinApp::g_Width;
+			g_AppHeight = WinApp::g_Height;
 
 			// スワップチェインの設定
 			DXGI_SWAP_CHAIN_DESC desc = {};
@@ -67,7 +67,7 @@ namespace Display
 			desc.SampleDesc.Quality = 0;
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			desc.BufferCount = FRAME_COUNT;
-			desc.OutputWindow = Window::g_hWnd;
+			desc.OutputWindow = WinApp::g_hWnd;
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			//desc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
 			desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -79,7 +79,7 @@ namespace Display
 			ENSURES(hr, "SwapChain生成");
 
 			// DXGIのAlt+Enterを禁止する(CreateSwapchainの後に呼ぶ)
-			hr = pFactory->MakeWindowAssociation(Window::g_hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
+			hr = pFactory->MakeWindowAssociation(WinApp::g_hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
 			ENSURES(hr, "DXGIfullscreenn無効化");
 
 			// IDXGISwapChain3を取得
@@ -156,8 +156,8 @@ namespace Display
 		if(!fullscreenDesc.Windowed)
 		{
 			s_pSwapChain->SetFullscreenState(false, nullptr);
-			SetWindowLong(Window::g_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-			ShowWindow(Window::g_hWnd, SW_NORMAL);
+			SetWindowLong(WinApp::g_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+			ShowWindow(WinApp::g_hWnd, SW_NORMAL);
 		}
 		// Windowed -> Fullscreen
 		else
@@ -175,7 +175,7 @@ namespace Display
 		}
 
 		// 解像度を変更する
-		OnSizeChanged(Window::g_Width, Window::g_Height);
+		OnSizeChanged(WinApp::g_Width, WinApp::g_Height);
 
 		s_IsFullscreen = !s_IsFullscreen;
 	}

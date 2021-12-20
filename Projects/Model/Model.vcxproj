@@ -88,27 +88,23 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileInput.h" />
-    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PipelineInitializer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpTest.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileInput.cpp" />
-    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="PipelineInitializer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

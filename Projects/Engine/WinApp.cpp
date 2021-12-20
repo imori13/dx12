@@ -6,7 +6,7 @@ namespace
 	std::wstring s_windowName;
 }
 
-namespace Window
+namespace WinApp
 {
 	uint32_t g_Width = 0;
 	uint32_t g_Height = 0;

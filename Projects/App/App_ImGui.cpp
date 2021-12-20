@@ -7,6 +7,7 @@
 #include "DataAverage.h"
 #include "Command.h"
 #include "App_ImGui_Method.h"
+#include "Input.h"
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -49,7 +50,7 @@ namespace App_ImGui
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplWin32_Init(Window::g_hWnd);
+		ImGui_ImplWin32_Init(WinApp::g_hWnd);
 
 		const auto& handle = g_ResourceHeap.GetNextHandle();
 		ImGui_ImplDX12_Init(Graphics::g_pDevice.Get(), FRAME_COUNT,
@@ -132,7 +133,7 @@ namespace App_ImGui
 // imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WinApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if(ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{ return true; }
@@ -151,8 +152,8 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			{
 				RECT windowRect = {};
 				GetWindowRect(hWnd, &windowRect);
-				Window::g_Width = windowRect.right - windowRect.left;
-				Window::g_Height = windowRect.bottom - windowRect.top;
+				WinApp::g_Width = windowRect.right - windowRect.left;
+				WinApp::g_Height = windowRect.bottom - windowRect.top;
 
 				RECT clientRect = {};
 				GetClientRect(hWnd, &clientRect);
@@ -167,6 +168,24 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 			{
 				Display::ToggleFullscreen();
 			}
+			break;
+		}
+
+		case WM_ACTIVATEAPP:
+		case WM_INPUT:
+		case WM_MOUSEMOVE:
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEWHEEL:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
+		case WM_MOUSEHOVER:
+		{
+			Input::ProcessMessage(message, wParam, lParam);
 			break;
 		}
 

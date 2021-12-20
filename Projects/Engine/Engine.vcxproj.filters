@@ -11,6 +11,15 @@
     <Filter Include="Source File\GpuHeaps">
       <UniqueIdentifier>{59c55f4f-429a-49ca-9cc7-c0171c19ace5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source File\Math">
+      <UniqueIdentifier>{4a66361b-fbfe-40ae-83c7-1a656b5a0070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Device">
+      <UniqueIdentifier>{342a92ca-2b14-4bee-8c64-d23ee6df01d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Core">
+      <UniqueIdentifier>{b2dc48d9-9cb2-4ca5-9f32-51f07b9a3998}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UploadBuffer.cpp">
@@ -25,34 +34,46 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="DataAverage.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="Display.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="GameCore.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsCore.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCore.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsCore.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source File\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="WinApp.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
     <ClCompile Include="PipelineStateObject.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DataAverage.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
     <ClCompile Include="TimeStamp.cpp">
-      <Filter>Source File</Filter>
-    </ClCompile>
-    <ClCompile Include="WinApp.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,31 +96,46 @@
     <ClInclude Include="Texture.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="DataAverage.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
     <ClInclude Include="Debug.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="Display.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCore.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsCore.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="InputElement.h">
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Source File</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCore.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCore.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Source File\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApp.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="InputElement.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
     <ClInclude Include="PipelineStateObject.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DataAverage.h">
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -109,9 +145,6 @@
       <Filter>Source File</Filter>
     </ClInclude>
     <ClInclude Include="TranslationBarrirUtil.h">
-      <Filter>Source File</Filter>
-    </ClInclude>
-    <ClInclude Include="WinApp.h">
       <Filter>Source File</Filter>
     </ClInclude>
   </ItemGroup>

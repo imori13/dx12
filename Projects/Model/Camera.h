@@ -1,5 +1,6 @@
 #pragma once
 #include "Matrix4x4.h"
+#include "Vector2.h"
 
 class Camera
 {
@@ -11,7 +12,6 @@ public:
 	{
 	}
 	void Create(float fovDeg, float nearZ, float farZ);
-	void LookAt(const Vector3& target);
 	void Update();
 
 	const Matrix4x4& GetViewMatrix() const noexcept { return m_ViewMatrix; }
@@ -19,11 +19,16 @@ public:
 
 	Vector3 Position;
 	Vector3 Rotation;
+	Vector3 Foward;
 private:
 	Matrix4x4 m_ViewMatrix;
 	Matrix4x4 m_ProjMatrix;
 	float m_Fov;
 	float m_NearZ;
 	float m_FarZ;
+
+	Vector2 prevMousePos;
+	float m_Longitude = 1.5f;
+	float m_Latitude = 0;
 };
 

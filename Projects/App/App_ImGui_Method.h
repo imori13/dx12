@@ -16,7 +16,7 @@ namespace AppGui
 		ImGui::Begin("DebugWindow");
 		{
 			ImGui::Text("Hello World!");
-			ImGui::Text("WindowSize : W %d  H %d", Window::g_Width, Window::g_Height);
+			ImGui::Text("WindowSize : W %d  H %d", WinApp::g_Width, WinApp::g_Height);
 			ImGui::Text("AppSize    : W %d  H %d", Display::g_AppWidth, Display::g_AppHeight);
 
 			ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
