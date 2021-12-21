@@ -42,8 +42,8 @@ namespace Debug
 				  nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&error_text, 0, nullptr); \
 	Debug::Print(error_text); \
 
-	inline void LogResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
-	inline void LogResult(bool flag) noexcept { flag; }
+	inline void LogHResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
+	inline void LogHResult(bool flag) noexcept { flag; }
 
 	inline wchar_t const* GetFileName(std::wstring_view path) noexcept
 	{
@@ -84,7 +84,7 @@ namespace Debug
 	namespace
 	{
 #define ASSERT( FLAG, ... ) \
-	if (Debug::Check(FLAG)) \
+		if (Debug::Check(FLAG)) \
 		{ \
 			if(Debug::HAVESTRING(__VA_ARGS__)) \
 			{ \
@@ -94,22 +94,22 @@ namespace Debug
 		} else { \
 			Debug::Print("FAILED: "); \
 			FILE_POS_LOG(__VA_ARGS__); \
-			Debug::LogResult(FLAG); \
+			Debug::LogHResult(FLAG); \
+			MessageBox(nullptr, "エラーが発生しました。\n出力ログを確認してください。", TEXT("DebugError"), MB_OK | MB_ICONERROR); \
 			__debugbreak(); \
-			std::terminate(); \
 		}
 	}
 
-#elif _RELEASE
+#else
 
 	// 事前確認
 	namespace
 	{
-#define ASSERT(FLAG, ... ) (FLAG) ? (static_cast<void>(0)) : (std::terminate())
+#define ASSERT(FLAG, ... )
 	}
 
-#define LOG( msg, ... ) {}
-#define LOGLINE( msg, ... ) {}
+#define LOG( msg, ... )
+#define LOGLINE( msg, ... )
 
 #endif
 
