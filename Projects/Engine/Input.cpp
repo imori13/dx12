@@ -11,165 +11,145 @@ struct MouseState
 
 namespace
 {
-	// マウス用
-	Vector2 s_MousePos;
-	MouseState s_State;
-	MouseState s_PrevMouseState;
-	MouseState s_CurrentMouseState;
+	IDirectInput8* s_InputInterface;
 
 	// キーボード用
-	IDirectInputDevice8* devkeyboard;
+	IDirectInputDevice8* s_KeyboardDevice;
 	std::array<BYTE, 256> currentKey;
 	std::array<BYTE, 256> prevKey;
+
+	// マウス用
+	IDirectInputDevice8* s_MouseDevice;
+	Vector2 s_MousePosition;
+	Vector2 s_MouseVelocity;
+	float s_MouseVelocityZ;
+	DIMOUSESTATE prevMouse;
+	DIMOUSESTATE currentMouse;
+}
+
+namespace
+{
+	void UpdateKeyboard() noexcept
+	{
+		// キーボード状態取得
+		{
+			prevKey = currentKey;
+			auto hr = s_KeyboardDevice->Acquire();
+			hr = s_KeyboardDevice->GetDeviceState(currentKey.size() * sizeof(BYTE), currentKey.data());
+		}
+	}
+
+	void UpdateMouse()
+	{
+		// マウス状態取得
+		{
+			prevMouse = currentMouse;
+			auto hr = s_MouseDevice->Acquire();
+			hr = s_MouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse);
+		}
+
+		// マウス座標取得
+		{
+			POINT p;
+			GetCursorPos(&p);
+			ScreenToClient(WinApp::g_hWnd, &p);
+			s_MousePosition = Vector2(static_cast<float>(p.x), static_cast<float>(p.y));
+		}
+
+		// マウス移動量取得
+		{
+			constexpr float Normalize = 1.0f / 120.0f;
+			s_MouseVelocity = Vector2(static_cast<float>(currentMouse.lX), static_cast<float>(currentMouse.lY));
+			s_MouseVelocityZ = static_cast<float>(currentMouse.lZ) * Normalize;
+		}
+	}
+
+	constexpr uint32_t MOUSE_ON_VALUE = 0x80;
+	constexpr inline bool IsClick(const DIMOUSESTATE& state, Mouse mouse)
+	{
+		return gsl::at(state.rgbButtons, static_cast<uint32_t>(mouse)) & MOUSE_ON_VALUE;
+	}
+
+	constexpr inline bool IsKey(gsl::span<BYTE> span, Key key)
+	{
+		return span[static_cast<uint32_t>(key)];
+	}
 }
 
 namespace Input
 {
 	void Initialize() noexcept
 	{
-		IDirectInput8* dinput = nullptr;
-		auto result = DirectInput8Create(
-			WinApp::g_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&dinput), nullptr);
-		result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, nullptr);
-		result = devkeyboard->SetDataFormat(&c_dfDIKeyboard);
-		result = devkeyboard->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	}
+		auto hr = DirectInput8Create(WinApp::g_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&s_InputInterface), nullptr);
+		ENSURES(hr);
 
-	void Update() noexcept
-	{
-		s_PrevMouseState = s_CurrentMouseState;
-		s_CurrentMouseState = s_State;
-
-		// 1フレーム前のキー状態を保存
-		for(int i = 0; i < currentKey.size(); i++)
+		// キーボード
 		{
-			prevKey.at(i) = currentKey.at(i);
-		}
-		auto result = devkeyboard->Acquire();
-		result = devkeyboard->GetDeviceState(currentKey.size() * sizeof(BYTE), currentKey.data());
-	}
-
-	bool IsKey(KeyCode keycode) noexcept
-	{
-		return currentKey.at(static_cast<uint8_t>(keycode));
-	}
-	bool IsKeyDown(KeyCode keycode) noexcept
-	{
-		return currentKey.at(static_cast<uint8_t>(keycode)) && !prevKey.at(static_cast<uint8_t>(keycode));
-	}
-	bool IsKeyUp(KeyCode keycode) noexcept
-	{
-		return !currentKey.at(static_cast<uint8_t>(keycode)) && prevKey.at(static_cast<uint8_t>(keycode));
-	}
-
-	bool IsLeft() noexcept
-	{
-		return s_CurrentMouseState.LeftButton;
-	}
-	bool IsLeftDown() noexcept
-	{
-		return s_CurrentMouseState.LeftButton && !s_PrevMouseState.LeftButton;
-	}
-	bool IsLeftUp() noexcept
-	{
-		return !s_CurrentMouseState.LeftButton && s_PrevMouseState.LeftButton;
-	}
-
-	bool IsRight() noexcept
-	{
-		return s_CurrentMouseState.RightButton;
-	}
-	bool IsRightDown() noexcept
-	{
-		return s_CurrentMouseState.RightButton && !s_PrevMouseState.RightButton;
-	}
-	bool IsRightUp() noexcept
-	{
-		return !s_CurrentMouseState.RightButton && s_PrevMouseState.RightButton;
-	}
-
-	float GetWheelValue() noexcept
-	{
-		return s_CurrentMouseState.WheelValue / WHEEL_DELTA;
-	}
-
-	bool IsWheel() noexcept
-	{
-		return s_CurrentMouseState.WheelButton;
-	}
-	bool IsWheelDown() noexcept
-	{
-		return s_CurrentMouseState.WheelButton && !s_PrevMouseState.WheelButton;
-	}
-	bool IsWheelUp() noexcept
-	{
-		return !s_CurrentMouseState.WheelButton && s_PrevMouseState.WheelButton;
-	}
-
-	const Vector2& MousePos() noexcept
-	{
-		return s_MousePos;
-	}
-
-	LRESULT CALLBACK ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) noexcept(false)
-	{
-		const float x = LOWORD(lParam);
-		const float y = HIWORD(lParam);
-		constexpr float limit = 10000;
-		s_MousePos.x() = (x >= limit) ? (0) : (x);
-		s_MousePos.y() = (y >= limit) ? (0) : (y);
-		s_State.WheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
-
-		switch(message)
-		{
-			// 左クリック
-			case WM_LBUTTONDOWN:
-			{
-				s_State.LeftButton = true;
-				break;
-			}
-			case WM_LBUTTONUP:
-			{
-				s_State.LeftButton = false;
-				break;
-			}
-
-			// 右クリック
-			case WM_RBUTTONDOWN:
-			{
-				s_State.RightButton = true;
-				break;
-			}
-			case WM_RBUTTONUP:
-			{
-				s_State.RightButton = false;
-				break;
-			}
-
-			// ホイールクリック
-			case WM_MBUTTONDOWN:
-			{
-				s_State.WheelButton = true;
-				break;
-			}
-			case WM_MBUTTONUP:
-			{
-				s_State.WheelButton = false;
-				break;
-			}
-			// ホイール
-			case WM_MOUSEWHEEL:
-			{
-				//s_State.WheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
-				break;
-			}
-
-			default:
-			{
-				break;
-			}
+			hr = s_InputInterface->CreateDevice(GUID_SysKeyboard, &s_KeyboardDevice, nullptr);
+			ENSURES(hr);
+			hr = s_KeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
+			ENSURES(hr);
+			hr = s_KeyboardDevice->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+			ENSURES(hr);
+			hr = s_KeyboardDevice->Acquire();
+			ENSURES(hr);
 		}
 
-		return true;
+		// マウス
+		{
+			hr = s_InputInterface->CreateDevice(GUID_SysMouse, &s_MouseDevice, nullptr);
+			ENSURES(hr);
+			hr = s_MouseDevice->SetDataFormat(&c_dfDIMouse);
+			ENSURES(hr);
+			hr = s_MouseDevice->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+			ENSURES(hr);
+			hr = s_MouseDevice->Acquire();
+			ENSURES(hr);
+		}
+	}
+
+	void Update()
+	{
+		UpdateKeyboard();
+		UpdateMouse();
+	}
+
+	bool IsKeyHold(Key keycode) noexcept
+	{
+		return IsKey(currentKey, keycode);
+	}
+	bool IsKeyDown(Key keycode) noexcept
+	{
+		return IsKey(currentKey, keycode) && !IsKey(prevKey, keycode);
+	}
+	bool IsKeyUp(Key keycode) noexcept
+	{
+		return !IsKey(currentKey, keycode) && IsKey(prevKey, keycode);
+	}
+
+	bool IsMouseDown(Mouse mouseCode) noexcept
+	{
+		return IsClick(currentMouse, mouseCode) && !IsClick(prevMouse, mouseCode);
+	}
+	bool IsMouseHold(Mouse mouseCode) noexcept
+	{
+		return IsClick(currentMouse, mouseCode);
+	}
+	bool IsMouseUp(Mouse mouseCode) noexcept
+	{
+		return !IsClick(currentMouse, mouseCode) && IsClick(prevMouse, mouseCode);
+	}
+
+	const Vector2& MousePosition() noexcept
+	{
+		return s_MousePosition;
+	}
+	const Vector2& MouseVelocity() noexcept
+	{
+		return s_MouseVelocity;
+	}
+	float MouseWheelVelocity() noexcept
+	{
+		return s_MouseVelocityZ;
 	}
 }

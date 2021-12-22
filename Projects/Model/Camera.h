@@ -30,7 +30,6 @@ private:
 	Vector3 m_Position;
 	Vector3 m_Rotation;
 
-	Vector2 m_PrevMousePos;
 	float m_Longitude = 1.5f;
 	float m_Latitude = 0;
 	float m_DestLongitude = 1.5f;

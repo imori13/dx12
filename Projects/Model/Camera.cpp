@@ -14,24 +14,24 @@ void Camera::Create(float fovDeg, float nearZ, float farZ) noexcept
 void Camera::Update()
 {
 	constexpr float moveSpeed = 0.1f;
-	if(Input::IsKey(KeyCode::W))
+	if(Input::IsKeyHold(Key::W))
 	{ m_DestPosition.z() += moveSpeed; }
-	else if(Input::IsKey(KeyCode::S))
+	else if(Input::IsKeyHold(Key::S))
 	{ m_DestPosition.z() -= moveSpeed; }
 
-	if(Input::IsKey(KeyCode::D))
+	if(Input::IsKeyHold(Key::D))
 	{ m_DestPosition.x() += moveSpeed; }
-	else if(Input::IsKey(KeyCode::A))
+	else if(Input::IsKeyHold(Key::A))
 	{ m_DestPosition.x() -= moveSpeed; }
 
-	if(Input::IsKey(KeyCode::R))
+	if(Input::IsKeyHold(Key::R))
 	{ m_DestPosition.y() += moveSpeed; }
-	else if(Input::IsKey(KeyCode::F))
+	else if(Input::IsKeyHold(Key::F))
 	{ m_DestPosition.y() -= moveSpeed; }
 
-	const Vector2 mousePos = Input::MousePos();
-	MouseRotate(mousePos);
-	MouseMove(mousePos);
+	const Vector2 mouseVelocity = Input::MouseVelocity();
+	MouseRotate(mouseVelocity);
+	MouseMove(mouseVelocity);
 
 	// •âŠ®
 	const float rate = 0.1f * Timer::g_FrameTime * 60.0f;
@@ -46,45 +46,37 @@ void Camera::Update()
 
 	m_ViewMatrix = Matrix4x4::LookAt(m_Position, m_Position + m_Rotation, Vector3::Up());
 	m_ProjMatrix = Matrix4x4::PerspectiveProjection(m_Fov, Display::g_Aspect, m_NearZ, m_FarZ);
-
-
-	m_PrevMousePos = Input::MousePos();
 }
 
-void Camera::MouseRotate(const Vector2& mousePos)
+void Camera::MouseRotate(const Vector2& mouseVelocity)
 {
-	if(Input::IsLeft())
+	if(Input::IsMouseHold(Mouse::Left))
 	{
-		if(mousePos != m_PrevMousePos && m_PrevMousePos != Vector2::Zero())
-		{
-			constexpr float speed = 2.0f;
-			constexpr float speedX = 1.0f;
-			constexpr float speedY = 1.5f;
+		constexpr float speed = 2.0f;
+		constexpr float speedX = 1.0f;
+		constexpr float speedY = 1.5f;
 
-			const auto mouseDir = (mousePos - m_PrevMousePos) * speed;
-			constexpr float toRad = 3.141592f * 180.0f;
-			m_DestLongitude += -mouseDir.x() / toRad * speedX;
-			m_DestLatitude += -mouseDir.y() / toRad * speedY;
+		constexpr float toRad = 3.141592f * 180.0f;
+		m_DestLongitude += -mouseVelocity.x() / toRad * speed * speedX;
+		m_DestLatitude += -mouseVelocity.y() / toRad * speed * speedY;
 
-			m_DestLatitude = std::clamp(m_DestLatitude, -1.5f, 1.5f);
-		}
+		m_DestLatitude = std::clamp(m_DestLatitude, -1.5f, 1.5f);
 	}
 }
 
-void Camera::MouseMove(const Vector2& mousePos)
+void Camera::MouseMove(const Vector2& mouseVelocity)
 {
-	if(Input::IsRight())
+	if(Input::IsMouseHold(Mouse::Right))
 	{
 		constexpr float speedXY = 0.05f;
-		if(mousePos != m_PrevMousePos && m_PrevMousePos != Vector2::Zero())
+		if(mouseVelocity != Vector2::Zero())
 		{
-			const auto mouseDir = (mousePos - m_PrevMousePos) * speedXY;
-			m_DestPosition.x() += mouseDir.x();
-			m_DestPosition.z() += -mouseDir.y();
+			m_DestPosition.x() += mouseVelocity.x() * speedXY;
+			m_DestPosition.z() += -mouseVelocity.y() * speedXY;
 		}
 	}
 
-	const auto wheelval = Input::GetWheelValue();
+	const auto wheelval = Input::MouseWheelVelocity();
 	if(wheelval != 0)
 	{
 		constexpr float speedY = 1.0f;

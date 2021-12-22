@@ -2,7 +2,7 @@
 #include "Vector2.h"
 #include <dinput.h>
 
-enum class KeyCode
+enum class Key
 {
 	Num0 = DIK_0,
 	Num1 = DIK_1,
@@ -55,28 +55,27 @@ enum class KeyCode
 	Back = DIK_BACK,
 };
 
+enum class Mouse
+{
+	Left = 0,
+	Right = 1,
+	Wheel = 2,
+};
+
 namespace Input
 {
 	void Initialize() noexcept;
-	void Update() noexcept;
+	void Update();
 
-	bool IsKey(KeyCode keycode) noexcept;
-	bool IsKeyDown(KeyCode keycode) noexcept;
-	bool IsKeyUp(KeyCode keycode) noexcept;
+	bool IsKeyHold(Key keycode) noexcept;
+	bool IsKeyDown(Key keycode) noexcept;
+	bool IsKeyUp(Key keycode) noexcept;
 
-	bool IsLeft() noexcept;
-	bool IsLeftDown() noexcept;
-	bool IsLeftUp() noexcept;
+	bool IsMouseDown(Mouse mouseCode) noexcept;
+	bool IsMouseHold(Mouse mouseCode) noexcept;
+	bool IsMouseUp(Mouse mouseCode) noexcept;
 
-	bool IsRight() noexcept;
-	bool IsRightDown() noexcept;
-	bool IsRightUp() noexcept;
-
-	float GetWheelValue() noexcept;
-	bool IsWheel() noexcept;
-	bool IsWheelDown() noexcept;
-	bool IsWheelUp() noexcept;
-	const Vector2& MousePos() noexcept;
-
-	extern LRESULT CALLBACK ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) noexcept(false);
+	const Vector2& MousePosition() noexcept;
+	const Vector2& MouseVelocity() noexcept;
+	float MouseWheelVelocity() noexcept;
 };
