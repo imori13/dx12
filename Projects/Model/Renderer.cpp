@@ -9,7 +9,7 @@ namespace
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
 }
 
-void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename)
+void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, uint32_t objectCount)
 {
 	auto model = ResourceManager::GetMesh(modelName);
 
@@ -18,11 +18,11 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, st
 	for(const auto& mesh : model.ModelMeshes)
 	{
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-		renderObject.Create(mesh, model.ModelMaterials.at(mesh.MaterialId), texture, 100);
+		renderObject.Create(mesh, model.ModelMaterials.at(mesh.MaterialId), texture, objectCount);
 	}
 }
 
-void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName)
+void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, uint32_t objectCount)
 {
 	auto model = ResourceManager::GetMesh(modelName);
 
@@ -34,7 +34,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName)
 		auto texture = ResourceManager::GetTexture(textureName);
 
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-		renderObject.Create(mesh, material, texture, 100);
+		renderObject.Create(mesh, material, texture, objectCount);
 	}
 }
 

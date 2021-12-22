@@ -12,8 +12,8 @@
 
 namespace
 {
+	constexpr bool s_GUI_ENABLE = true;
 	bool s_ViewportsEnable;
-	bool s_GUI_ENABLE = true;
 }
 
 namespace App_ImGui
@@ -61,7 +61,7 @@ namespace App_ImGui
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		//AppGui::DebugViewEnable();
+		AppGui::DebugViewEnable();
 		AppGui::FillEnable();
 		AppGui::FramePieEnable();
 		//AppGui::FrameViewrEnable();
@@ -98,30 +98,36 @@ namespace App_ImGui
 
 	void Begin(std::string_view name)
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::Begin(name.data());
 	}
 
 	void CreateSlider(std::string_view name, gsl::not_null<float*> value)
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::SliderFloat(name.data(), value, -10, 10);
 	}
 
 	void CreateSlider(std::string_view name, gsl::not_null<Vector3*> vec)
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::SliderFloat3(name.data(), vec->data(), -10, 10);
 	}
 
 	void DragSlider(std::string_view name, gsl::not_null<float*> value)
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::DragFloat(name.data(), value);
 	}
 	void DragSlider(std::string_view name, gsl::not_null<Vector3*> vec)
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::DragFloat3(name.data(), vec->data());
 	}
 
 	void End()
 	{
+		if(!s_GUI_ENABLE) { return; }
 		ImGui::End();
 	}
 }
@@ -131,8 +137,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 LRESULT CALLBACK WinApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if(ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
-	{ return true; }
+	if(s_GUI_ENABLE)
+	{
+		if(ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		{ return true; }
+	}
 
 	switch(message)
 	{

@@ -82,7 +82,7 @@ namespace
 		}
 
 		const auto title = boost::format("DEBUG_ERROR -> %s [ line : %lu ]") % FileName(file).c_str() % line;
-		MessageBox(nullptr, error_text.c_str(), title.str().c_str(), MB_OK | MB_ICONERROR);
+		MessageBoxA(nullptr, error_text.c_str(), title.str().c_str(), MB_OK | MB_ICONERROR);
 	}
 
 	constexpr inline bool Check(bool flag) noexcept { return flag; }

@@ -79,6 +79,7 @@ IF %ERRORLEVEL% LSS 8 EXIT 0</Command>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Engine;$(ProjectDir)..\Model;$(ProjectDir)..\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
       <OmitFramePointers>true</OmitFramePointers>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

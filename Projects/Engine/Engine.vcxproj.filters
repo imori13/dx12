@@ -76,6 +76,9 @@
     <ClCompile Include="TimeStamp.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source File\Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GpuResource.h">
@@ -149,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="MyMath.h">
       <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Source File\Device</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
