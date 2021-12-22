@@ -1,5 +1,6 @@
 #include "Input.h"
 #include "WinApp.h"
+#include "Debug.h"
 
 struct MouseState
 {
@@ -29,23 +30,39 @@ namespace
 
 namespace
 {
+	constexpr inline void DebugHRESULT(HRESULT hr) noexcept
+	{
+		// 問題なし(停止しない) : ウィンドウが裏面(デバイス状態は取得されない)
+		if(FAILED(hr))
+			LOGLINE("WARNING : Input.cpp DebugHRESULT(hr) 画面未検出");
+	}
+
 	void UpdateKeyboard() noexcept
 	{
 		// キーボード状態取得
 		{
 			prevKey = currentKey;
-			auto hr = s_KeyboardDevice->Acquire();
-			hr = s_KeyboardDevice->GetDeviceState(currentKey.size() * sizeof(BYTE), currentKey.data());
+
+			auto hr = s_KeyboardDevice->GetDeviceState(gsl::narrow<DWORD>(currentKey.size() * sizeof(BYTE)), currentKey.data());
+			if(FAILED(hr))
+			{
+				hr = s_KeyboardDevice->Acquire();
+				DebugHRESULT(hr);
+			}
 		}
 	}
-
 	void UpdateMouse()
 	{
 		// マウス状態取得
 		{
 			prevMouse = currentMouse;
-			auto hr = s_MouseDevice->Acquire();
-			hr = s_MouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse);
+			auto hr = s_MouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse);
+
+			if(FAILED(hr))
+			{
+				hr = s_MouseDevice->Acquire();
+				DebugHRESULT(hr);
+			}
 		}
 
 		// マウス座標取得
@@ -64,15 +81,15 @@ namespace
 		}
 	}
 
-	constexpr uint32_t MOUSE_ON_VALUE = 0x80;
-	constexpr inline bool IsClick(const DIMOUSESTATE& state, Mouse mouse)
+	constexpr inline uint32_t MOUSE_ON_VALUE = 0x80;
+	constexpr inline bool IsClick(const DIMOUSESTATE& state, Mouse mousecode)
 	{
-		return gsl::at(state.rgbButtons, static_cast<uint32_t>(mouse)) & MOUSE_ON_VALUE;
+		return gsl::at(state.rgbButtons, static_cast<uint32_t>(mousecode)) & MOUSE_ON_VALUE;
 	}
 
-	constexpr inline bool IsKey(gsl::span<BYTE> span, Key key)
+	constexpr inline bool IsKey(gsl::span<BYTE> state, Keys keycode)
 	{
-		return span[static_cast<uint32_t>(key)];
+		return state[static_cast<uint32_t>(keycode)];
 	}
 }
 
@@ -80,7 +97,9 @@ namespace Input
 {
 	void Initialize() noexcept
 	{
-		auto hr = DirectInput8Create(WinApp::g_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&s_InputInterface), nullptr);
+		auto hr = DirectInput8Create(
+			WinApp::g_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8,
+			reinterpret_cast<LPVOID*>(&s_InputInterface), nullptr);
 		ENSURES(hr);
 
 		// キーボード
@@ -91,8 +110,11 @@ namespace Input
 			ENSURES(hr);
 			hr = s_KeyboardDevice->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 			ENSURES(hr);
+
 			hr = s_KeyboardDevice->Acquire();
-			ENSURES(hr);
+			DebugHRESULT(hr);
+			hr = s_KeyboardDevice->Poll();
+			DebugHRESULT(hr);
 		}
 
 		// マウス
@@ -102,9 +124,12 @@ namespace Input
 			hr = s_MouseDevice->SetDataFormat(&c_dfDIMouse);
 			ENSURES(hr);
 			hr = s_MouseDevice->SetCooperativeLevel(WinApp::g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-			ENSURES(hr);
+			ENSURES(hr);	
+
 			hr = s_MouseDevice->Acquire();
-			ENSURES(hr);
+			DebugHRESULT(hr);
+			hr = s_MouseDevice->Poll();
+			DebugHRESULT(hr);
 		}
 	}
 
@@ -114,30 +139,60 @@ namespace Input
 		UpdateMouse();
 	}
 
-	bool IsKeyHold(Key keycode) noexcept
+	void Terminate() noexcept
+	{
+		HRESULT hr = {};
+		uint64_t counter = 0;
+
+		// キーボードの破棄
+		{
+			hr = s_KeyboardDevice->Unacquire();
+			ENSURES(hr);
+
+			counter = s_KeyboardDevice->Release();
+			ENSURES(counter == 0);
+		}
+
+		// マウスの破棄
+		{
+			hr = s_MouseDevice->Unacquire();
+			ENSURES(hr);
+
+			counter = s_MouseDevice->Release();
+			ENSURES(counter == 0);
+		}
+
+		// インターフェースの破棄
+		counter = s_InputInterface->Release();
+		ENSURES(counter == 0);
+
+		LOGLINE("InputDevice破棄");
+	}
+
+	bool IsKeyHold(Keys keycode) noexcept
 	{
 		return IsKey(currentKey, keycode);
 	}
-	bool IsKeyDown(Key keycode) noexcept
+	bool IsKeyDown(Keys keycode) noexcept
 	{
 		return IsKey(currentKey, keycode) && !IsKey(prevKey, keycode);
 	}
-	bool IsKeyUp(Key keycode) noexcept
+	bool IsKeyUp(Keys keycode) noexcept
 	{
 		return !IsKey(currentKey, keycode) && IsKey(prevKey, keycode);
 	}
 
-	bool IsMouseDown(Mouse mouseCode) noexcept
+	bool IsMouseDown(Mouse mousecode) noexcept
 	{
-		return IsClick(currentMouse, mouseCode) && !IsClick(prevMouse, mouseCode);
+		return IsClick(currentMouse, mousecode) && !IsClick(prevMouse, mousecode);
 	}
-	bool IsMouseHold(Mouse mouseCode) noexcept
+	bool IsMouseHold(Mouse mousecode) noexcept
 	{
-		return IsClick(currentMouse, mouseCode);
+		return IsClick(currentMouse, mousecode);
 	}
-	bool IsMouseUp(Mouse mouseCode) noexcept
+	bool IsMouseUp(Mouse mousecode) noexcept
 	{
-		return !IsClick(currentMouse, mouseCode) && IsClick(prevMouse, mouseCode);
+		return !IsClick(currentMouse, mousecode) && IsClick(prevMouse, mousecode);
 	}
 
 	const Vector2& MousePosition() noexcept

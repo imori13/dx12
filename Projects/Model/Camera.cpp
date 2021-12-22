@@ -14,19 +14,19 @@ void Camera::Create(float fovDeg, float nearZ, float farZ) noexcept
 void Camera::Update()
 {
 	constexpr float moveSpeed = 0.1f;
-	if(Input::IsKeyHold(Key::W))
+	if(Input::IsKeyHold(Keys::W))
 	{ m_DestPosition.z() += moveSpeed; }
-	else if(Input::IsKeyHold(Key::S))
+	else if(Input::IsKeyHold(Keys::S))
 	{ m_DestPosition.z() -= moveSpeed; }
 
-	if(Input::IsKeyHold(Key::D))
+	if(Input::IsKeyHold(Keys::D))
 	{ m_DestPosition.x() += moveSpeed; }
-	else if(Input::IsKeyHold(Key::A))
+	else if(Input::IsKeyHold(Keys::A))
 	{ m_DestPosition.x() -= moveSpeed; }
 
-	if(Input::IsKeyHold(Key::R))
+	if(Input::IsKeyHold(Keys::R))
 	{ m_DestPosition.y() += moveSpeed; }
-	else if(Input::IsKeyHold(Key::F))
+	else if(Input::IsKeyHold(Keys::F))
 	{ m_DestPosition.y() -= moveSpeed; }
 
 	const Vector2 mouseVelocity = Input::MouseVelocity();
