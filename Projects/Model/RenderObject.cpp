@@ -40,14 +40,17 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	// Transform生成
 	{
 		m_TransformBuffers.resize(objectCount);
+		m_Transforms.reserve(objectCount);
 
-		for(auto i = 0u; i < objectCount; ++i)
+#pragma omp parallel for
+		for(int i = 0; i < gsl::narrow<int>(objectCount); ++i)
 		{
 			auto& buffer = m_TransformBuffers.at(i);
 
 			buffer.Create(sizeof(Transform), sizeof(Transform));
 			Transform* transform = static_cast<Transform*>(buffer.Map());
 
+#pragma omp critical
 			m_Transforms.emplace_back(transform);
 
 			// ビュー設定
@@ -105,15 +108,17 @@ void RenderObject::Initialize()
 	m_WaitDraw.clear();
 }
 
-void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection)
+void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, uint32_t index)
 {
+#ifdef _DEBUG
 	if(m_DrawIndex >= m_ObjectCount)
 	{
 		LOGLINE(L"WARNING 描画呼び出し制限に達したので、描画を無視しました");
 		return;
 	}
+#endif
 
-	auto instance = m_Transforms.at(m_DrawIndex);
+	auto instance = m_Transforms.at(index);
 	instance->World = world.Data();
 	instance->View = view.Data();
 	instance->Proj = projection.Data();
@@ -139,7 +144,6 @@ void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList
 	for(auto i = 0u; i < m_DrawIndex; ++i)
 	{
 		cmdList->SetGraphicsRootConstantBufferView(0, m_TransformBuffers.at(i).GetConstantLocation());
-
 		cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 	}
 }

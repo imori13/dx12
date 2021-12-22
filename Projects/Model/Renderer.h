@@ -12,8 +12,8 @@ namespace Renderer
 
 	gsl::not_null<ID3D12GraphicsCommandList*> Begin();
 
-	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection);
-	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera);
+	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection,uint32_t index);
+	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera, uint32_t index);
 
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
