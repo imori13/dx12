@@ -13,22 +13,6 @@ void Camera::Create(float fovDeg, float nearZ, float farZ) noexcept
 
 void Camera::Update()
 {
-	constexpr float moveSpeed = 0.1f;
-	if(Input::IsKeyHold(Keys::W))
-	{ m_DestPosition.z() += moveSpeed; }
-	else if(Input::IsKeyHold(Keys::S))
-	{ m_DestPosition.z() -= moveSpeed; }
-
-	if(Input::IsKeyHold(Keys::D))
-	{ m_DestPosition.x() += moveSpeed; }
-	else if(Input::IsKeyHold(Keys::A))
-	{ m_DestPosition.x() -= moveSpeed; }
-
-	if(Input::IsKeyHold(Keys::R))
-	{ m_DestPosition.y() += moveSpeed; }
-	else if(Input::IsKeyHold(Keys::F))
-	{ m_DestPosition.y() -= moveSpeed; }
-
 	const Vector2 mouseVelocity = Input::MouseVelocity();
 	MouseRotate(mouseVelocity);
 	MouseMove(mouseVelocity);
@@ -91,4 +75,21 @@ void Camera::MouseMove(const Vector2& mouseVelocity)
 		constexpr float speedY = 1.0f;
 		m_DestPosition.y() += wheelval * speedY;
 	}
+
+
+	constexpr float moveSpeed = 0.1f;
+	if(Input::IsKeyHold(Keys::W))
+	{ m_DestPosition += foward * moveSpeed; }
+	else if(Input::IsKeyHold(Keys::S))
+	{ m_DestPosition += -foward * moveSpeed; }
+
+	if(Input::IsKeyHold(Keys::D))
+	{ m_DestPosition += right * moveSpeed; }
+	else if(Input::IsKeyHold(Keys::A))
+	{ m_DestPosition += -right * moveSpeed; }
+
+	if(Input::IsKeyHold(Keys::R))
+	{ m_DestPosition.y() += moveSpeed; }
+	else if(Input::IsKeyHold(Keys::F))
+	{ m_DestPosition.y() -= moveSpeed; }
 }

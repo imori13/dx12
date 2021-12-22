@@ -10,8 +10,10 @@ namespace
 	Microsoft::WRL::ComPtr<IDXGISwapChain3> s_pSwapChain = nullptr;
 	ResourceHeap s_RenderTargetHeap;
 	ResourceHeap s_DepthStencilHeap;
-	bool s_IsFullscreen = false;
-	bool s_TearingSupport = false;
+	bool s_IsFullscreen{};
+	bool s_TearingSupport{};
+
+	constexpr uint32_t s_RefreshRate = 120;
 }
 
 namespace Display
@@ -59,7 +61,7 @@ namespace Display
 			desc.Windowed = !s_IsFullscreen;
 			desc.BufferDesc.Width = g_AppWidth;
 			desc.BufferDesc.Height = g_AppHeight;
-			desc.BufferDesc.RefreshRate.Numerator = 120;		// リフレッシュレート
+			desc.BufferDesc.RefreshRate.Numerator = s_RefreshRate;		// リフレッシュレート
 			desc.BufferDesc.RefreshRate.Denominator = 1;
 			desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -168,7 +170,7 @@ namespace Display
 			desc.Width = 1920;
 			desc.Height = 1080;
 			desc.RefreshRate.Denominator = 1;
-			desc.RefreshRate.Numerator = 60;
+			desc.RefreshRate.Numerator = s_RefreshRate;
 			desc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 			s_pSwapChain->ResizeTarget(&desc);
@@ -176,7 +178,7 @@ namespace Display
 		}
 
 		// 解像度を変更する
-		OnSizeChanged(WinApp::g_Width, WinApp::g_Height);
+		//OnSizeChanged(WinApp::g_Width, WinApp::g_Height);
 
 		s_IsFullscreen = !s_IsFullscreen;
 	}
