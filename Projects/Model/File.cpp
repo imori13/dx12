@@ -1,4 +1,5 @@
 #include "File.h"
+#include "Debug.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -8,13 +9,13 @@ namespace File
 	const bool Exists(std::wstring_view name)
 	{
 		const bool flag = boost::filesystem::exists(name.data());
-		ENSURES(flag == true, L"ファイル検索 [ %s ]", name.data());
+		ENSURES(flag, L"ファイル検索 [ %s ]", name.data());
 		return flag;
 	}
 
 	const Path LoadPath(std::wstring_view name)
 	{
-		Exists(name.data());
+		Exists(name);
 
 		boost::filesystem::wpath boostPath = name.data();
 

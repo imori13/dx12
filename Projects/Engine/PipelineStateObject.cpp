@@ -1,4 +1,16 @@
 #include "PipelineStateObject.h"
+#include "Debug.h"
+
+void PipelineStateObject::Create()
+{
+	EXPECTS(isCreated == false);
+
+	// パイプラインステートを生成
+	const auto hr = Graphics::g_pDevice->CreateGraphicsPipelineState(&m_State, IID_PPV_ARGS(m_pPipelineStateObject.GetAddressOf()));
+	ENSURES(hr, "PipelineStateObject生成");
+
+	isCreated = true;
+}
 
 // Set
 void PipelineStateObject::SetInputLayout(const gsl::span<const D3D12_INPUT_ELEMENT_DESC> inputLayout)

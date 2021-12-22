@@ -1,5 +1,6 @@
 #include "RenderObject.h"
 #include "PipelineInitializer.h"
+#include "Debug.h"
 
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount)
 {

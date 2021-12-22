@@ -3,6 +3,7 @@
 #include "ResourceHeap.h"
 #include "WinApp.h"
 #include "Command.h"
+#include "Debug.h"
 
 namespace
 {

@@ -3,6 +3,7 @@
 #include "ObjLoader.h"
 #include "TimeStamp.h"
 #include "AssimpTest.h"
+#include "Debug.h"
 
 #include <map>
 
@@ -22,7 +23,7 @@ namespace ResourceManager
 		auto& shader = s_Shaders[path.FileName];
 
 		const auto hr = D3DReadFileToBlob(path.RelativePath.c_str(), shader.GetAddressOf());
-		ENSURES("Shader読み込み [ %s ]", path.RelativePath);
+		ENSURES(hr, L"Shader読み込み [ %s ]", path.RelativePath);
 	}
 
 	void LoadTexture(const std::wstring_view textureName)

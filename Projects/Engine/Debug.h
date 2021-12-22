@@ -1,120 +1,167 @@
 #pragma once
 #include <tchar.h>
+#include <system_error>
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
-namespace Debug
+#pragma warning (disable : 26447)
+
+namespace
 {
-	constexpr inline bool Check(HRESULT flag) noexcept(false) { return SUCCEEDED(flag); }
-	constexpr inline bool Check(bool flag) noexcept(false) { return flag; }
+	constexpr bool SUCCESS_LOG = true;
+	constexpr const char* DebugTextFormat = "[%4lu] %-20s : ";
+	constexpr const char* DebugTitle = "DEBUG_ERROR";
+	constexpr const char* SuccsessHeader = "SUCCEEDED: ";
+	constexpr const char* ErrorHeader = "DEBUG_ERROR: ";
+}
 
-#ifdef _DEBUG
+// Private
+namespace
+{
 	//inline void Print(const std::string_view msg) noexcept { printf("%s", msg.data()); }
 	//inline void Print(const std::wstring_view msg) noexcept { wprintf(L"%ws", msg.data()); }
 	inline void Print(const std::string_view msg) noexcept { OutputDebugStringA(msg.data()); }
 	inline void Print(const std::wstring_view msg) noexcept { OutputDebugStringW(msg.data()); }
 	inline void Print(void) noexcept {}
 
-	inline void Printf(std::string_view format, ...) noexcept
-	{
-		char buffer[256];
-		const auto bufferSpan = gsl::make_span(buffer);
-		va_list ap;
-		va_start(ap, format);
-		vsprintf_s(bufferSpan.data(), 256, format.data(), ap);
-		ap = nullptr;
-		Print(bufferSpan.data());
-	}
+	inline void Printf(const boost::format& format) noexcept { Print(format.str().c_str()); }
+	inline void Printf(const boost::wformat& format) noexcept { Print(format.str().c_str()); }
 
-	inline void Printf(std::wstring_view format, ...) noexcept
+	// 再起処理でBoost::formatに変換 https://theolizer.com/cpp-school2/cpp-school2-30/
+	template<typename PARAM_FIRST, typename... PARAMETER>
+	inline void Printf(boost::format& format, PARAM_FIRST paramFirst, PARAMETER... parameterT) noexcept
+	{ Printf(format % paramFirst, parameterT...); }
+	template<typename PARAM_FIRST, typename... PARAMETER>
+	inline void Printf(boost::wformat& format, PARAM_FIRST paramFirst, PARAMETER... parameterT) noexcept
+	{ Printf(format % paramFirst, parameterT...); }
+
+	template<typename... PARAMETER>
+	inline void Printf(std::string_view formatText, PARAMETER... parameterT) noexcept
 	{
-		wchar_t buffer[256];
-		const auto bufferSpan = gsl::make_span(buffer);
-		va_list ap;
-		va_start(ap, format);
-		vswprintf(bufferSpan.data(), 256, format.data(), ap);
-		ap = nullptr;
-		Print(bufferSpan.data());
+		boost::format fomat(formatText.data());
+		Printf(fomat, parameterT...);
+	}
+	template<typename... PARAMETER>
+	inline void Printf(std::wstring_view formatText, PARAMETER... parameterT) noexcept
+	{
+		boost::wformat fomat(formatText.data());
+		Printf(fomat, parameterT...);
 	}
 	inline void Printf(void) noexcept {}
+}
 
-#define LOG_HRESULT(hr) \
-	LPTSTR error_text = nullptr; \
-	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS, \
-				  nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&error_text, 0, nullptr); \
-	Debug::Print(error_text); \
-
-	inline void LogHResult(HRESULT flag) noexcept { LOG_HRESULT(flag); }
-	inline void LogHResult(bool flag) noexcept { flag; }
-
-	inline wchar_t const* GetFileName(std::wstring_view path) noexcept
+// Private
+namespace
+{
+	inline std::wstring FileName(std::wstring_view path) noexcept
 	{
-#pragma warning( push )
-#pragma warning (disable : 26481)
-		const auto str = wcsrchr(path.data(), '\\');
-		return (str != nullptr) ? (str + 1) : (str);
-#pragma warning( pop )
+		std::wstring str = wcsrchr(path.data(), '\\');
+		str.erase(str.begin());
+		return str;
+	}
+	inline std::string FileName(std::string_view path) noexcept
+	{
+		std::string str = strrchr(path.data(), '\\');
+		str.erase(str.begin());
+		return str;
 	}
 
-	inline char const* GetFileName(std::string_view path) noexcept
+	inline void LogErrorText(HRESULT hr, uint32_t line, std::string_view file) noexcept
 	{
-#pragma warning( push )
-#pragma warning (disable : 26481)
-		const auto str = strrchr(path.data(), '\\');
-		return (str != nullptr) ? (str + 1) : (str);
-#pragma warning( pop )
-	}
+		auto error_text = std::system_category().message(hr);
 
-#define STRINGIFY(x) #x
-#define STRINGIFY_BUILTIN(x) STRINGIFY(x)
-#define FILE_POS_LOG(...) \
-		LOG("[%2s]%-20s : ", _T(STRINGIFY_BUILTIN(__LINE__)), Debug::GetFileName(_T(__FILE__))); \
-		Debug::Printf(__VA_ARGS__); \
-		Debug::Print("\n");
+		std::vector<std::string> splitLine;
+		boost::algorithm::split(splitLine, error_text, boost::is_any_of("\n"));
+		for(const auto& split : splitLine)
+		{
+			if(split.empty()) continue;
 
-	constexpr inline bool HAVESTRING(std::string_view format, ...) noexcept { return format.size() > 0; }
-	constexpr inline bool HAVESTRING(std::wstring_view format, ...) noexcept { return format.size() > 0; }
-	constexpr inline bool HAVESTRING(void) noexcept { return false; }
-
-	// ログ(改行なし)
-#define LOG( msg, ... ) \
-    Debug::Printf(_T(msg), ##__VA_ARGS__ );
-	// ログ(改行あり)
-#define LOGLINE( msg, ... ) \
-    Debug::Printf(_T(msg) "\n", ##__VA_ARGS__ );
-
-	namespace
-	{
-#define ASSERT( FLAG, ... ) \
-		if (Debug::Check(FLAG)) \
-		{ \
-			if(Debug::HAVESTRING(__VA_ARGS__)) \
-			{ \
-				Debug::Print("SUCCEEDED: "); \
-				FILE_POS_LOG(__VA_ARGS__); \
-			} \
-		} else { \
-			Debug::Print("FAILED: "); \
-			FILE_POS_LOG(__VA_ARGS__); \
-			Debug::LogHResult(FLAG); \
-			MessageBox(nullptr, "エラーが発生しました。\n出力ログを確認してください。", TEXT("DebugError"), MB_OK | MB_ICONERROR); \
-			__debugbreak(); \
+			Print(ErrorHeader);
+			Print(split);
+			Print("\n");
 		}
+
+		const auto title = boost::format("DEBUG_ERROR -> %s [ line : %lu ]") % FileName(file).c_str() % line;
+		MessageBox(nullptr, error_text.c_str(), title.str().c_str(), MB_OK | MB_ICONERROR);
 	}
+
+	constexpr inline bool Check(bool flag) noexcept { return flag; }
+	constexpr inline bool Check(HRESULT flag) noexcept { return SUCCEEDED(flag); }
+
+
+	template<typename PARAM_FIRST, typename... PARAMETER>
+	constexpr inline bool IsEmpty(PARAM_FIRST paramFirst, PARAMETER...) noexcept
+	{ return paramFirst == nullptr; }
+
+	template<typename... PAARAMETER>
+	constexpr inline bool IsEmpty(PAARAMETER... parameterT) noexcept
+	{ return IsEmpty(parameterT...); }
+
+	constexpr inline bool IsEmpty(void) noexcept { return true; }
+
+	inline void LogDirectory(uint32_t line, std::wstring_view file) noexcept
+	{ Printf(DebugTextFormat, line, FileName(file).c_str()); }
+
+	inline void LogDirectory(uint32_t line, std::string_view file) noexcept
+	{ Printf(DebugTextFormat, line, FileName(file).c_str()); }
+
+	template<typename LINE, typename FILE>
+	inline void LogResult(HRESULT flag, LINE lineT, FILE fileT) noexcept { LogErrorText(flag, lineT, fileT); }
+	template<typename LINE, typename FILE>
+	inline void LogResult(bool, LINE lineT, FILE fileT) noexcept { LogResult(E_ABORT, lineT, fileT); }
+}
+
+// Private
+namespace
+{
+	template<typename HEADERTEXT, typename LINE, typename FILE, typename... PARAMETER>
+	constexpr inline void DebugText(HEADERTEXT textT, LINE lineT, FILE fileT, PARAMETER... parameterT)
+	{
+		Print(textT);
+		LogDirectory(lineT, fileT);
+		Printf(parameterT...);
+		Print("\n");
+	}
+
+	template<typename LINE, typename FILE, typename... PARAMETER>
+	constexpr inline void Succsess(LINE lineT, FILE fileT, PARAMETER... parameterT)
+	{
+		if(SUCCESS_LOG && !IsEmpty(parameterT...))
+			DebugText(SuccsessHeader, lineT, fileT, parameterT...);
+	}
+
+	template<typename FLAG, typename LINE, typename FILE, typename... PARAMETER>
+	constexpr inline void DebugError(FLAG flagT, LINE lineT, FILE fileT, PARAMETER... parameterT)
+	{
+		DebugText(ErrorHeader, lineT, fileT, parameterT...);
+		LogResult(flagT, lineT, fileT);
+
+		__debugbreak();
+	}
+}
+
+// Public
+#ifdef _DEBUG
+
+#define LOG( msg, ...) Printf(msg, ##__VA_ARGS__)
+#define LOGLINE( msg, ...) Printf(msg "\n", ##__VA_ARGS__)
+
+#define ASSERT( FLAG, ... ) \
+		if (Check(FLAG)) \
+			Succsess( __LINE__, __FILE__, __VA_ARGS__); \
+		else \
+			DebugError( FLAG, __LINE__, __FILE__, __VA_ARGS__);
+
+#define EXPECTS( FLAG, ...) ASSERT( FLAG, __VA_ARGS__)
+#define ENSURES( FLAG, ...) ASSERT( FLAG, __VA_ARGS__)
 
 #else
 
-	// 事前確認
-	namespace
-	{
-#define ASSERT(FLAG, ... )
-	}
+#define ASSERT( FLAG, ...)
+#define EXPECTS( FLAG, ...)
+#define ENSURES( FLAG, ...)
 
-#define LOG( msg, ... )
-#define LOGLINE( msg, ... )
+#define LOG( msg, ...)
+#define LOGLINE( msg, ...)
 
 #endif
-
-	// 事前確認
-#define EXPECTS( FLAG, ... ) ASSERT(Debug::Check(FLAG),__VA_ARGS__)
-	// 事後確認
-#define ENSURES( FLAG, ... ) ASSERT(Debug::Check(FLAG),__VA_ARGS__)
-};

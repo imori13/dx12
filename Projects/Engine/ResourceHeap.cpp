@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ResourceHeap.h"
 #include "GraphicsCore.h"
+#include "Debug.h"
 
 void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag)
 {

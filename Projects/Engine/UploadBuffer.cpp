@@ -1,5 +1,6 @@
 #include "UploadBuffer.h"
 #include "GraphicsCore.h"
+#include "Debug.h"
 
 
 void UploadBuffer::Create(size_t bufferSize, size_t strideSize)

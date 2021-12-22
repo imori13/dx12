@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "GraphicsCore.h"
 #include "Command.h"
+#include "Debug.h"
 
 #include <directx/d3dx12.h>
 

@@ -3,6 +3,7 @@
 #include <crtdbg.h>
 #endif
 
+#include "Debug.h"
 #include "GameCore.h"
 #include "WinApp.h"
 #include "GraphicsCore.h"
@@ -87,6 +88,7 @@ namespace GameCore
 	{
 		Command::WaitForGpu();
 
+		Input::Terminate();
 		game.Cleanup();
 		Display::Terminate();
 		Graphics::Terminate();
@@ -104,13 +106,16 @@ namespace GameCore
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		//_CrtSetBreakAlloc(266);
 #endif
+
+		LOGLINE("■■■ 初期化 開始 ■■■");
+
 		// ウィンドウ初期化
 		WinApp::InitWnd(hInstance, width, height);
 
 		// アプリ初期化
 		InitializeApplication(game);
 
-		LOGLINE("■■■ 初期化完了 ■■■");
+		LOGLINE("■■■ 初期化 完了 ■■■");
 
 		do
 		{
@@ -122,13 +127,13 @@ namespace GameCore
 
 			// アプリの更新
 		} while(UpdateApplication(game));
-
+		
+		LOGLINE("■■■ 終了処理 開始 ■■■");
 		// アプリ終了
 		TerminateApplication(game);
 		// ウィンドウ終了
 		WinApp::TermWnd();
-
-		LOGLINE("■■■ 終了処理 ■■■");
+		LOGLINE("■■■ 終了処理 完了 ■■■");
 
 		return 0;
 	}

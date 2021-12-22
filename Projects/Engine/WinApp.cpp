@@ -1,4 +1,5 @@
 #include "WinApp.h"
+#include "Debug.h"
 
 namespace
 {

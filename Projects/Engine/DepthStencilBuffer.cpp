@@ -1,6 +1,7 @@
 #include "DepthStencilBuffer.h"
 #include "WinApp.h"
 #include "GraphicsCore.h"
+#include "Debug.h"
 
 void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT format, float depthValue, uint8_t stencilValue)
 {

@@ -19,16 +19,7 @@ public:
 	}
 
 	// Create
-	void Create()
-	{
-		EXPECTS(isCreated == false);
-
-		// パイプラインステートを生成
-		const auto hr = Graphics::g_pDevice->CreateGraphicsPipelineState(&m_State, IID_PPV_ARGS(m_pPipelineStateObject.GetAddressOf()));
-		ENSURES(hr, "PipelineStateObject生成");
-
-		isCreated = true;
-	}
+	void Create();
 	// Get
 	const gsl::not_null<ID3D12PipelineState*> Get() const noexcept { return m_pPipelineStateObject.Get(); }
 	const gsl::not_null<ID3D12RootSignature*> GetSignature() const noexcept { return m_pRootSignature.Get(); }

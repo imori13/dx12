@@ -1,5 +1,6 @@
 #include "FileInput.h"
 #include "File.h"
+#include "Debug.h"
 
 #include <fstream>
 #include <boost/filesystem.hpp>
@@ -36,5 +37,5 @@ std::wstring FileInput::ReadLine()
 void FileInput::Close()
 {
 	m_ReadingFile.close();
-	LOGLINE("File Closed")
+	LOGLINE("File Closed");
 }

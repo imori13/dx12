@@ -2,8 +2,8 @@
 #include "File.h"
 #include "FileInput.h"
 
-#include <boost/algorithm/string.hpp>
 #include <deque>
+#include <boost/algorithm/string.hpp>
 
 namespace
 {

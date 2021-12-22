@@ -1,5 +1,6 @@
 #include "Command.h"
 #include "Display.h"
+#include "Debug.h"
 
 namespace
 {

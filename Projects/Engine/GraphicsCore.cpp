@@ -1,5 +1,6 @@
 #include "GraphicsCore.h"
 #include "Display.h"
+#include "Debug.h"
 
 namespace Graphics
 {

@@ -41,12 +41,12 @@ const PipelineStateObject CreateDefault(std::wstring_view vsName, std::wstring_v
 	// ルートシグネチャ読み込み
 	Microsoft::WRL::ComPtr<ID3DBlob> rootSignatureBlob = nullptr;
 	auto hr = D3DGetBlobPart(vsShader->GetBufferPointer(), vsShader->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignatureBlob);
-	ENSURES(hr, L"RootSignature設定の取得");
+	ENSURES(hr, "RootSignature設定の取得");
 
 	// ルートシグネチャ設定
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> pRootSignature = nullptr;
 	hr = Graphics::g_pDevice->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&pRootSignature));
-	ENSURES(hr, L"RootSignatureの生成");
+	ENSURES(hr, "RootSignatureの生成");
 
 	// パイプラインステート設定
 	PipelineStateObject pipelineStateObject;

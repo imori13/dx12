@@ -1,4 +1,5 @@
 #pragma once
+#include "Debug.h"
 
 struct Handle_CPU_GPU
 {
