@@ -28,7 +28,7 @@ private:
 
 	Vector3 m_DestPosition;
 	Vector3 m_Position;
-	Vector3 m_Rotation;
+	Vector3 m_Rotate;
 
 	float m_Longitude = 1.5f;
 	float m_Latitude = 0;

@@ -88,7 +88,6 @@ namespace
 	constexpr inline bool Check(bool flag) noexcept { return flag; }
 	constexpr inline bool Check(HRESULT flag) noexcept { return SUCCEEDED(flag); }
 
-
 	template<typename PARAM_FIRST, typename... PARAMETER>
 	constexpr inline bool IsEmpty(PARAM_FIRST paramFirst, PARAMETER...) noexcept
 	{ return paramFirst == nullptr; }

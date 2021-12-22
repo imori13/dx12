@@ -40,11 +40,11 @@ void Camera::Update()
 	m_Latitude = Math::Lerp(m_Latitude, m_DestLatitude, rate);
 
 	// 緯度/経度を求める
-	m_Rotation.x() = cos(m_Longitude) * cos(m_Latitude);
-	m_Rotation.y() = sin(m_Latitude);
-	m_Rotation.z() = sin(m_Longitude) * cos(m_Latitude);
+	m_Rotate.x() = cos(m_Longitude) * cos(m_Latitude);
+	m_Rotate.y() = sin(m_Latitude);
+	m_Rotate.z() = sin(m_Longitude) * cos(m_Latitude);
 
-	m_ViewMatrix = Matrix4x4::LookAt(m_Position, m_Position + m_Rotation, Vector3::Up());
+	m_ViewMatrix = Matrix4x4::LookAt(m_Position, m_Position + m_Rotate, Vector3::Up());
 	m_ProjMatrix = Matrix4x4::PerspectiveProjection(m_Fov, Display::g_Aspect, m_NearZ, m_FarZ);
 }
 
@@ -66,13 +66,22 @@ void Camera::MouseRotate(const Vector2& mouseVelocity)
 
 void Camera::MouseMove(const Vector2& mouseVelocity)
 {
+	constexpr float rightRad = 90.0f / 3.141592f * 180.0f;
+	const auto foward = Vector3(cos(m_Longitude), 0, sin(m_Longitude));
+	const auto right = Vector3(cos(m_Longitude + rightRad), 0, sin(m_Longitude + rightRad));
+
 	if(Input::IsMouseHold(Mouse::Right))
 	{
 		constexpr float speedXY = 0.05f;
-		if(mouseVelocity != Vector2::Zero())
+		// 前後
+		if(mouseVelocity.y() != 0)
 		{
-			m_DestPosition.x() += mouseVelocity.x() * speedXY;
-			m_DestPosition.z() += -mouseVelocity.y() * speedXY;
+			m_DestPosition += foward * -mouseVelocity.y() * speedXY;
+		}
+		// 左右
+		if(mouseVelocity.x() != 0)
+		{
+			m_DestPosition += right * mouseVelocity.x() * speedXY;
 		}
 	}
 
