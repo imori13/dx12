@@ -62,19 +62,19 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 	return cmdList;
 }
 
-void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, uint32_t index)
+void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions)
 {
 	auto& meshVec = s_RenderObjects[assetName.data()];
 
 	for(auto& mesh : meshVec)
 	{
-		mesh.Draw(world, view, projection ,index);
+		mesh.Draw(world, view, projection , positions);
 	}
 }
 
-void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera, uint32_t index)
+void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera, gsl::span<Vector3> positions)
 {
-	Draw(assetName, world, camera.GetViewMatrix(), camera.GetProjMatrix(), index);
+	Draw(assetName, world, camera.GetViewMatrix(), camera.GetProjMatrix(), positions);
 }
 
 void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

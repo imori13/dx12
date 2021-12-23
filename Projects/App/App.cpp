@@ -24,6 +24,7 @@ public:
 	Camera camera;
 
 	std::vector<Vector3> positionVector;
+	std::vector<Vector3> positionVector2;
 };
 
 CREATE_APPLICATION(App, 1600, 900);
@@ -37,10 +38,12 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(path + L"neko.jpg");
 	ResourceManager::LoadTexture(path + L"neko2.jpg");
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
+	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
-	ResourceManager::LoadMesh(path + L"umaru.obj");
+	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
+	//ResourceManager::LoadMesh(path + L"g36.obj");
 
 	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
 	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
@@ -51,19 +54,26 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int32_t count = 100000;
-	constexpr int32_t range = 100;
+	constexpr int64_t count = 50000;
+	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
-	positionVector.reserve(count);
+
+	positionVector.resize(count);
+	positionVector2.resize(count);
 	Random::Set(min, max);
 
-	for(int i = 0; i < count; ++i)
+#pragma omp parallel for
+	for(int64_t i = 0; i < count; ++i)
 	{
-		positionVector.emplace_back(Vector3(Random::Next(), Random::Next(), Random::Next()));
+		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
+		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
+#pragma omp barrier
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
+	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
+	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
 }
 
 void App::Cleanup(void)
@@ -90,11 +100,8 @@ void App::Update(float deltaT)
 	world *= Matrix4x4::Scale(scale);
 	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 
-#pragma omp parallel for
-	for(int i = 0; i < positionVector.size(); ++i)
-	{
-		Renderer::Draw(L"Cube", world * Matrix4x4::Translate(positionVector.at(i)), camera, i);
-	}
+	Renderer::Draw(L"Cube", world, camera, positionVector);
+	Renderer::Draw(L"Cube2", world, camera, positionVector2);
 }
 
 void App::RenderScene(void)

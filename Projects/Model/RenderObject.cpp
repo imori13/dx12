@@ -40,22 +40,22 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	// Transformê∂ê¨
 	{
 		m_TransformBuffers.resize(objectCount);
-		m_Transforms.reserve(objectCount);
+		m_Transforms.resize(objectCount);
 
 #pragma omp parallel for
-		for(int i = 0; i < gsl::narrow<int>(objectCount); ++i)
+		for(int64_t i = 0; i < gsl::narrow<int64_t>(objectCount); ++i)
 		{
 			auto& buffer = m_TransformBuffers.at(i);
 
 			buffer.Create(sizeof(Transform), sizeof(Transform));
 			Transform* transform = static_cast<Transform*>(buffer.Map());
 
-#pragma omp critical
-			m_Transforms.emplace_back(transform);
+			m_Transforms.at(i) = transform;
 
 			// ÉrÉÖÅ[ê›íË
 			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 		}
+#pragma omp barrier
 	}
 
 	// Lightê∂ê¨
@@ -101,14 +101,14 @@ void RenderObject::Initialize()
 {
 	m_DrawIndex = 0;
 
-	for(const auto& drawed : m_WaitDraw)
-	{
-		m_Transforms.emplace_back(drawed);
-	}
-	m_WaitDraw.clear();
+	//for(const auto& drawed : m_WaitDraw)
+	//{
+	//	m_Transforms.emplace_back(drawed);
+	//}
+	//m_WaitDraw.clear();
 }
 
-void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, uint32_t index)
+void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, gsl::span<Vector3> positions)
 {
 #ifdef _DEBUG
 	if(m_DrawIndex >= m_ObjectCount)
@@ -118,12 +118,17 @@ void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matri
 	}
 #endif
 
-	auto instance = m_Transforms.at(index);
-	instance->World = world.Data();
-	instance->View = view.Data();
-	instance->Proj = projection.Data();
+#pragma omp parallel for
+	for(int64_t i = 0; i < positions.size(); ++i)
+	{
+		auto instance = m_Transforms.at(i);
+		instance->World = (world * Matrix4x4::Translate(positions[i])).Data();
+		instance->View = view.Data();
+		instance->Proj = projection.Data();
+	}
+#pragma omp barrier
 
-	++m_DrawIndex;
+	m_DrawIndex = positions.size();
 }
 
 void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

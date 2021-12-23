@@ -1,23 +1,21 @@
 #include "Random.h"
-#include <random>
+#include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
 
 namespace
 {
-	constexpr int32_t FLOAT_MIN = INT32_MIN;
-	constexpr int32_t FLOAT_MAX = INT32_MAX;
-
-	std::default_random_engine eng;
-	std::uniform_real_distribution<float> distr;
+	boost::random::random_device seed_gen;
+	boost::random::mt19937 gen;
+	boost::random::uniform_real_distribution<float> dist;
 }
 
 float Random::Next()
 {
-	return distr(eng);
+	return dist(gen);
 }
 
 void Random::Set(float min, float max)
 {
-	std::random_device rd;
-	eng = std::default_random_engine(rd());
-	distr = std::uniform_real_distribution<float>(min, max);
+	gen = boost::random::mt19937(seed_gen);
+	dist = boost::random::uniform_real_distribution<float>(min, max);
 }

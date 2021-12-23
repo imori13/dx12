@@ -20,11 +20,11 @@ namespace GameCore
 
 	void InitializeApplication(IGameApp& game)
 	{
-		//omp_set_num_threads(8);
+		omp_set_num_threads(8);
 		//Eigen::setNbThreads(1);
 		//Eigen::initParallel();
-		//omp_set_nested(1);
-		//omp_set_dynamic(256);
+		omp_set_nested(1);
+		omp_set_dynamic(256);
 
 		Input::Initialize();
 		Timer::Initialize();

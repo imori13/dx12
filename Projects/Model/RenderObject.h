@@ -15,7 +15,7 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize();
-	void Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, uint32_t index);
+	void Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, gsl::span<Vector3> positions);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	ResourceHeap m_ResourceHeap;
@@ -33,5 +33,5 @@ private:
 	uint32_t m_IndexCount;
 
 	uint32_t m_ObjectCount;
-	uint32_t m_DrawIndex;
+	uint32_t m_DrawIndex = 0;
 };
