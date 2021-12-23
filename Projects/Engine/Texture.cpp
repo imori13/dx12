@@ -19,6 +19,7 @@ void Texture::CreateWIC(const std::wstring_view path)
 		path.data(),
 		0,
 		D3D12_RESOURCE_FLAG_NONE,
+		//DirectX::WIC_LOADER_FLAGS::WIC_LOADER_DEFAULT,
 		DirectX::WIC_LOADER_FLAGS::WIC_LOADER_MIP_AUTOGEN,
 		m_pResource.GetAddressOf());
 	ENSURES(hr, L"テクスチャロード [ %s ]", path.data());

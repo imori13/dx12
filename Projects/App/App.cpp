@@ -54,7 +54,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 250000;
+	constexpr int64_t count = 500000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -63,20 +63,20 @@ void App::Startup(void)
 	positionVector2.resize(count);
 
 	Random::Set(min, max);
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
 	{
 		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
-#pragma omp barrier
+//#pragma omp barrier
 
 	Random::Set(min, max);
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
 	{
 		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
-#pragma omp barrier
+//#pragma omp barrier
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);

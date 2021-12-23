@@ -26,37 +26,34 @@ struct PSOutput
 #define RSDEF \
 	"RootFlags( ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT )," \
 	"CBV( b0 , visibility = SHADER_VISIBILITY_VERTEX ), " \
-	"CBV( b1 , visibility = SHADER_VISIBILITY_VERTEX ), " \
+	"CBV( b1 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 	"CBV( b2 , visibility = SHADER_VISIBILITY_PIXEL ), " \
-	"CBV( b3 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 	"StaticSampler( s0, " \
 		"visibility = SHADER_VISIBILITY_PIXEL, " \
-		"filter = FILTER_MIN_MAG_MIP_POINT )," \
+		"filter = FILTER_MIN_MAG_MIP_LINEAR )," \
 	"DescriptorTable( SRV( t0 ), visibility = SHADER_VISIBILITY_PIXEL )" \
+
+// FILTER_MIN_MAG_MIP_POINT
+// FILTER_MIN_MAG_MIP_LINEAR
 
 // Transform (b0)
 cbuffer Transform : register(b0)
 {
     float4x4 World : packoffset(c0);
+    float4x4 View : packoffset(c4);
+    float4x4 Proj : packoffset(c8);
 }
 
-// Camera (b1)
-cbuffer CameraBuffer : register(b1)
-{
-    float4x4 View : packoffset(c0);
-    float4x4 Proj : packoffset(c4);
-}
-
-// Light (b2)
-cbuffer LightBuffer : register(b2)
+// Light (b1)
+cbuffer LightBuffer : register(b1)
 {
     float3 LightPosition : packoffset(c0);
     float3 LightColor : packoffset(c1);
     float3 CameraPosition : packoffset(c2);
 }
 
-// Material (b3)
-cbuffer MaterialBuffer : register(b3)
+// Material (b2)
+cbuffer MaterialBuffer : register(b2)
 {
     float3 Ambient : packoffset(c0);  // ŠÂ‹«”½ŽË—¦
     float3 Diffuse : packoffset(c1);  // ŠgŽU”½ŽË—¦

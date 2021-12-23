@@ -42,10 +42,6 @@ struct Model	// モデル
 struct alignas(256) Transform
 {
 	DirectX::XMMATRIX World;		// ワールド行列
-};
-
-struct alignas(256) CameraBuff
-{
 	DirectX::XMMATRIX View;		// ビュー行列
 	DirectX::XMMATRIX Proj;		// 射影行列
 };

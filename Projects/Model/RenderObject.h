@@ -10,11 +10,10 @@ public:
 	RenderObject() noexcept
 		: m_TextureGpuHandle{}
 		, m_IndexCount(0)
-		, m_ObjectCount(0)
-		, m_DrawIndex(0)
+		, m_DrawCount(0)
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
-	void Initialize();
+	void Initialize() noexcept;
 	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
@@ -22,22 +21,14 @@ private:
 
 	UploadBuffer m_VertexBuffer;
 	UploadBuffer m_IndexBuffer;
-	//std::vector<UploadBuffer> m_TransformBuffers;
-
-	UploadBuffer TransformBuffer;
-	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
-
-	UploadBuffer m_CameraBuffer;
+	UploadBuffer m_TransformBuffer;
 	UploadBuffer m_LightBuffer;
 	UploadBuffer m_MaterialBuffer;
-
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 
+	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
 	std::vector<Transform*> m_Transforms;
-	std::vector<Transform*> m_WaitDraw;
-	CameraBuff* m_CameraData;
-	uint32_t m_IndexCount;
 
-	uint32_t m_ObjectCount;
-	uint32_t m_DrawIndex = 0;
+	uint32_t m_IndexCount;
+	uint32_t m_DrawCount;
 };
