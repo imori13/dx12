@@ -61,12 +61,19 @@ void App::Startup(void)
 
 	positionVector.resize(count);
 	positionVector2.resize(count);
-	Random::Set(min, max);
 
+	Random::Set(min, max);
 #pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
 	{
 		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
+	}
+#pragma omp barrier
+
+	Random::Set(min, max);
+#pragma omp parallel for
+	for(int64_t i = 0; i < count; ++i)
+	{
 		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
 #pragma omp barrier
