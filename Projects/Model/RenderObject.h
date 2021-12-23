@@ -15,14 +15,18 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize();
-	void Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, gsl::span<Vector3> positions);
+	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	ResourceHeap m_ResourceHeap;
 
 	UploadBuffer m_VertexBuffer;
 	UploadBuffer m_IndexBuffer;
-	std::vector<UploadBuffer> m_TransformBuffers;
+	//std::vector<UploadBuffer> m_TransformBuffers;
+
+	UploadBuffer TransformBuffer;
+	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
+
 	UploadBuffer m_CameraBuffer;
 	UploadBuffer m_LightBuffer;
 	UploadBuffer m_MaterialBuffer;

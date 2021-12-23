@@ -40,23 +40,40 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 
 	// Transform生成
 	{
-		m_TransformBuffers.resize(objectCount);
-		m_Transforms.resize(objectCount);
+		//		m_TransformBuffers.resize(objectCount);
+		//		m_Transforms.resize(objectCount);
+		//
+		//#pragma omp parallel for
+		//		for(int64_t i = 0; i < gsl::narrow<int64_t>(objectCount); ++i)
+		//		{
+		//			auto& buffer = m_TransformBuffers.at(i);
+		//
+		//			buffer.Create(sizeof(Transform), sizeof(Transform));
+		//			Transform* transform = static_cast<Transform*>(buffer.Map());
+		//
+		//			m_Transforms.at(i) = transform;
+		//
+		//			// ビュー設定
+		//			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
+		//		}
+		//#pragma omp barrier
 
-#pragma omp parallel for
+		transformView.resize(objectCount);
+		m_Transforms.resize(objectCount);
+		TransformBuffer.Create(sizeof(Transform) * objectCount, sizeof(Transform));
+		auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(TransformBuffer.Map());
+
 		for(int64_t i = 0; i < gsl::narrow<int64_t>(objectCount); ++i)
 		{
-			auto& buffer = m_TransformBuffers.at(i);
+			m_Transforms.at(i) = reinterpret_cast<Transform*>(gpuVirtualAddress);
+			auto& view = transformView.at(i);
+			gpuVirtualAddress += sizeof(Transform);
 
-			buffer.Create(sizeof(Transform), sizeof(Transform));
-			Transform* transform = static_cast<Transform*>(buffer.Map());
-
-			m_Transforms.at(i) = transform;
-
-			// ビュー設定
-			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
+			view.BufferLocation = TransformBuffer.GetConstantLocation() + sizeof(Transform) * i;
+			view.SizeInBytes = sizeof(Transform);
+			const auto handle = m_ResourceHeap.GetNextHandle();
+			Graphics::g_pDevice->CreateConstantBufferView(&view, handle.CPU);
 		}
-#pragma omp barrier
 	}
 
 	// カメラ生成
@@ -119,7 +136,7 @@ void RenderObject::Initialize()
 	//m_WaitDraw.clear();
 }
 
-void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matrix4x4 projection, gsl::span<Vector3> positions)
+void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions)
 {
 #ifdef _DEBUG
 	if(m_DrawIndex >= m_ObjectCount)
@@ -128,7 +145,7 @@ void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matri
 		return;
 	}
 #endif		
-	
+
 	m_CameraData->View = view.Data();
 	m_CameraData->Proj = projection.Data();
 
@@ -161,7 +178,7 @@ void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList
 
 	for(auto i = 0u; i < m_DrawIndex; ++i)
 	{
-		cmdList->SetGraphicsRootConstantBufferView(0, m_TransformBuffers.at(i).GetConstantLocation());
+		cmdList->SetGraphicsRootConstantBufferView(0, transformView.at(i).BufferLocation);
 		cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 	}
 }

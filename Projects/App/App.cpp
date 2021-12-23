@@ -54,7 +54,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 50000;
+	constexpr int64_t count = 250000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
