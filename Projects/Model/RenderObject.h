@@ -23,6 +23,7 @@ private:
 	UploadBuffer m_VertexBuffer;
 	UploadBuffer m_IndexBuffer;
 	std::vector<UploadBuffer> m_TransformBuffers;
+	UploadBuffer m_CameraBuffer;
 	UploadBuffer m_LightBuffer;
 	UploadBuffer m_MaterialBuffer;
 
@@ -30,6 +31,7 @@ private:
 
 	std::vector<Transform*> m_Transforms;
 	std::vector<Transform*> m_WaitDraw;
+	CameraBuff* m_CameraData;
 	uint32_t m_IndexCount;
 
 	uint32_t m_ObjectCount;

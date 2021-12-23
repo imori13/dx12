@@ -10,8 +10,9 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	{
 		constexpr uint32_t materialCount = 1;
 		constexpr uint32_t lightCount = 1;
+		constexpr uint32_t cameraCount = 1;
 		constexpr uint32_t textureCount = 1;
-		const uint32_t heapCount = materialCount + lightCount + textureCount + objectCount;
+		const uint32_t heapCount = materialCount + cameraCount + lightCount + textureCount + objectCount;
 		m_ResourceHeap.Create(heapCount, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 	}
 
@@ -56,6 +57,16 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 			buffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 		}
 #pragma omp barrier
+	}
+
+	// カメラ生成
+	{
+		m_CameraBuffer.Create(sizeof(CameraBuff), sizeof(CameraBuff));
+
+		m_CameraData = static_cast<CameraBuff*>(m_CameraBuffer.Map());
+
+		// ビュー設定
+		m_CameraBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 	}
 
 	// Light生成
@@ -116,15 +127,16 @@ void RenderObject::Draw(const Matrix4x4 world, const Matrix4x4 view, const Matri
 		LOGLINE(L"WARNING 描画呼び出し制限に達したので、描画を無視しました");
 		return;
 	}
-#endif
+#endif		
+	
+	m_CameraData->View = view.Data();
+	m_CameraData->Proj = projection.Data();
 
 #pragma omp parallel for
 	for(int64_t i = 0; i < positions.size(); ++i)
 	{
 		auto instance = m_Transforms.at(i);
 		instance->World = (world * Matrix4x4::Translate(positions[i])).Data();
-		instance->View = view.Data();
-		instance->Proj = projection.Data();
 	}
 #pragma omp barrier
 
@@ -142,9 +154,10 @@ void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList
 	cmdList->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
 
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-	cmdList->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
-	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
-	cmdList->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+	cmdList->SetGraphicsRootConstantBufferView(1, m_CameraBuffer.GetConstantLocation());
+	cmdList->SetGraphicsRootConstantBufferView(2, m_LightBuffer.GetConstantLocation());
+	cmdList->SetGraphicsRootConstantBufferView(3, m_MaterialBuffer.GetConstantLocation());
+	cmdList->SetGraphicsRootDescriptorTable(4, m_TextureGpuHandle);
 
 	for(auto i = 0u; i < m_DrawIndex; ++i)
 	{
