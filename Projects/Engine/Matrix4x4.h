@@ -20,7 +20,7 @@ public:
 	Matrix4x4 operator*(float s) const;
 	Vector3 operator*(const Vector3& vec) const;
 
-	DirectX::XMMATRIX Data() const;
+	DirectX::XMFLOAT4X4 Data() const;
 	Matrix4x4 Transpose() const;
 	Matrix4x4 Inverse() const;
 

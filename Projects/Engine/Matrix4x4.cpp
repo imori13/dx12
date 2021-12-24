@@ -45,9 +45,9 @@ Vector3 Matrix4x4::operator*(const Vector3& vec) const
 	return Vector3(vec4.x(), vec4.y(), vec4.z());
 }
 
-DirectX::XMMATRIX Matrix4x4::Data() const
+DirectX::XMFLOAT4X4 Matrix4x4::Data() const
 {
-	return DirectX::XMMATRIX(matrix.data());
+	return DirectX::XMFLOAT4X4(matrix.data());
 }
 
 Matrix4x4 Matrix4x4::Transpose() const

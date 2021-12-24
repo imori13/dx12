@@ -1,5 +1,10 @@
 #pragma once
 
+//struct alignas(256) InstanceData
+//{
+//	DirectX::XMFLOAT4X4 world;
+//};
+
 struct ModelMeshVertex	// メッシュ用頂点
 {
 	DirectX::XMFLOAT3 Position;
@@ -41,9 +46,9 @@ struct Model	// モデル
 
 struct alignas(256) Transform
 {
-	DirectX::XMMATRIX World;		// ワールド行列
-	DirectX::XMMATRIX View;		// ビュー行列
-	DirectX::XMMATRIX Proj;		// 射影行列
+	DirectX::XMFLOAT4X4 World;		// ビュー行列
+	DirectX::XMFLOAT4X4 View;		// ビュー行列
+	DirectX::XMFLOAT4X4 Proj;		// 射影行列
 };
 
 struct alignas(256) Light

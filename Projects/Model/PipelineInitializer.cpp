@@ -30,10 +30,12 @@ namespace PipelineInitializer
 const PipelineStateObject CreateDefault(std::wstring_view vsName, std::wstring_view psName)
 {
 	InputElement inputElement;
-	inputElement.SetElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
-	inputElement.SetElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
-	inputElement.SetElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	inputElement.SetElement("TANGENT", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetVertexElement("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetVertexElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetVertexElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	inputElement.SetVertexElement("TANGENT", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetInstanceElement("INSTANCEPOS", DXGI_FORMAT_R32G32B32_FLOAT);
+	//inputElement.SetInstanceElement("INSTANCECOLOR", DXGI_FORMAT_R32G32B32_FLOAT, 1);
 
 	const auto vsShader = ResourceManager::GetShader(vsName);
 	const auto psShader = ResourceManager::GetShader(psName);

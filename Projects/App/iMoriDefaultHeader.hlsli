@@ -7,7 +7,8 @@ struct VSInput
     float3 Position : POSITION; // 位置ベクトル
     float3 Normal   : NORMAL;   // 法線ベクトル
     float2 TexCoord : TEXCOORD; // テクスチャ座標
-    float3 Tangent  : TANGENT;  // 接線ベクトル
+    float3 Tangent : TANGENT;   // 接線ベクトル
+    float3 InstancePos : INSTANCEPOS;
 };
 
 struct VSOutput
@@ -36,8 +37,18 @@ struct PSOutput
 // FILTER_MIN_MAG_MIP_POINT
 // FILTER_MIN_MAG_MIP_LINEAR
 
+//struct InstanceData
+//{
+//    float4x4 World : packoffset(c0);
+//};
+
+//cbuffer InstanceArray : register(b0)
+//{
+//    InstanceData Instances[512];
+//};
+
 // Transform (b0)
-cbuffer Transform : register(b0)
+cbuffer CameraBuffer : register(b0)
 {
     float4x4 World : packoffset(c0);
     float4x4 View : packoffset(c4);

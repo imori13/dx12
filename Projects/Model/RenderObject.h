@@ -20,14 +20,17 @@ private:
 	ResourceHeap m_ResourceHeap;
 
 	UploadBuffer m_VertexBuffer;
+	UploadBuffer m_InstanceBuffer;
 	UploadBuffer m_IndexBuffer;
 	UploadBuffer m_TransformBuffer;
 	UploadBuffer m_LightBuffer;
 	UploadBuffer m_MaterialBuffer;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 
-	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
-	std::vector<Transform*> m_Transforms;
+	D3D12_VERTEX_BUFFER_VIEW m_InstanceView;
+
+	std::vector<DirectX::XMFLOAT3*> m_InstanceData;
+	Transform* m_Transform;
 	ID3D12GraphicsCommandList* m_Bandle;
 
 	uint32_t m_IndexCount;
