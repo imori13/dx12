@@ -1,6 +1,7 @@
 #include "RenderObject.h"
 #include "PipelineInitializer.h"
 #include "Debug.h"
+#include "Command.h"
 
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount)
 {
@@ -95,6 +96,32 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		const auto textureView = texture.GetView();
 		Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &textureView, handle.CPU);
 	}
+
+	const auto threadNum = omp_get_thread_num();
+
+	{
+		const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
+		m_Bandles = Command::CreateBandle();
+
+		m_Bandles->SetGraphicsRootSignature(pipeline.GetSignature());
+		m_Bandles->SetPipelineState(pipeline.Get());
+		m_Bandles->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		m_Bandles->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
+		m_Bandles->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
+
+		m_Bandles->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
+		m_Bandles->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
+		m_Bandles->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
+		m_Bandles->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+
+		for(auto i = 0; i < objectCount; ++i)
+		{
+			m_Bandles->SetGraphicsRootConstantBufferView(0, transformView.at(i).BufferLocation);
+			m_Bandles->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
+		}
+		m_Bandles->Close();
+	}
 }
 
 void RenderObject::Initialize() noexcept
@@ -112,7 +139,6 @@ void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Mat
 		instance->View = view.Data();
 		instance->Proj = projection.Data();
 	}
-#pragma omp barrier
 
 	m_DrawCount = gsl::narrow<uint32_t>(positions.size());
 }
@@ -120,21 +146,8 @@ void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Mat
 void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
+
 	cmdList->SetGraphicsRootSignature(pipeline.GetSignature());
-	cmdList->SetPipelineState(pipeline.Get());
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	cmdList->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
-	cmdList->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
-
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-	cmdList->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
-	cmdList->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
-	cmdList->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
-
-	for(auto i = 0u; i < m_DrawCount; ++i)
-	{
-		cmdList->SetGraphicsRootConstantBufferView(0, transformView.at(i).BufferLocation);
-		cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
-	}
+	cmdList->ExecuteBundle(m_Bandles);
 }

@@ -23,6 +23,7 @@ public:
 
 	Camera camera;
 
+	Matrix4x4 world;
 	std::vector<Vector3> positionVector;
 	std::vector<Vector3> positionVector2;
 };
@@ -54,7 +55,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 500000;
+	constexpr int64_t count = 250000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -68,7 +69,6 @@ void App::Startup(void)
 	{
 		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
-//#pragma omp barrier
 
 	Random::Set(min, max);
 //#pragma omp parallel for
@@ -76,7 +76,6 @@ void App::Startup(void)
 	{
 		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
-//#pragma omp barrier
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
@@ -101,9 +100,7 @@ void App::Update(float deltaT)
 	static Vector3 scale(1);
 	static Vector3 rotation(0, 1, 0);
 
-	//world *= Matrix4x4::Translate(position);
-
-	auto world = Matrix4x4::Identity();
+	world = Matrix4x4::Identity();
 	world *= Matrix4x4::Scale(scale);
 	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 

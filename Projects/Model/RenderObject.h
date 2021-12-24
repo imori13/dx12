@@ -28,6 +28,7 @@ private:
 
 	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
 	std::vector<Transform*> m_Transforms;
+	ID3D12GraphicsCommandList* m_Bandles;
 
 	uint32_t m_IndexCount;
 	uint32_t m_DrawCount;

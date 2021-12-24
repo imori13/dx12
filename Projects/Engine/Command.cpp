@@ -11,6 +11,9 @@ namespace
 
 	HANDLE s_FenceEventHandle;
 	std::array<uint64_t, FRAME_COUNT> s_NextFenceValue;
+
+	std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> s_pBundleAllocator;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>> s_pBundles;
 }
 
 namespace Command
@@ -70,6 +73,9 @@ namespace Command
 			s_FenceEventHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 			ENSURES(s_FenceEventHandle != nullptr, "FenceEvent生成");
 		}
+
+		// バンドルアロケータ
+		//Graphics::g_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&s_pBundleAllocator));
 
 		s_pCmdList->Close();
 	}
@@ -134,5 +140,16 @@ namespace Command
 
 		// Fence値を更新して終了
 		s_NextFenceValue.at(Display::g_FrameIndex)++;
+	}
+	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle()
+	{
+		//const auto maxThreadNum = omp_get_num_threads();
+
+		auto& alocator = s_pBundleAllocator.emplace_back();
+		Graphics::g_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&alocator));
+		auto& bandle = s_pBundles.emplace_back();
+		Graphics::g_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_BUNDLE, alocator.Get(), nullptr, IID_PPV_ARGS(&bandle));
+
+		return bandle.Get();
 	}
 }
