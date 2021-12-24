@@ -15,8 +15,10 @@ namespace GameCore
 		virtual void Startup(void) = 0;
 		virtual void Cleanup(void) = 0;
 		virtual bool IsDone(void) noexcept;
-		virtual void Update(float deltaT) = 0;
+		virtual void Update() = 0;
+		virtual void UpdateGUI() = 0;
 		virtual void RenderScene(void) = 0;
+		virtual void RenderGUI(void) = 0;
 	};
 }
 

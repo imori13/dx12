@@ -4,11 +4,11 @@
 
 enum class Average
 {
-	None = 2,
-	VeryLow = 10,
-	Low = 20,
-	Middle = 30,
-	High = 40,
+	None = 1,
+	VeryLow = 5,
+	Low = 10,
+	Middle = 20,
+	High = 30,
 	VeryHigh = 50,
 };
 

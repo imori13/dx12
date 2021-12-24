@@ -101,26 +101,27 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 
 	{
 		const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
-		m_Bandles = Command::CreateBandle();
+		m_Bandle = Command::CreateBandle();
 
-		m_Bandles->SetGraphicsRootSignature(pipeline.GetSignature());
-		m_Bandles->SetPipelineState(pipeline.Get());
-		m_Bandles->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_Bandle->SetGraphicsRootSignature(pipeline.GetSignature());
+		m_Bandle->SetPipelineState(pipeline.Get());
+		m_Bandle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		m_Bandles->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
-		m_Bandles->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
+		m_Bandle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
+		m_Bandle->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
 
-		m_Bandles->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-		m_Bandles->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
-		m_Bandles->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
-		m_Bandles->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+		m_Bandle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
+		m_Bandle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
+		m_Bandle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
+		m_Bandle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 		for(auto i = 0; i < objectCount; ++i)
 		{
-			m_Bandles->SetGraphicsRootConstantBufferView(0, transformView.at(i).BufferLocation);
-			m_Bandles->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
+			m_Bandle->SetGraphicsRootConstantBufferView(0, transformView.at(i).BufferLocation);
+			m_Bandle->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 		}
-		m_Bandles->Close();
+
+		m_Bandle->Close();
 	}
 }
 
@@ -129,16 +130,19 @@ void RenderObject::Initialize() noexcept
 	m_DrawCount = 0;
 }
 
-void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions)
+void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
 {
+	const auto& viewMat = view.Data();
+	const auto& projMat = projection.Data();
 #pragma omp parallel for
-	for(int64_t i = 0; i < gsl::narrow<int64_t>(positions.size()); ++i)
+	for(auto i = 0; i < positions.size(); ++i)
 	{
-		auto instance = m_Transforms.at(i);
+		auto& instance = m_Transforms.at(i);
 		instance->World = (world * Matrix4x4::Translate(positions[i])).Data();
-		instance->View = view.Data();
-		instance->Proj = projection.Data();
+		instance->View = viewMat;
+		instance->Proj = projMat;
 	}
+//#pragma omp barrier
 
 	m_DrawCount = gsl::narrow<uint32_t>(positions.size());
 }
@@ -149,5 +153,5 @@ void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList
 
 	cmdList->SetGraphicsRootSignature(pipeline.GetSignature());
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-	cmdList->ExecuteBundle(m_Bandles);
+	cmdList->ExecuteBundle(m_Bandle);
 }

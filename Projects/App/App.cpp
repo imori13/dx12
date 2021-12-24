@@ -18,8 +18,10 @@ public:
 
 	void Startup(void) override;
 	void Cleanup(void) override;
-	void Update(float deltaT) override;
+	void Update() override;
+	void UpdateGUI() override;
 	void RenderScene(void) override;
+	void RenderGUI(void) override;
 
 	Camera camera;
 
@@ -29,6 +31,10 @@ public:
 };
 
 CREATE_APPLICATION(App, 1600, 900);
+
+static Vector3 position(0, -1, 0);
+static Vector3 scale(1);
+static Vector3 rotation(0, 1, 0);
 
 void App::Startup(void)
 {
@@ -55,7 +61,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 250000;
+	constexpr int64_t count = 500000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -64,14 +70,14 @@ void App::Startup(void)
 	positionVector2.resize(count);
 
 	Random::Set(min, max);
-//#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
 	{
 		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
 	}
 
 	Random::Set(min, max);
-//#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
 	{
 		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
@@ -80,6 +86,10 @@ void App::Startup(void)
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
+
+	world = Matrix4x4::Identity();
+	world *= Matrix4x4::Scale(scale);
+	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 }
 
 void App::Cleanup(void)
@@ -87,25 +97,17 @@ void App::Cleanup(void)
 	App_ImGui::Terminate();
 }
 
-void App::Update(float deltaT)
+void App::Update()
 {
-	deltaT++;	// Œx‰ñ”ð—p
-
-	App_ImGui::Update();
-
 	camera.Update();
-
-	static Vector3 position(0, -1, 0);
-	//static Vector3 scale(0.02f);
-	static Vector3 scale(1);
-	static Vector3 rotation(0, 1, 0);
-
-	world = Matrix4x4::Identity();
-	world *= Matrix4x4::Scale(scale);
-	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 
 	Renderer::Draw(L"Cube", world, camera, positionVector);
 	Renderer::Draw(L"Cube2", world, camera, positionVector2);
+}
+
+void App::UpdateGUI()
+{
+	App_ImGui::Update();
 }
 
 void App::RenderScene(void)
@@ -115,6 +117,9 @@ void App::RenderScene(void)
 	Renderer::SendCommand(cmdList);
 	App_ImGui::Render(cmdList);
 	Renderer::End(cmdList);
+}
 
-	App_ImGui::UpdateAdditionalPlatformWindows(cmdList);
+void App::RenderGUI(void)
+{
+	App_ImGui::UpdateAdditionalPlatformWindows(Command::GetCmdList());
 }

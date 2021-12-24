@@ -49,11 +49,13 @@ namespace GameCore
 
 		TimeStamp::Begin();
 
+		game.UpdateGUI();
+
 		// çXêVèàóù
 		{
 			TimeStamp::Begin();
 
-			game.Update(Timer::g_FrameTime);
+			game.Update();
 
 			DataAverage::Set(L"Update", TimeStamp::End(), Average::VeryLow);
 		}
@@ -80,6 +82,7 @@ namespace GameCore
 		{
 			TimeStamp::Begin();
 
+			game.RenderGUI();
 			Command::MoveToNextFrame();
 
 			DataAverage::Set(L"GPUwait", TimeStamp::End(), Average::VeryLow);

@@ -17,5 +17,6 @@ namespace Command
 
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle();
 
-	ID3D12CommandQueue* GetCmdQueue() noexcept;
+	gsl::not_null<ID3D12GraphicsCommandList*> GetCmdList() noexcept;
+	gsl::not_null<ID3D12CommandQueue*> GetCmdQueue() noexcept;
 };

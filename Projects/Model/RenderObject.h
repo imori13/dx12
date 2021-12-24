@@ -14,7 +14,7 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount);
 	void Initialize() noexcept;
-	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, gsl::span<Vector3> positions);
+	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions);
 	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	ResourceHeap m_ResourceHeap;
@@ -28,7 +28,7 @@ private:
 
 	std::vector<D3D12_CONSTANT_BUFFER_VIEW_DESC> transformView;
 	std::vector<Transform*> m_Transforms;
-	ID3D12GraphicsCommandList* m_Bandles;
+	ID3D12GraphicsCommandList* m_Bandle;
 
 	uint32_t m_IndexCount;
 	uint32_t m_DrawCount;

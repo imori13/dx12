@@ -80,7 +80,12 @@ namespace Command
 		s_pCmdList->Close();
 	}
 
-	ID3D12CommandQueue* GetCmdQueue() noexcept
+	gsl::not_null<ID3D12GraphicsCommandList*> GetCmdList() noexcept
+	{
+		return s_pCmdList.Get();
+	}
+
+	gsl::not_null<ID3D12CommandQueue*> GetCmdQueue() noexcept
 	{
 		return s_pCmdQueue.Get();
 	}

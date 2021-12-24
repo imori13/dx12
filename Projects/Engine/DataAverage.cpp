@@ -21,7 +21,7 @@ void DataAverage::Set(const std::wstring_view name, const float value, const Ave
 	pair.Sum += pair.ValueList.emplace_back(value);
 
 	// ˆÚ“®•½‹Ï‚Ì—v‘f”‚ð"ŽžŠÔ’PˆÊ"‚ÅŠÇ—‚·‚é
-	while(pair.ValueList.size() * (Timer::g_FrameTime * 60) > static_cast<uint32_t>(limit))
+	while(pair.ValueList.size() * (Timer::g_FrameTime * 60) >= static_cast<uint32_t>(limit))
 	{
 		pair.Sum -= pair.ValueList.front();
 		pair.ValueList.erase(pair.ValueList.begin());

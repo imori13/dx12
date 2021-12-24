@@ -32,7 +32,7 @@ namespace App_ImGui
 
 		auto& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark();
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
@@ -61,10 +61,11 @@ namespace App_ImGui
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		AppGui::Update();
 		AppGui::DebugViewEnable();
 		AppGui::FillEnable();
 		AppGui::FramePieEnable();
-		//AppGui::FrameViewrEnable();
+		AppGui::FrameViewrEnable();
 	}
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
