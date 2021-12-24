@@ -18,11 +18,11 @@ public:
 	}
 
 	void SetInstanceElement(
-	std::string_view semanticsName, DXGI_FORMAT format)
+	std::string_view semanticsName, uint32_t semanticIndex, DXGI_FORMAT format)
 	{
 		D3D12_INPUT_ELEMENT_DESC desc{};
 		desc.SemanticName = semanticsName.data();
-		desc.SemanticIndex = 0;
+		desc.SemanticIndex = semanticIndex;
 		desc.Format = format;
 		desc.InputSlot = 1;
 		desc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;

@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Texture.h"
 #include "Matrix4x4.h"
+#include "PipelineInitializer.h"
 
 class RenderObject
 {
@@ -29,9 +30,10 @@ private:
 
 	D3D12_VERTEX_BUFFER_VIEW m_InstanceView;
 
-	std::vector<DirectX::XMFLOAT3*> m_InstanceData;
+	std::vector<DirectX::XMFLOAT4X4*> m_InstanceData;
 	Transform* m_Transform;
 	ID3D12GraphicsCommandList* m_Bandle;
+	PipelineStateObject m_Pipeline;
 
 	uint32_t m_IndexCount;
 	uint32_t m_DrawCount;

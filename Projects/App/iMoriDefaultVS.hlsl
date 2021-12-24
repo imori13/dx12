@@ -7,7 +7,7 @@ VSOutput main(VSInput input)
 
     float4 localPos = float4(input.Position, 1.0f);
     
-    localPos += float4(input.InstancePos, 1.0f);
+    float4x4 World = float4x4(input.World0, input.World1, input.World2, input.World3);
     
     float4 worldPos = mul(World, localPos);
     float4 viewPos = mul(View, worldPos);
@@ -16,7 +16,7 @@ VSOutput main(VSInput input)
     output.Position = projPos;
     output.TexCoord = input.TexCoord;
     output.WorldPos = worldPos;
-    output.Normal = normalize(mul((float3x3) World, input.Normal));
+    output.Normal = normalize(mul((float3x3)World, input.Normal));
 
     return output;
 }

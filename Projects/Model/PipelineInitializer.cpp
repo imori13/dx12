@@ -34,7 +34,10 @@ const PipelineStateObject CreateDefault(std::wstring_view vsName, std::wstring_v
 	inputElement.SetVertexElement("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	inputElement.SetVertexElement("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	inputElement.SetVertexElement("TANGENT", DXGI_FORMAT_R32G32B32_FLOAT);
-	inputElement.SetInstanceElement("INSTANCEPOS", DXGI_FORMAT_R32G32B32_FLOAT);
+	inputElement.SetInstanceElement("TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	inputElement.SetInstanceElement("TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	inputElement.SetInstanceElement("TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	inputElement.SetInstanceElement("TEXCOORD", 4, DXGI_FORMAT_R32G32B32A32_FLOAT);
 	//inputElement.SetInstanceElement("INSTANCECOLOR", DXGI_FORMAT_R32G32B32_FLOAT, 1);
 
 	const auto vsShader = ResourceManager::GetShader(vsName);

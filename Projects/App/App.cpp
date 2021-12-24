@@ -33,7 +33,7 @@ public:
 CREATE_APPLICATION(App, 1600, 900);
 
 static Vector3 position(0, -1, 0);
-static Vector3 scale(100);
+static Vector3 scale(1);
 static Vector3 rotation(0, 1, 0);
 
 void App::Startup(void)
@@ -61,7 +61,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 10000;
+	constexpr int64_t count = 500000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;

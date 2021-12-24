@@ -1,5 +1,4 @@
 #include "RenderObject.h"
-#include "PipelineInitializer.h"
 #include "Debug.h"
 #include "Command.h"
 
@@ -30,12 +29,12 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	{
 		m_InstanceData.resize(objectCount);
 
-		constexpr auto InstanceStrideSize = sizeof(DirectX::XMFLOAT3);
+		constexpr auto InstanceStrideSize = sizeof(DirectX::XMFLOAT4X4);
 		m_InstanceBuffer.Create(InstanceStrideSize * objectCount, InstanceStrideSize);
 		auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_InstanceBuffer.Map());
 		for(auto i = 0; i < objectCount; ++i)
 		{
-			m_InstanceData.at(i) = reinterpret_cast<DirectX::XMFLOAT3*>(gpuVirtualAddress);
+			m_InstanceData.at(i) = reinterpret_cast<DirectX::XMFLOAT4X4*>(gpuVirtualAddress);
 
 			gpuVirtualAddress += InstanceStrideSize;
 		}
@@ -102,12 +101,13 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 
 	const auto threadNum = omp_get_thread_num();
 
+	m_Pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
+
 	{
-		const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
 		m_Bandle = Command::CreateBandle();
 
-		m_Bandle->SetGraphicsRootSignature(pipeline.GetSignature());
-		m_Bandle->SetPipelineState(pipeline.Get());
+		m_Bandle->SetGraphicsRootSignature(m_Pipeline.GetSignature());
+		m_Bandle->SetPipelineState(m_Pipeline.Get());
 		m_Bandle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		m_Bandle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
@@ -134,23 +134,19 @@ void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Mat
 {
 	m_DrawCount = gsl::narrow<uint32_t>(positions.size());
 
-	m_Transform->World = (Matrix4x4::Identity() * Matrix4x4::Translate(Vector3(0))).Data();
 	m_Transform->View = view.Data();
 	m_Transform->Proj = projection.Data();
 
+#pragma omp parallel for
 	for(auto i = 0; i < m_DrawCount; ++i)
 	{
-		//const auto vec = (world * Matrix4x4::Translate(positions[i])) * Vector3::One();
-		const auto vec = Matrix4x4::Translate(positions[i]) * Vector3::One();
-		*m_InstanceData.at(i) = DirectX::XMFLOAT3{ vec.x(), vec.y(), vec.z() };
+		*m_InstanceData.at(i) = (world * Matrix4x4::Translate(positions[i])).Data();
 	}
 }
 
 void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
-	const auto pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
-
-	cmdList->SetGraphicsRootSignature(pipeline.GetSignature());
+	cmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 	cmdList->ExecuteBundle(m_Bandle);
 }

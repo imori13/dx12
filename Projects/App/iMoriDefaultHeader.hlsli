@@ -8,7 +8,11 @@ struct VSInput
     float3 Normal   : NORMAL;   // 法線ベクトル
     float2 TexCoord : TEXCOORD; // テクスチャ座標
     float3 Tangent : TANGENT;   // 接線ベクトル
-    float3 InstancePos : INSTANCEPOS;
+    
+    float4 World0 : TEXCOORD1;
+    float4 World1 : TEXCOORD2;
+    float4 World2 : TEXCOORD3;
+    float4 World3 : TEXCOORD4;
 };
 
 struct VSOutput
@@ -50,7 +54,6 @@ struct PSOutput
 // Transform (b0)
 cbuffer CameraBuffer : register(b0)
 {
-    float4x4 World : packoffset(c0);
     float4x4 View : packoffset(c4);
     float4x4 Proj : packoffset(c8);
 }
