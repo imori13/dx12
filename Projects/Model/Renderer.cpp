@@ -9,7 +9,7 @@ namespace
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
 }
 
-void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, uint32_t objectCount)
+void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, int32_t objectCount)
 {
 	auto model = ResourceManager::GetMesh(modelName);
 
@@ -22,7 +22,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, st
 	}
 }
 
-void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, uint32_t objectCount)
+void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, int32_t objectCount)
 {
 	auto model = ResourceManager::GetMesh(modelName);
 

@@ -88,7 +88,7 @@ namespace GameCore
 			DataAverage::Set(L"GPUwait", TimeStamp::End(), Average::VeryLow);
 		}
 
-		DataAverage::Set(L"更新時間", TimeStamp::End(), Average::VeryLow);
+		DataAverage::Set(L"更新時間", TimeStamp::End(), Average::None);
 
 		return !game.IsDone();
 	}

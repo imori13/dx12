@@ -2,7 +2,7 @@
 #include "Debug.h"
 #include "Command.h"
 
-void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, uint32_t objectCount)
+void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 {
 	// ÉqÅ[Évê∂ê¨
 	{
@@ -43,8 +43,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	// IndexèÓïÒMap
 	{
 		const auto span = gsl::make_span(mesh.Indices);
-
-		m_IndexCount = gsl::narrow<uint32_t>(span.size());
+		m_IndexCount = gsl::narrow<int32_t>(span.size());
 
 		m_IndexBuffer.Create(span.size_bytes(), sizeof(uint32_t));
 		void* ptr = m_IndexBuffer.Map();
@@ -52,20 +51,20 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_IndexBuffer.UnMap();
 	}
 
-	// Transformê∂ê¨
+	// CameraBufferê∂ê¨
 	{
-		m_TransformBuffer.Create(sizeof(Transform), sizeof(Transform));
-		auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_TransformBuffer.Map());
-		m_Transform = reinterpret_cast<Transform*>(gpuVirtualAddress);
+		m_CameraBuffer.Create(sizeof(CameraData), sizeof(CameraData));
+		auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_CameraBuffer.Map());
+		m_CameraData = reinterpret_cast<CameraData*>(gpuVirtualAddress);
 
-		m_TransformBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
+		m_CameraBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 	}
 
-	// Lightê∂ê¨
+	// LightBufferê∂ê¨
 	{
-		m_LightBuffer.Create(sizeof(Light), sizeof(Light));
+		m_LightBuffer.Create(sizeof(LightData), sizeof(LightData));
 
-		Light light;
+		LightData light;
 		light.LightPosition = { 0.0f,50.0f,100.0f,0.0f };
 		light.Color = { 1.0f,1.0f,1.0f,0.0f };
 		light.CameraPosition = { 0.0f,1.0f,2.0f,0.0f };
@@ -115,7 +114,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_Bandle->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
 
 		m_Bandle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-		m_Bandle->SetGraphicsRootConstantBufferView(0, m_TransformBuffer.GetConstantLocation());
+		m_Bandle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetConstantLocation());
 		m_Bandle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
 		m_Bandle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
 		m_Bandle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
@@ -132,10 +131,10 @@ void RenderObject::Initialize() noexcept
 
 void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
 {
-	m_DrawCount = gsl::narrow<uint32_t>(positions.size());
+	m_DrawCount = gsl::narrow<int32_t>(positions.size());
 
-	m_Transform->View = view.Data();
-	m_Transform->Proj = projection.Data();
+	m_CameraData->View = view.Data();
+	m_CameraData->Proj = projection.Data();
 
 #pragma omp parallel for
 	for(auto i = 0; i < m_DrawCount; ++i)

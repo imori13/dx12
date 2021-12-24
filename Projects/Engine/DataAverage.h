@@ -4,7 +4,7 @@
 
 enum class Average
 {
-	None = 1,
+	None = 2,
 	VeryLow = 5,
 	Low = 10,
 	Middle = 20,

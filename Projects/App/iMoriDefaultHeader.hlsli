@@ -54,8 +54,8 @@ struct PSOutput
 // Transform (b0)
 cbuffer CameraBuffer : register(b0)
 {
-    float4x4 View : packoffset(c4);
-    float4x4 Proj : packoffset(c8);
+    float4x4 View : packoffset(c0);
+    float4x4 Proj : packoffset(c4);
 }
 
 // Light (b1)
