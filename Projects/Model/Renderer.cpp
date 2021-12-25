@@ -38,23 +38,14 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	}
 }
 
-void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, const Matrix4x4& world, gsl::span<Vector3> positions, std::wstring_view assetName)
+void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
 {
 	auto& meshVec = s_RenderObjects[assetName.data()];
 	for(auto& mesh : meshVec)
 	{
-		mesh.Draw(cmdList, world, positions);
+		mesh.Draw(cmdList, matrixData);
 	}
 }
-
-//void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<RenderData> renderData, std::wstring_view assetName)
-//{
-//	auto& meshVec = s_RenderObjects[assetName.data()];
-//	for(auto& mesh : meshVec)
-//	{
-//		mesh.Draw(cmdList, renderData);
-//	}
-//}
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(Matrix4x4 view, Matrix4x4 proj)
 {

@@ -6,13 +6,6 @@
 #include "PipelineInitializer.h"
 #include "Command.h"
 
-struct RenderData
-{
-	Vector3 position;
-	Vector3 rotation;
-	Vector3 scale;
-};
-
 class RenderObject
 {
 public:
@@ -22,7 +15,7 @@ public:
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount);
 	void Initialize(const Matrix4x4& view, const Matrix4x4& projection) noexcept;
-	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, const Matrix4x4& world, gsl::span<Vector3> position);
+	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData);
 private:
 	ID3D12GraphicsCommandList* m_Bandle;
 	PipelineStateObject m_Pipeline;

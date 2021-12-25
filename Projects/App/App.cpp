@@ -12,6 +12,14 @@
 #include "Random.h"
 #include "TimeStamp.h"
 
+struct RenderData
+{
+	Vector3 position;
+	Vector3 rotation;
+	Vector3 scale;
+	float rotationSpeed;
+};
+
 class App : public GameCore::IGameApp
 {
 public:
@@ -27,15 +35,11 @@ public:
 	Camera camera;
 
 	Matrix4x4 world;
-	std::vector<Vector3> positionVector;
-	std::vector<Vector3> positionVector2;
+	std::vector<RenderData> renderDataVector;
+	std::vector<RenderData> renderDataVector2;
 };
 
 CREATE_APPLICATION(App, 1600, 900);
-
-static Vector3 position(0, -1, 0);
-static Vector3 scale(1);
-static Vector3 rotation(0, 1, 0);
 
 void App::Startup(void)
 {
@@ -67,22 +71,34 @@ void App::Startup(void)
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
 
-	positionVector.resize(count);
-	positionVector2.resize(count);
+	renderDataVector.resize(count);
+	renderDataVector2.resize(count);
 
 	Random::Set(min, max);
-	//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
-	{
-		positionVector.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
-	}
+		renderDataVector.at(i).position = Vector3(Random::Next(), Random::Next(), Random::Next());
+	Random::Set(-1.0f, 1.0f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector.at(i).rotation = Vector3(Random::Next(), Random::Next(), Random::Next()).normalized();
+	Random::Set(0.1f, 1.5f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector.at(i).scale = Vector3(Random::Next());
+	Random::Set(-5.0f, 5.0f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector.at(i).rotationSpeed = Random::Next();
 
 	Random::Set(min, max);
-	//#pragma omp parallel for
 	for(int64_t i = 0; i < count; ++i)
-	{
-		positionVector2.at(i) = Vector3(Random::Next(), Random::Next(), Random::Next());
-	}
+		renderDataVector2.at(i).position = Vector3(Random::Next(), Random::Next(), Random::Next());
+	Random::Set(-1.0f, 1.0f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector2.at(i).rotation = Vector3(Random::Next(), Random::Next(), Random::Next()).normalized();
+	Random::Set(0.1f, 1.25f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector2.at(i).scale = Vector3(Random::Next());
+	Random::Set(-5.0f, 5.0f);
+	for(int64_t i = 0; i < count; ++i)
+		renderDataVector2.at(i).rotationSpeed = Random::Next();
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
@@ -98,10 +114,6 @@ void App::Update()
 {
 	camera.Update();
 
-	world = Matrix4x4::identity()
-		.scale(scale.x(), scale.y(), scale.z())
-		.rotateY(Timer::g_ElapsedTime * 1.0f);
-
 }
 
 void App::UpdateGUI()
@@ -113,8 +125,35 @@ void App::RenderScene(void)
 {
 	auto cmdList = Renderer::Begin(camera.GetViewMatrix(), camera.GetProjMatrix());
 
-	Renderer::Draw(cmdList, world, positionVector, L"Cube");
-	Renderer::Draw(cmdList, world, positionVector2, L"Cube2");
+	std::vector<Matrix4x4> matrix;
+	matrix.resize(renderDataVector.size());
+
+#pragma omp parallel for
+	for(auto i = 0; i < matrix.size(); ++i)
+	{
+		auto& data = renderDataVector.at(i);
+
+		matrix.at(i) = Matrix4x4::identity()
+			.scale(data.scale)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed)
+			.rotation(data.rotation)
+			.translation(data.position);
+	}
+	Renderer::Draw(cmdList, L"Cube", matrix);
+
+	matrix.resize(renderDataVector2.size());
+#pragma omp parallel for
+	for(auto i = 0; i < matrix.size(); ++i)
+	{
+		auto& data = renderDataVector2.at(i);
+
+		matrix.at(i) = Matrix4x4::identity()
+			.scale(data.scale)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed)
+			.rotation(data.rotation)
+			.translation(data.position);
+	}
+	Renderer::Draw(cmdList, L"Cube2", matrix);
 
 	{
 		TimeStamp::Stop();

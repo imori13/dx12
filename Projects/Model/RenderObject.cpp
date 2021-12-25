@@ -130,13 +130,13 @@ void RenderObject::Initialize(const Matrix4x4& view, const Matrix4x4& projection
 	m_CameraData->Proj = projection.data();
 }
 
-void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, const Matrix4x4& world, gsl::span<Vector3> position)
+void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
 {
-	const auto size = position.size();
+	const auto size = matrixData.size();
 
 #pragma omp parallel for
 	for(auto i = 0; i < size; ++i)
-		*m_InstanceData.at(i) = world.translation(position[i]).data();
+		*m_InstanceData.at(i) = matrixData[i].data();
 
 	cmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
