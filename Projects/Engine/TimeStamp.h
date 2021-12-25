@@ -2,7 +2,9 @@
 
 namespace TimeStamp
 {
-	void Initialize() noexcept;
-	void Begin();
+	void Begin() noexcept;
 	float End() noexcept;
+
+	void Stop() noexcept;
+	void Resume() noexcept;
 }

@@ -29,7 +29,6 @@ namespace GameCore
 
 		Input::Initialize();
 		Timer::Initialize();
-		TimeStamp::Initialize();
 
 		TimeStamp::Begin();
 
