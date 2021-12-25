@@ -39,9 +39,6 @@ static Vector3 rotation(0, 1, 0);
 
 void App::Startup(void)
 {
-	// óLå¯Ç…Ç»Ç¡ÇƒÇ¢ÇÈSIMDñΩóﬂÇï\é¶ÅD
-	LOGLINE("A:%s", Eigen::SimdInstructionSetsInUse());
-
 	App_ImGui::Initialize();
 
 	std::wstring path = L"Textures/";
@@ -65,7 +62,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 100000;
+	constexpr int64_t count = 500000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -105,8 +102,6 @@ void App::Update()
 		.scale(scale.x(), scale.y(), scale.z())
 		.rotateY(Timer::g_ElapsedTime * 1.0f);
 
-	Renderer::Draw(L"Cube", world, camera, positionVector);
-	Renderer::Draw(L"Cube2", world, camera, positionVector2);
 }
 
 void App::UpdateGUI()
@@ -116,9 +111,10 @@ void App::UpdateGUI()
 
 void App::RenderScene(void)
 {
-	auto cmdList = Renderer::Begin();
+	auto cmdList = Renderer::Begin(camera.GetViewMatrix(), camera.GetProjMatrix());
 
-	Renderer::SendCommand(cmdList);
+	Renderer::Draw(cmdList, world, positionVector, L"Cube");
+	Renderer::Draw(cmdList, world, positionVector2, L"Cube2");
 
 	{
 		TimeStamp::Stop();

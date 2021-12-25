@@ -38,8 +38,34 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	}
 }
 
-gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
+void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, const Matrix4x4& world, gsl::span<Vector3> positions, std::wstring_view assetName)
 {
+	auto& meshVec = s_RenderObjects[assetName.data()];
+	for(auto& mesh : meshVec)
+	{
+		mesh.Draw(cmdList, world, positions);
+	}
+}
+
+//void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<RenderData> renderData, std::wstring_view assetName)
+//{
+//	auto& meshVec = s_RenderObjects[assetName.data()];
+//	for(auto& mesh : meshVec)
+//	{
+//		mesh.Draw(cmdList, renderData);
+//	}
+//}
+
+gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(Matrix4x4 view, Matrix4x4 proj)
+{
+	for(auto& model : s_RenderObjects)
+	{
+		for(auto& mesh : model.second)
+		{
+			mesh.Initialize(view, proj);
+		}
+	}
+
 	auto cmdList = Command::BeginMain();
 
 	// リソースバリア
@@ -62,33 +88,6 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 	return cmdList;
 }
 
-void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
-{
-	auto& meshVec = s_RenderObjects[assetName.data()];
-
-	for(auto& mesh : meshVec)
-	{
-		mesh.Draw(world, view, projection , positions);
-	}
-}
-
-void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera, const gsl::span<Vector3>& positions)
-{
-	Draw(assetName, world, camera.GetViewMatrix(), camera.GetProjMatrix(), positions);
-}
-
-void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
-{
-	for(auto& model : s_RenderObjects)
-	{
-		for(auto& mesh : model.second)
-		{
-			mesh.SendCommand(cmdList);
-			mesh.Initialize();
-		}
-	}
-}
-
 void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	// リソースバリア
@@ -96,5 +95,4 @@ void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	cmdList->ResourceBarrier(1, &barrier);
 
 	Command::EndMain();
-	Command::WaitForGpu();
 }

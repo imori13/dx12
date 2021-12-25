@@ -167,12 +167,12 @@ Matrix4x4 Matrix4x4::translation(float x, float y, float z) const
 	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::rotateRollPitchYaw(const Vector3& vec) const
+Matrix4x4 Matrix4x4::rotation(const Vector3& vec) const
 {
-	return rotateRollPitchYaw(vec.x(), vec.y(), vec.z());
+	return rotation(vec.x(), vec.y(), vec.z());
 }
 
-Matrix4x4 Matrix4x4::rotateRollPitchYaw(float x, float y, float z) const
+Matrix4x4 Matrix4x4::rotation(float x, float y, float z) const
 {
 	return rotateZ(z) * rotateX(x) * rotateY(y);
 }

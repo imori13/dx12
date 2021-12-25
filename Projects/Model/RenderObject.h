@@ -6,18 +6,23 @@
 #include "PipelineInitializer.h"
 #include "Command.h"
 
+struct RenderData
+{
+	Vector3 position;
+	Vector3 rotation;
+	Vector3 scale;
+};
+
 class RenderObject
 {
 public:
 	RenderObject() noexcept
 		: m_TextureGpuHandle{}
 		, m_IndexCount(0)
-		, m_DrawCount(0)
 	{}
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount);
-	void Initialize() noexcept;
-	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions);
-	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
+	void Initialize(const Matrix4x4& view, const Matrix4x4& projection) noexcept;
+	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, const Matrix4x4& world, gsl::span<Vector3> position);
 private:
 	ID3D12GraphicsCommandList* m_Bandle;
 	PipelineStateObject m_Pipeline;
@@ -35,5 +40,4 @@ private:
 	std::vector<DirectX::XMFLOAT4X4*> m_InstanceData;
 
 	int32_t m_IndexCount;
-	int32_t m_DrawCount;
 };

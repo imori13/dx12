@@ -37,8 +37,8 @@ public:
 	Matrix4x4 scale(float x, float y, float z) const;
 	Matrix4x4 translation(const Vector3& vec) const;
 	Matrix4x4 translation(float x, float y, float z) const;
-	Matrix4x4 rotateRollPitchYaw(const Vector3& vec) const;
-	Matrix4x4 rotateRollPitchYaw(float x, float y, float z) const;
+	Matrix4x4 rotation(const Vector3& vec) const;
+	Matrix4x4 rotation(float x, float y, float z) const;
 	Matrix4x4 rotateX(float radian) const;
 	Matrix4x4 rotateY(float radian) const;
 	Matrix4x4 rotateZ(float radian) const;
