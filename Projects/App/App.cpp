@@ -10,7 +10,6 @@
 #include "Timer.h"
 #include "Input.h"
 #include "Random.h"
-#include "Matrix.h"
 
 class App : public GameCore::IGameApp
 {
@@ -26,7 +25,7 @@ public:
 
 	Camera camera;
 
-	Matrix world;
+	Matrix4x4 world;
 	std::vector<Vector3> positionVector;
 	std::vector<Vector3> positionVector2;
 };
@@ -39,6 +38,9 @@ static Vector3 rotation(0, 1, 0);
 
 void App::Startup(void)
 {
+	// óLå¯Ç…Ç»Ç¡ÇƒÇ¢ÇÈSIMDñΩóﬂÇï\é¶ÅD
+	LOGLINE("A:%s", Eigen::SimdInstructionSetsInUse());
+
 	App_ImGui::Initialize();
 
 	std::wstring path = L"Textures/";
@@ -98,9 +100,9 @@ void App::Update()
 {
 	camera.Update();
 
-	world = Matrix().identity();
-	world.scale(scale.x(), scale.y(), scale.z());
-	//world *= Matrix::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
+	world = Matrix4x4::identity()
+		.scale(scale.x(), scale.y(), scale.z())
+		.rotateY(Timer::g_ElapsedTime * 1.0f);
 
 	Renderer::Draw(L"Cube", world, camera, positionVector);
 	Renderer::Draw(L"Cube2", world, camera, positionVector2);
@@ -115,12 +117,8 @@ void App::RenderScene(void)
 {
 	auto cmdList = Renderer::Begin();
 
-	auto cmdLists = Command::BeginSub();
-
-	Renderer::SendCommand(cmdLists);
-	App_ImGui::Render(cmdLists);
-
-	Command::EndSub();
+	Renderer::SendCommand(cmdList);
+	App_ImGui::Render(cmdList);
 
 	Renderer::End(cmdList);
 }

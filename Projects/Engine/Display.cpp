@@ -93,7 +93,6 @@ namespace Display
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		}
 
-
 		// RSV/DSVÇÃê∂ê¨
 		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
@@ -214,8 +213,8 @@ namespace Display
 	{
 		g_Viewport.TopLeftX = 0;
 		g_Viewport.TopLeftY = 0;
-		g_Viewport.Width = static_cast<float>(width);
-		g_Viewport.Height = static_cast<float>(height);
+		g_Viewport.Width = width;
+		g_Viewport.Height = height;
 		g_Viewport.MinDepth = 0.0f;
 		g_Viewport.MaxDepth = 1.0f;
 		g_Scissor.left = 0;

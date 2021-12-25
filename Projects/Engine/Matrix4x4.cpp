@@ -1,34 +1,38 @@
 #include "Matrix4x4.h"
 
-// プライベートクラス
-class APrivate
+namespace 
 {
-public:
-	Eigen::Matrix4f matrix;
-};
+	const Eigen::Matrix4f IDENTITY = Eigen::Matrix4f::Identity();
+}
+
+Matrix4x4 Matrix4x4::identity()
+{
+	return IDENTITY;
+}
 
 Matrix4x4& Matrix4x4::operator+=(const Matrix4x4& m)
 {
 	matrix += m.matrix;
 	return *this;
 }
-Matrix4x4 Matrix4x4::operator+(const Matrix4x4& m) const
-{
-	return matrix + m.matrix;
-}
 Matrix4x4& Matrix4x4::operator-=(const Matrix4x4& m)
 {
 	matrix -= m.matrix;
 	return *this;
 }
-Matrix4x4 Matrix4x4::operator-(const Matrix4x4& m) const
-{
-	return matrix - m.matrix;
-}
 Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& m)
 {
 	matrix *= m.matrix;
 	return *this;
+}
+
+Matrix4x4 Matrix4x4::operator+(const Matrix4x4& m) const
+{
+	return matrix + m.matrix;
+}
+Matrix4x4 Matrix4x4::operator-(const Matrix4x4& m) const
+{
+	return matrix - m.matrix;
 }
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& m) const
 {
@@ -45,75 +49,79 @@ Vector3 Matrix4x4::operator*(const Vector3& vec) const
 	return Vector3(vec4.x(), vec4.y(), vec4.z());
 }
 
-DirectX::XMFLOAT4X4 Matrix4x4::Data() const
+DirectX::XMFLOAT4X4 Matrix4x4::data() const
 {
 	return DirectX::XMFLOAT4X4(matrix.data());
 }
 
-Matrix4x4 Matrix4x4::Transpose() const
+Matrix4x4 Matrix4x4::transpose() const
 {
 	return matrix.transpose();
 }
 
-Matrix4x4 Matrix4x4::Inverse() const
+Matrix4x4 Matrix4x4::inverse() const
 {
 	return matrix.inverse();
 }
 
-Matrix4x4 Matrix4x4::Identity()
+float& Matrix4x4::at(uint8_t row, uint8_t col)
 {
-	return Eigen::Matrix4f::Identity();
+	return matrix(row, col);
 }
 
-Matrix4x4 Matrix4x4::Scale(const Vector3& vec)
+const float& Matrix4x4::at(uint8_t row, uint8_t col) const
 {
-	return Scale(vec.x(), vec.y(), vec.z());
+	return matrix(row, col);
 }
 
-Matrix4x4 Matrix4x4::Scale(float x, float y, float z)
+Matrix4x4 Matrix4x4::scale(const Vector3& vec) const
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = x;
-	m(1, 1) = y;
-	m(2, 2) = z;
-
-	return m;
+	return *this * scale(vec.x(), vec.y(), vec.z());
 }
 
-Matrix4x4 Matrix4x4::RotateX(float radian)
+Matrix4x4 Matrix4x4::scale(float x, float y, float z) const
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(1, 1) = cos(radian);
-	m(1, 2) = sin(radian);
-	m(2, 1) = -sin(radian);
-	m(2, 2) = cos(radian);
-
-	return m;
+	auto m = identity();
+	m.at(0, 0) = x;
+	m.at(1, 1) = y;
+	m.at(2, 2) = z;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::RotateY(float radian)
+Matrix4x4 Matrix4x4::rotateX(float radian) const
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = cos(radian);
-	m(0, 2) = -sin(radian);
-	m(2, 0) = sin(radian);
-	m(2, 2) = cos(radian);
+	auto m = identity();
+	m.at(1, 1) = cos(radian);
+	m.at(1, 2) = sin(radian);
+	m.at(2, 1) = -sin(radian);
+	m.at(2, 2) = cos(radian);
 
-	return m;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::RotateZ(float radian)
+Matrix4x4 Matrix4x4::rotateY(float radian) const
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = cos(radian);
-	m(0, 1) = sin(radian);
-	m(1, 0) = -sin(radian);
-	m(1, 1) = cos(radian);
+	auto m = identity();
+	m.at(0, 0) = cos(radian);
+	m.at(0, 2) = -sin(radian);
+	m.at(2, 0) = sin(radian);
+	m.at(2, 2) = cos(radian);
 
-	return m;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::RotateAxis(const Vector3& vector, float radian)
+Matrix4x4 Matrix4x4::rotateZ(float radian) const
+{
+	auto m = identity();
+	m.at(0, 0) = cos(radian);
+	m.at(0, 1) = sin(radian);
+	m.at(1, 0) = -sin(radian);
+	m.at(1, 1) = cos(radian);
+
+	return *this * m;
+}
+
+Matrix4x4 Matrix4x4::rotateAxis(const Vector3& vector, float radian) const
 {
 	float X = vector.x();
 	float Y = vector.y();
@@ -123,55 +131,53 @@ Matrix4x4 Matrix4x4::RotateAxis(const Vector3& vector, float radian)
 	float Sin = sin(radian);
 	float A = 1 - Cos;
 
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = X * X * A + Cos;
-	m(0, 1) = X * Y * A - Z * Sin;
-	m(0, 2) = Z * X * A + Y * Sin;
+	auto m = identity();
+	m.at(0, 0) = X * X * A + Cos;
+	m.at(0, 1) = X * Y * A - Z * Sin;
+	m.at(0, 2) = Z * X * A + Y * Sin;
 
-	m(1, 0) = X * Y * A + Z * Sin;
-	m(1, 1) = Y * Y * A + Cos;
-	m(1, 2) = Y * Z * A - X * Sin;
+	m.at(1, 0) = X * Y * A + Z * Sin;
+	m.at(1, 1) = Y * Y * A + Cos;
+	m.at(1, 2) = Y * Z * A - X * Sin;
 
-	m(2, 0) = Z * X * A - Y * Sin;
-	m(2, 1) = Y * Z * A + X * Sin;
-	m(2, 2) = Z * Z * A + Cos;
+	m.at(2, 0) = Z * X * A - Y * Sin;
+	m.at(2, 1) = Y * Z * A + X * Sin;
+	m.at(2, 2) = Z * Z * A + Cos;
 
-	return m;
+	return *this * m;
 }
 
-const Matrix4x4& Matrix4x4::Translate(const Vector3& vec)
+Matrix4x4 Matrix4x4::translation(const Vector3& vec) const
 {
-	Eigen::Matrix4f mat = Eigen::Matrix4f::Identity();
-	mat(3, 0) = vec.x();
-	mat(3, 1) = vec.y();
-	mat(3, 2) = vec.z();
-	matrix *= mat;
+	auto m = identity();
+	m.at(3, 0) = vec.x();
+	m.at(3, 1) = vec.y();
+	m.at(3, 2) = vec.z();
 
-	return matrix;
+	return *this * m;
 }
 
-const Matrix4x4& Matrix4x4::Translate(float x, float y, float z)
+Matrix4x4 Matrix4x4::translation(float x, float y, float z) const
 {
-	Eigen::Matrix4f mat = Eigen::Matrix4f::Identity();
-	mat(3, 0) = x;
-	mat(3, 1) = y;
-	mat(3, 2) = z;
-	matrix *= mat;
+	auto m = identity();
+	m.at(3, 0) = x;
+	m.at(3, 1) = y;
+	m.at(3, 2) = z;
 
-	return matrix;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::RotateRollPitchYaw(const Vector3& vec)
+Matrix4x4 Matrix4x4::rotateRollPitchYaw(const Vector3& vec) const
 {
-	return RotateRollPitchYaw(vec.x(), vec.y(), vec.z());
+	return rotateRollPitchYaw(vec.x(), vec.y(), vec.z());
 }
 
-Matrix4x4 Matrix4x4::RotateRollPitchYaw(float x, float y, float z)
+Matrix4x4 Matrix4x4::rotateRollPitchYaw(float x, float y, float z) const
 {
-	return Identity() * RotateZ(z) * RotateX(x) * RotateY(y);
+	return rotateZ(z) * rotateX(x) * rotateY(y);
 }
 
-Matrix4x4 Matrix4x4::LookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward)
+Matrix4x4 Matrix4x4::lookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward) const
 {
 	Vector3 Z = (targetPos - cameraPos);
 	Z = (Z != Vector3::Zero()) ? (Z.Normalized()) : (Vector3::Zero());
@@ -182,53 +188,52 @@ Matrix4x4 Matrix4x4::LookAt(const Vector3& cameraPos, const Vector3& targetPos, 
 	X = (X != Vector3::Zero()) ? (X.Normalized()) : (Vector3::Zero());
 	Y = (Y != Vector3::Zero()) ? (Y.Normalized()) : (Vector3::Zero());
 
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
+	auto m = identity();
+	m.at(0, 0) = X.x();
+	m.at(1, 0) = X.y();
+	m.at(2, 0) = X.z();
+	m.at(3, 0) = -X.Dot(cameraPos);
 
-	m(0, 0) = X.x();
-	m(1, 0) = X.y();
-	m(2, 0) = X.z();
-	m(3, 0) = -X.Dot(cameraPos);
+	m.at(0, 1) = Y.x();
+	m.at(1, 1) = Y.y();
+	m.at(2, 1) = Y.z();
+	m.at(3, 1) = -Y.Dot(cameraPos);
 
-	m(0, 1) = Y.x();
-	m(1, 1) = Y.y();
-	m(2, 1) = Y.z();
-	m(3, 1) = -Y.Dot(cameraPos);
+	m.at(0, 2) = Z.x();
+	m.at(1, 2) = Z.y();
+	m.at(2, 2) = Z.z();
+	m.at(3, 2) = -Z.Dot(cameraPos);
 
-	m(0, 2) = Z.x();
-	m(1, 2) = Z.y();
-	m(2, 2) = Z.z();
-	m(3, 2) = -Z.Dot(cameraPos);
-
-	return m;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::ParrallelProjection(float top, float bottom, float right, float left, float Near, float Far)
+Matrix4x4 Matrix4x4::parrallelProjection(float top, float bottom, float right, float left, float Near, float Far) const
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = 2.0f / (right - left);
-	m(1, 1) = 2.0f / (top - bottom);
-	m(2, 2) = 2.0f / (Far - Near);
+	auto m = identity();
+	m.at(0, 0) = 2.0f / (right - left);
+	m.at(1, 1) = 2.0f / (top - bottom);
+	m.at(2, 2) = 2.0f / (Far - Near);
 
-	m(0, 3) = -((right + left) / (right - left));
-	m(1, 3) = -((top + bottom) / (top - bottom));
-	m(2, 3) = -((Far + Near) / (Far - Near));
+	m.at(0, 3) = -((right + left) / (right - left));
+	m.at(1, 3) = -((top + bottom) / (top - bottom));
+	m.at(2, 3) = -((Far + Near) / (Far - Near));
 
-	return m;
+	return *this * m;
 }
 
-Matrix4x4 Matrix4x4::PerspectiveProjection(float fovRad, float aspect, float Near, float Far)
+Matrix4x4 Matrix4x4::perspectiveProjection(float fovRad, float aspect, float Near, float Far) const
 {
 	float Height = 1.0f / tanf(fovRad / 2.0f);
 	float Width = Height / aspect;
 	float fRange = Far / (Far - Near);
 
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(0, 0) = Width;
-	m(1, 1) = Height;
-	m(2, 2) = fRange;
-	m(2, 3) = 1;
-	m(3, 2) = -fRange * Near;
-	m(3, 3) = 0;
+	auto m = identity();
+	m.at(0, 0) = Width;
+	m.at(1, 1) = Height;
+	m.at(2, 2) = fRange;
+	m.at(2, 3) = 1;
+	m.at(3, 2) = -fRange * Near;
+	m.at(3, 3) = 0;
 
-	return m;
+	return *this * m;
 }

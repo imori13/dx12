@@ -28,8 +28,8 @@ void Camera::Update()
 	m_Rotate.y() = sin(m_Latitude);
 	m_Rotate.z() = sin(m_Longitude) * cos(m_Latitude);
 
-	m_ViewMatrix = Matrix4x4::LookAt(m_Position, m_Position + m_Rotate, Vector3::Up());
-	m_ProjMatrix = Matrix4x4::PerspectiveProjection(m_Fov, Display::g_Aspect, m_NearZ, m_FarZ);
+	m_ViewMatrix = Matrix4x4::identity().lookAt(m_Position, m_Position + m_Rotate, Vector3::Up());
+	m_ProjMatrix = Matrix4x4::identity().perspectiveProjection(m_Fov, Display::g_Aspect, m_NearZ, m_FarZ);
 }
 
 void Camera::MouseRotate(const Vector2& mouseVelocity)

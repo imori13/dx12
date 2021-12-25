@@ -14,7 +14,7 @@ namespace App_ImGui
 
 	void Initialize();
 	void Update();
-	void Render(std::vector<CommandList> cmdLists);
+	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 	void Terminate();
 	void UpdateAdditionalPlatformWindows(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 

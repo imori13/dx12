@@ -119,6 +119,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_Bandle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetConstantLocation());
 		m_Bandle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetConstantLocation());
 		m_Bandle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+		m_Bandle->DrawIndexedInstanced(m_IndexCount, objectCount, 0, 0, 0);
 
 		m_Bandle->Close();
 	}
@@ -129,39 +130,43 @@ void RenderObject::Initialize() noexcept
 
 }
 
-void RenderObject::Draw(const Matrix& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
+void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
 {
 	m_DrawCount = gsl::narrow<int32_t>(positions.size());
 
-	m_CameraData->View = view.Data();
-	m_CameraData->Proj = projection.Data();
+	m_CameraData->View = view.data();
+	m_CameraData->Proj = projection.data();
 
 #pragma omp parallel for
 	for(auto i = 0; i < m_DrawCount; ++i)
 	{
-		Matrix mat = world;
-		Vector3 pos = positions[i];
-		*m_InstanceData.at(i) = mat.translation(pos.x(), pos.y(), pos.z()).transpose().data();
+		*m_InstanceData.at(i) = world.translation(positions[i]).data();
 	}
 }
 
-void RenderObject::SendCommand(std::vector<CommandList> cmdLists)
+void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
-	const auto drawCount = m_DrawCount / omp_get_max_threads();
-	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	cmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
+	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
+	cmdList->ExecuteBundle(m_Bandle);
 
-#pragma omp parallel for
-	for(auto i = 0; i < omp_get_max_threads(); ++i)
-	{
-		const auto subCmdList = cmdLists.at(i).Get();
-		subCmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
-		subCmdList->RSSetViewports(1, &Display::g_Viewport);
-		subCmdList->RSSetScissorRects(1, &Display::g_Scissor);
-
-		subCmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
-		subCmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-		subCmdList->ExecuteBundle(m_Bandle);
-		subCmdList->DrawIndexedInstanced(m_IndexCount, drawCount, 0, 0, drawCount * i);
-	}
+	//	const auto drawCount = m_DrawCount / omp_get_max_threads();
+	//	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	//	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	//
+	//	const auto vec = Command::BeginSub();
+	//#pragma omp parallel for
+	//	for(auto i = 0; i < omp_get_max_threads(); ++i)
+	//	{
+	//		const auto subCmdList = vec.at(i).Get();
+	//		subCmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+	//		subCmdList->RSSetViewports(1, &Display::g_Viewport);
+	//		subCmdList->RSSetScissorRects(1, &Display::g_Scissor);
+	//
+	//		subCmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
+	//		subCmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
+	//		subCmdList->ExecuteBundle(m_Bandle);
+	//		subCmdList->DrawIndexedInstanced(m_IndexCount, drawCount, 0, 0, drawCount * i);
+	//	}
+	//	Command::EndSub();
 }

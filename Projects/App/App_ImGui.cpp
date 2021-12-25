@@ -67,11 +67,9 @@ namespace App_ImGui
 		AppGui::FrameViewrEnable();
 	}
 
-	void Render(std::vector<CommandList> cmdLists)
+	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	{
 		if(!s_GUI_ENABLE) { return; }
-
-		auto cmdList = cmdLists.back().Get();
 
 		ImGui::Render();
 

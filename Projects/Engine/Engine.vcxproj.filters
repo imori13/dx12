@@ -82,9 +82,6 @@
     <ClCompile Include="CommandList.cpp">
       <Filter>Source File\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source File\Math</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GpuResource.h">
@@ -164,9 +161,6 @@
     </ClInclude>
     <ClInclude Include="CommandList.h">
       <Filter>Source File\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Source File\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
