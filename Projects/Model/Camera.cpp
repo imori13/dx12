@@ -19,7 +19,7 @@ void Camera::Update()
 
 	// •âŠ®
 	const float rate = 0.1f * Timer::g_FrameTime * 60.0f;
-	m_Position = Vector3::Lerp(m_Position, m_DestPosition, rate);
+	m_Position = m_Position.lerp(m_DestPosition, rate);
 	m_Longitude = Math::Lerp(m_Longitude, m_DestLongitude, rate);
 	m_Latitude = Math::Lerp(m_Latitude, m_DestLatitude, rate);
 
@@ -28,7 +28,7 @@ void Camera::Update()
 	m_Rotate.y() = sin(m_Latitude);
 	m_Rotate.z() = sin(m_Longitude) * cos(m_Latitude);
 
-	m_ViewMatrix = Matrix4x4::identity().lookAt(m_Position, m_Position + m_Rotate, Vector3::Up());
+	m_ViewMatrix = Matrix4x4::identity().lookAt(m_Position, m_Position + m_Rotate, Vector3::up());
 	m_ProjMatrix = Matrix4x4::identity().perspectiveProjection(m_Fov, Display::g_Aspect, m_NearZ, m_FarZ);
 }
 

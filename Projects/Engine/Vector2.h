@@ -22,12 +22,12 @@ public:
 
 	Vector2 operator-() const;
 	Vector2 operator+(const Vector2& vector) const;
-	Vector2& operator+=(const Vector2& vector);
 	Vector2 operator-(const Vector2& vector) const;
-	Vector2& operator-=(const Vector2& vector);
 	Vector2 operator*(const float scaler) const;
-	Vector2& operator*=(const float scaler);
 	Vector2 operator/(const float scaler) const;
+	Vector2& operator+=(const Vector2& vector);
+	Vector2& operator-=(const Vector2& vector);
+	Vector2& operator*=(const float scaler);
 	Vector2& operator/=(const float scaler);
 	bool operator==(const Vector2& vector) const;
 	bool operator!=(const Vector2& vector) const;
@@ -41,17 +41,17 @@ public:
 	const float* data() const;
 	float* data();
 
-	Vector2 Normalized() const;
-	float Length() const;
-	float LengthSquared() const;
-	float Dot(const Vector2& vector) const;
+	Vector2 normalized() const;
+	float length() const;
+	float lengthSquared() const;
+	float dot(const Vector2& vector) const;
 
-	static Vector2 Zero();
-	static Vector2 One();
-	static Vector2 Up();
-	static Vector2 Down();
-	static Vector2 Right();
-	static Vector2 Left();
+	static Vector2 zero();
+	static Vector2 one();
+	static Vector2 up();
+	static Vector2 down();
+	static Vector2 right();
+	static Vector2 left();
 
 private:
 	Vector2::Vector2(const Eigen::Vector2f& vector)

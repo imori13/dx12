@@ -28,38 +28,40 @@ Vector2 Vector2::operator+(const Vector2& vector) const
 {
 	return vec + vector.vec;
 }
+Vector2 Vector2::operator-(const Vector2& vector) const
+{
+	return vec - vector.vec;
+}
+Vector2 Vector2::operator*(const float scaler) const
+{
+	return vec * scaler;
+}
+Vector2 Vector2::operator/(const float scaler) const
+{
+	return vec / scaler;
+}
+
 Vector2& Vector2::operator+=(const Vector2& vector)
 {
 	vec += vector.vec;
 	return *this;
-}
-Vector2 Vector2::operator-(const Vector2& vector) const
-{
-	return vec - vector.vec;
 }
 Vector2& Vector2::operator-=(const Vector2& vector)
 {
 	vec -= vector.vec;
 	return *this;
 }
-Vector2 Vector2::operator*(const float scaler) const
-{
-	return vec * scaler;
-}
 Vector2& Vector2::operator*=(const float scaler)
 {
 	vec *= scaler;
 	return *this;
-}
-Vector2 Vector2::operator/(const float scaler) const
-{
-	return vec / scaler;
 }
 Vector2& Vector2::operator/=(const float scaler)
 {
 	vec /= scaler;
 	return *this;
 }
+
 bool Vector2::operator==(const Vector2& vector) const
 {
 	return vec == vector.vec;
@@ -74,22 +76,22 @@ void Vector2::Normalize()
 	vec.normalize();
 }
 
-Vector2 Vector2::Normalized() const
+Vector2 Vector2::normalized() const
 {
 	return vec.normalized();
 }
 
-float Vector2::Length() const
+float Vector2::length() const
 {
 	return std::sqrtf(vec.dot(vec));
 }
 
-float Vector2::LengthSquared() const
+float Vector2::lengthSquared() const
 {
 	return vec.dot(vec);
 }
 
-float Vector2::Dot(const Vector2& vector) const
+float Vector2::dot(const Vector2& vector) const
 {
 	return vec.dot(vector.vec);
 }
@@ -104,9 +106,9 @@ float* Vector2::data()
 	return vec.data();
 }
 
-Vector2 Vector2::Zero() { return Vector2(0); }
-Vector2 Vector2::One() { return Vector2(1); }
-Vector2 Vector2::Up() { return Vector2(0, 1); }
-Vector2 Vector2::Down() { return Vector2(0, -1); }
-Vector2 Vector2::Right() { return Vector2(1, 0); }
-Vector2 Vector2::Left() { return Vector2(-1, 0); }
+Vector2 Vector2::zero() { return Vector2(0); }
+Vector2 Vector2::one() { return Vector2(1); }
+Vector2 Vector2::up() { return Vector2(0, 1); }
+Vector2 Vector2::down() { return Vector2(0, -1); }
+Vector2 Vector2::right() { return Vector2(1, 0); }
+Vector2 Vector2::left() { return Vector2(-1, 0); }

@@ -180,29 +180,29 @@ Matrix4x4 Matrix4x4::rotateRollPitchYaw(float x, float y, float z) const
 Matrix4x4 Matrix4x4::lookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward) const
 {
 	Vector3 Z = (targetPos - cameraPos);
-	Z = (Z != Vector3::Zero()) ? (Z.Normalized()) : (Vector3::Zero());
+	Z = (Z != Vector3::zero()) ? (Z.normalized()) : (Vector3::zero());
 
-	Vector3 X = upward.Cross(Z);
-	Vector3 Y = Z.Cross(X);
+	Vector3 X = upward.cross(Z);
+	Vector3 Y = Z.cross(X);
 
-	X = (X != Vector3::Zero()) ? (X.Normalized()) : (Vector3::Zero());
-	Y = (Y != Vector3::Zero()) ? (Y.Normalized()) : (Vector3::Zero());
+	X = (X != Vector3::zero()) ? (X.normalized()) : (Vector3::zero());
+	Y = (Y != Vector3::zero()) ? (Y.normalized()) : (Vector3::zero());
 
 	auto m = identity();
 	m.at(0, 0) = X.x();
 	m.at(1, 0) = X.y();
 	m.at(2, 0) = X.z();
-	m.at(3, 0) = -X.Dot(cameraPos);
+	m.at(3, 0) = -X.dot(cameraPos);
 
 	m.at(0, 1) = Y.x();
 	m.at(1, 1) = Y.y();
 	m.at(2, 1) = Y.z();
-	m.at(3, 1) = -Y.Dot(cameraPos);
+	m.at(3, 1) = -Y.dot(cameraPos);
 
 	m.at(0, 2) = Z.x();
 	m.at(1, 2) = Z.y();
 	m.at(2, 2) = Z.z();
-	m.at(3, 2) = -Z.Dot(cameraPos);
+	m.at(3, 2) = -Z.dot(cameraPos);
 
 	return *this * m;
 }

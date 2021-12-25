@@ -23,12 +23,12 @@ struct Vector3
 
 	Vector3 operator-() const;
 	Vector3 operator+(const Vector3& vector) const;
-	Vector3& operator+=(const Vector3& vector);
 	Vector3 operator-(const Vector3& vector) const;
-	Vector3& operator-=(const Vector3& vector);
 	Vector3 operator*(const float scaler) const;
-	Vector3& operator*=(const float scaler);
 	Vector3 operator/(const float scaler) const;
+	Vector3& operator+=(const Vector3& vector);
+	Vector3& operator-=(const Vector3& vector);
+	Vector3& operator*=(const float scaler);
 	Vector3& operator/=(const float scaler);
 	bool operator==(const Vector3& vector) const;
 	bool operator!=(const Vector3& vector) const;
@@ -45,29 +45,21 @@ struct Vector3
 	const float* data() const;
 	float* data();
 
-	Vector3 Normalized() const;
-	float Length() const;
-	float LengthSquared() const;
-	float Dot(const Vector3& vector) const;
-	Vector3 Cross(const Vector3& vector) const;
-	DirectX::XMFLOAT3 XMFloat() const;
+	Vector3 normalized() const;
+	float length() const;
+	float lengthSquared() const;
+	float dot(const Vector3& vector) const;
+	Vector3 cross(const Vector3& vector) const;
+	Vector3 lerp(const Vector3& b, float t) const;
 
-	static Vector3 Zero();
-	static Vector3 One();
-	static Vector3 Up();
-	static Vector3 Down();
-	static Vector3 Right();
-	static Vector3 Left();
-	static Vector3 Foward();
-	static Vector3 Backward();
-
-
-	static Vector3 Lerp(const Vector3& a, const Vector3& b, float t)
-	{
-		return Vector3(Math::Lerp(a.x(), b.x(), t),
-					   Math::Lerp(a.y(), b.y(), t),
-					   Math::Lerp(a.z(), b.z(), t));
-	}
+	static Vector3 zero();
+	static Vector3 one();
+	static Vector3 up();
+	static Vector3 down();
+	static Vector3 right();
+	static Vector3 left();
+	static Vector3 foward();
+	static Vector3 backward();
 private:
 	Vector3::Vector3(const Eigen::Vector3f& vector)
 		: vec(0, 0, 0)
