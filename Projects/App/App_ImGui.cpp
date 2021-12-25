@@ -5,7 +5,6 @@
 #include "GameCore.h"
 #include "Timer.h"
 #include "DataAverage.h"
-#include "Command.h"
 #include "App_ImGui_Method.h"
 #include "Input.h"
 
@@ -68,9 +67,11 @@ namespace App_ImGui
 		AppGui::FrameViewrEnable();
 	}
 
-	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+	void Render(std::vector<CommandList> cmdLists)
 	{
 		if(!s_GUI_ENABLE) { return; }
+
+		auto cmdList = cmdLists.back().Get();
 
 		ImGui::Render();
 

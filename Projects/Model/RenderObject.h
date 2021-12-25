@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Matrix4x4.h"
 #include "PipelineInitializer.h"
+#include "Command.h"
 
 class RenderObject
 {
@@ -16,7 +17,7 @@ public:
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount);
 	void Initialize() noexcept;
 	void Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions);
-	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
+	void SendCommand(std::vector<CommandList> cmdLists);
 private:
 	ID3D12GraphicsCommandList* m_Bandle;
 	PipelineStateObject m_Pipeline;

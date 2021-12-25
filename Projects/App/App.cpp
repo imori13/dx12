@@ -114,12 +114,17 @@ void App::RenderScene(void)
 {
 	auto cmdList = Renderer::Begin();
 
-	Renderer::SendCommand(cmdList);
-	App_ImGui::Render(cmdList);
+	auto cmdLists = Command::BeginSub();
+
+	Renderer::SendCommand(cmdLists);
+	App_ImGui::Render(cmdLists);
+
+	Command::EndSub();
+
 	Renderer::End(cmdList);
 }
 
 void App::RenderGUI(void)
 {
-	App_ImGui::UpdateAdditionalPlatformWindows(Command::GetCmdList());
+	App_ImGui::UpdateAdditionalPlatformWindows(Command::GetMainCmdList());
 }

@@ -79,6 +79,9 @@
     <ClCompile Include="Random.cpp">
       <Filter>Source File\Device</Filter>
     </ClCompile>
+    <ClCompile Include="CommandList.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GpuResource.h">
@@ -155,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>Source File\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandList.h">
+      <Filter>Source File\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,13 +1,14 @@
 #include "Command.h"
 #include "Display.h"
 #include "Debug.h"
+#include <omp.h>
 
 namespace
 {
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> s_pCmdQueue;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> s_pCmdList;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> s_pCmdAllocators;
 	Microsoft::WRL::ComPtr<ID3D12Fence> s_pFence;
+	CommandList s_MainCmdList;
+	std::vector<CommandList> s_SubCmdList;
 
 	HANDLE s_FenceEventHandle;
 	std::array<uint64_t, FRAME_COUNT> s_NextFenceValue;
@@ -36,28 +37,15 @@ namespace Command
 			ENSURES(hr, "CommandQueue生成");
 		}
 
-		// コマンドアロケータの生成
-		{
-			s_pCmdAllocators = std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>>(FRAME_COUNT);
-			s_pCmdAllocators.reserve(FRAME_COUNT);
-			for(auto& itr : s_pCmdAllocators)
-			{
-				hr = Graphics::g_pDevice->CreateCommandAllocator(
-					D3D12_COMMAND_LIST_TYPE_DIRECT,
-					IID_PPV_ARGS(itr.GetAddressOf()));	// ダブルバッファリング用で2個
-				ENSURES(hr, "CommandAllocator生成");
-			}
-		}
+		hr = s_MainCmdList.Create(FRAME_COUNT);
+		ENSURES(hr, "MainCmdList生成");
 
-		// コマンドリストの生成
+		// スレッド分確保
+		s_SubCmdList.resize(omp_get_max_threads());
+		for(auto i = 0; i < s_SubCmdList.size(); ++i)
 		{
-			hr = Graphics::g_pDevice->CreateCommandList(
-				0,
-				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				s_pCmdAllocators.at(0).Get(),
-				nullptr,	// パイプラインステート(後で設定する)
-				IID_PPV_ARGS(s_pCmdList.GetAddressOf()));
-			ENSURES(hr, "CommandList生成");
+			hr = s_SubCmdList.at(i).Create(FRAME_COUNT);
+			ENSURES(hr, "SubCmdList生成 %d", i);
 		}
 
 		// フェンスの生成
@@ -73,16 +61,24 @@ namespace Command
 			s_FenceEventHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 			ENSURES(s_FenceEventHandle != nullptr, "FenceEvent生成");
 		}
-
-		// バンドルアロケータ
-		//Graphics::g_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&s_pBundleAllocator));
-
-		s_pCmdList->Close();
 	}
 
-	gsl::not_null<ID3D12GraphicsCommandList*> GetCmdList() noexcept
+	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList() noexcept
 	{
-		return s_pCmdList.Get();
+		return s_MainCmdList.Get();
+	}
+
+	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t threadNum) noexcept
+	{
+		std::vector<ID3D12GraphicsCommandList*> retVec;
+		const auto size = s_SubCmdList.size();
+
+		retVec.resize(size);
+		for(auto i = 0; i < size; ++i)
+		{
+			retVec.at(i) = s_SubCmdList.at(i).Get();
+		}
+		return retVec;
 	}
 
 	gsl::not_null<ID3D12CommandQueue*> GetCmdQueue() noexcept
@@ -90,24 +86,54 @@ namespace Command
 		return s_pCmdQueue.Get();
 	}
 
-	const gsl::not_null<ID3D12GraphicsCommandList*> Begin()
+	gsl::not_null<ID3D12GraphicsCommandList*> BeginMain()
 	{
 		// コマンドの記録を開始
-		auto hr = s_pCmdAllocators.at(Display::g_FrameIndex)->Reset();
-		ENSURES(hr);
-		hr = s_pCmdList->Reset(s_pCmdAllocators.at(Display::g_FrameIndex).Get(), nullptr);
+		const auto hr = s_MainCmdList.Reset(Display::g_FrameIndex);
 		ENSURES(hr);
 
-		return s_pCmdList.Get();
+		return s_MainCmdList.Get();
 	}
 
-	void End()
+	std::vector<CommandList> BeginSub()
 	{
-		const auto hr = s_pCmdList->Close();
+		EndMain();
+		//WaitForGpu();
+
+		for(auto& cmdList : s_SubCmdList)
+		{
+			const auto hr = cmdList.Reset(Display::g_FrameIndex);
+			ENSURES(hr);
+		}
+
+		return s_SubCmdList;
+	}
+
+	void EndMain()
+	{
+		const auto hr = s_MainCmdList.Close();
 		ENSURES(hr);
 
-		ID3D12CommandList* ppCommandLists[] = { s_pCmdList.Get(), };
-		s_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), static_cast<ID3D12CommandList* const*>(ppCommandLists));
+		std::vector<ID3D12CommandList*> executeCmdList = { s_MainCmdList.Get()};
+		s_pCmdQueue->ExecuteCommandLists(executeCmdList.size(), executeCmdList.data());
+	}
+
+	void EndSub()
+	{
+		std::vector<ID3D12CommandList*> executeCmdList;
+		executeCmdList.reserve(s_SubCmdList.size());
+
+		for(auto& cmdList : s_SubCmdList)
+		{
+			const auto hr = cmdList.Close();
+			ENSURES(hr);
+
+			executeCmdList.emplace_back(cmdList.Get());
+		}
+		s_pCmdQueue->ExecuteCommandLists(executeCmdList.size(), executeCmdList.data());
+
+		//WaitForGpu();
+		BeginMain();
 	}
 
 	void MoveToNextFrame()
@@ -148,8 +174,6 @@ namespace Command
 	}
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle()
 	{
-		//const auto maxThreadNum = omp_get_num_threads();
-
 		auto& alocator = s_pBundleAllocator.emplace_back();
 		Graphics::g_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&alocator));
 		auto& bandle = s_pBundles.emplace_back();

@@ -1,6 +1,7 @@
 #pragma once
 #include "ResourceHeap.h"
 #include "Vector3.h"
+#include "Command.h"
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -13,7 +14,7 @@ namespace App_ImGui
 
 	void Initialize();
 	void Update();
-	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
+	void Render(std::vector<CommandList> cmdLists);
 	void Terminate();
 	void UpdateAdditionalPlatformWindows(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 

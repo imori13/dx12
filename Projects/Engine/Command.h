@@ -1,4 +1,5 @@
 #pragma once
+#include "CommandList.h"
 
 namespace Command
 {
@@ -6,9 +7,11 @@ namespace Command
 	void Initialize();
 
 	// 描画開始
-	const gsl::not_null<ID3D12GraphicsCommandList*> Begin();
+	gsl::not_null<ID3D12GraphicsCommandList*> BeginMain();
+	std::vector<CommandList> BeginSub();
 	// 描画終了
-	void End();
+	void EndMain();
+	void EndSub();
 
 	// 次のフレームに移動する
 	void MoveToNextFrame();
@@ -17,6 +20,7 @@ namespace Command
 
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle();
 
-	gsl::not_null<ID3D12GraphicsCommandList*> GetCmdList() noexcept;
+	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList() noexcept;
+	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t threadNum) noexcept;
 	gsl::not_null<ID3D12CommandQueue*> GetCmdQueue() noexcept;
 };

@@ -40,7 +40,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin()
 {
-	auto cmdList = Command::Begin();
+	auto cmdList = Command::BeginMain();
 
 	// リソースバリア
 	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -77,13 +77,13 @@ void Renderer::Draw(std::wstring_view assetName, const Matrix4x4& world, const C
 	Draw(assetName, world, camera.GetViewMatrix(), camera.GetProjMatrix(), positions);
 }
 
-void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+void Renderer::SendCommand(std::vector<CommandList> cmdLists)
 {
 	for(auto& model : s_RenderObjects)
 	{
 		for(auto& mesh : model.second)
 		{
-			mesh.SendCommand(cmdList);
+			mesh.SendCommand(cmdLists);
 			mesh.Initialize();
 		}
 	}
@@ -95,5 +95,6 @@ void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	cmdList->ResourceBarrier(1, &barrier);
 
-	Command::End();
+	Command::EndMain();
+	Command::WaitForGpu();
 }
