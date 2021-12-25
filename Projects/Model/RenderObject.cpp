@@ -129,7 +129,7 @@ void RenderObject::Initialize() noexcept
 
 }
 
-void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
+void RenderObject::Draw(const Matrix& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions)
 {
 	m_DrawCount = gsl::narrow<int32_t>(positions.size());
 
@@ -139,7 +139,9 @@ void RenderObject::Draw(const Matrix4x4& world, const Matrix4x4& view, const Mat
 #pragma omp parallel for
 	for(auto i = 0; i < m_DrawCount; ++i)
 	{
-		*m_InstanceData.at(i) = (world * Matrix4x4::Translate(positions[i])).Data();
+		Matrix mat = world;
+		Vector3 pos = positions[i];
+		*m_InstanceData.at(i) = mat.translation(pos.x(), pos.y(), pos.z()).transpose().data();
 	}
 }
 
@@ -160,6 +162,6 @@ void RenderObject::SendCommand(std::vector<CommandList> cmdLists)
 		subCmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
 		subCmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 		subCmdList->ExecuteBundle(m_Bandle);
-		subCmdList->DrawIndexedInstanced(m_IndexCount, drawCount, 0, 0, drawCount*i);
+		subCmdList->DrawIndexedInstanced(m_IndexCount, drawCount, 0, 0, drawCount * i);
 	}
 }

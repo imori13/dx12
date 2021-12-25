@@ -28,8 +28,8 @@ public:
 	// ÉÇÉfÉãçsóÒ
 	static Matrix4x4 Scale(const Vector3& vec);
 	static Matrix4x4 Scale(float x, float y, float z);
-	static Matrix4x4 Translate(const Vector3& vec);
-	static Matrix4x4 Translate(float x, float y, float z);
+	const Matrix4x4& Translate(const Vector3& vec);
+	const Matrix4x4& Translate(float x, float y, float z);
 	static Matrix4x4 RotateRollPitchYaw(const Vector3& vec);
 	static Matrix4x4 RotateRollPitchYaw(float x, float y, float z);
 	static Matrix4x4 RotateX(float radian);

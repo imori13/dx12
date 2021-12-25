@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "Input.h"
 #include "Random.h"
+#include "Matrix.h"
 
 class App : public GameCore::IGameApp
 {
@@ -25,7 +26,7 @@ public:
 
 	Camera camera;
 
-	Matrix4x4 world;
+	Matrix world;
 	std::vector<Vector3> positionVector;
 	std::vector<Vector3> positionVector2;
 };
@@ -86,10 +87,6 @@ void App::Startup(void)
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
-
-	world = Matrix4x4::Identity();
-	world *= Matrix4x4::Scale(scale);
-	world *= Matrix4x4::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 }
 
 void App::Cleanup(void)
@@ -100,6 +97,10 @@ void App::Cleanup(void)
 void App::Update()
 {
 	camera.Update();
+
+	world = Matrix().identity();
+	world.scale(scale.x(), scale.y(), scale.z());
+	//world *= Matrix::RotateAxis(rotation, Timer::g_ElapsedTime * 1.0f);
 
 	Renderer::Draw(L"Cube", world, camera, positionVector);
 	Renderer::Draw(L"Cube2", world, camera, positionVector2);

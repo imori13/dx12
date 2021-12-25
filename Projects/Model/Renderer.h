@@ -2,6 +2,7 @@
 #include "UploadBuffer.h"
 #include "RenderObject.h"
 #include "Camera.h"
+#include "Matrix.h"
 
 #include <map>
 
@@ -11,8 +12,8 @@ namespace Renderer
 	void Load(std::wstring_view assetName, std::wstring_view modelName, int32_t objectCount = 1);
 
 
-	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions);
-	void Draw(std::wstring_view assetName, const Matrix4x4& world, const Camera& camera, const gsl::span<Vector3>& positions);
+	void Draw(std::wstring_view assetName, const Matrix& world, const Matrix4x4& view, const Matrix4x4& projection, const gsl::span<Vector3>& positions);
+	void Draw(std::wstring_view assetName, const Matrix& world, const Camera& camera, const gsl::span<Vector3>& positions);
 
 	void SendCommand(std::vector<CommandList> cmdLists);
 

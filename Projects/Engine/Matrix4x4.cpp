@@ -139,19 +139,26 @@ Matrix4x4 Matrix4x4::RotateAxis(const Vector3& vector, float radian)
 	return m;
 }
 
-Matrix4x4 Matrix4x4::Translate(const Vector3& vec)
+const Matrix4x4& Matrix4x4::Translate(const Vector3& vec)
 {
-	return Translate(vec.x(), vec.y(), vec.z());
+	Eigen::Matrix4f mat = Eigen::Matrix4f::Identity();
+	mat(3, 0) = vec.x();
+	mat(3, 1) = vec.y();
+	mat(3, 2) = vec.z();
+	matrix *= mat;
+
+	return matrix;
 }
 
-Matrix4x4 Matrix4x4::Translate(float x, float y, float z)
+const Matrix4x4& Matrix4x4::Translate(float x, float y, float z)
 {
-	Eigen::Matrix4f m = Eigen::Matrix4f::Identity();
-	m(3, 0) = x;
-	m(3, 1) = y;
-	m(3, 2) = z;
+	Eigen::Matrix4f mat = Eigen::Matrix4f::Identity();
+	mat(3, 0) = x;
+	mat(3, 1) = y;
+	mat(3, 2) = z;
+	matrix *= mat;
 
-	return m;
+	return matrix;
 }
 
 Matrix4x4 Matrix4x4::RotateRollPitchYaw(const Vector3& vec)
