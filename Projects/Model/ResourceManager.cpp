@@ -12,20 +12,10 @@ namespace
 	std::map<std::wstring, Texture> s_Textures;
 	std::map<std::wstring, Model> s_ObjModels;
 	std::map<std::wstring, Model> s_AssimpModels;
-	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3DBlob>> s_Shaders;
 }
 
 namespace ResourceManager
 {
-	void LoadShader(const std::wstring_view shaderName)
-	{
-		const auto& path = File::LoadPath(shaderName);
-		auto& shader = s_Shaders[path.FileName];
-
-		const auto hr = D3DReadFileToBlob(path.RelativePath.c_str(), shader.GetAddressOf());
-		ENSURES(hr, L"Shader読み込み [ %s ]", path.RelativePath);
-	}
-
 	void LoadTexture(const std::wstring_view textureName)
 	{
 		const auto& path = File::LoadPath(textureName);
@@ -60,12 +50,6 @@ namespace ResourceManager
 
 		const auto time = TimeStamp::End();
 		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
-	}
-
-	gsl::not_null<ID3DBlob*> GetShader(const std::wstring_view shaderName)
-	{
-		const auto& shader = s_Shaders[shaderName.data()];
-		return shader.Get();
 	}
 
 	const Texture& GetTexture(const std::wstring_view texutreName)

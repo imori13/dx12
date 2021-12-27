@@ -5,17 +5,17 @@
 
 struct Vector3
 {
-	explicit Vector3::Vector3() noexcept(false)
+	explicit Vector3() noexcept(false)
 		: vec(0, 0, 0)
 	{
 	}
 
-	explicit Vector3::Vector3(float value) noexcept(false)
+	explicit Vector3(float value) noexcept(false)
 		: vec(value, value, value)
 	{
 	}
 
-	explicit Vector3::Vector3(float value_x, float value_y, float value_z) noexcept(false)
+	explicit Vector3(float value_x, float value_y, float value_z) noexcept(false)
 		: vec(value_x, value_y, value_z)
 	{
 
@@ -61,7 +61,7 @@ struct Vector3
 	static Vector3 foward();
 	static Vector3 backward();
 private:
-	Vector3::Vector3(const Eigen::Vector3f& vector)
+	Vector3(const Eigen::Vector3f& vector)
 		: vec(0, 0, 0)
 	{
 		this->vec = vector;

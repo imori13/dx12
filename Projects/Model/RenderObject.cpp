@@ -3,6 +3,41 @@
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
 
+namespace
+{
+	bool isCreate = false;
+	GraphicsPipeline s_Pipeline;
+
+	void AA()
+	{
+		if(isCreate) { return; }
+
+		static ShaderData s;
+		s.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
+		s.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
+
+		s.ShaderInput.SetElement(0, SI_Semantic::POSITION, 0, SI_Stride::Float3, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::NORMAL, 0, SI_Stride::Float3, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::TEXCOORD, 0, SI_Stride::Float2, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::TANGENT, 0, SI_Stride::Float3, SI_Class::Vertex);
+
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 1, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 2, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 3, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 4, SI_Stride::Float4, SI_Class::Instance);
+
+		s.ShaderSignature.SetSignature(s.VertexShader.GetBlob());
+
+		PipelineCreater::SetShader(s);
+		PipelineCreater::SetRasterizerDesc();
+		PipelineCreater::SetBlendDesc();
+		PipelineCreater::SetDepthStencil(true);
+		s_Pipeline = PipelineCreater::CreatePipeline();
+
+		isCreate = true;
+	}
+}
+
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 {
 	// ƒq[ƒv¶¬
@@ -99,15 +134,14 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &textureView, handle.CPU);
 	}
 
-	const auto threadNum = omp_get_thread_num();
-
-	m_Pipeline = PipelineInitializer::GetPipeline(L"DefaultPipeline");
+	AA();
+	m_Pipeline = s_Pipeline;
 
 	{
 		m_Bandle = Command::CreateBandle();
 
 		m_Bandle->SetGraphicsRootSignature(m_Pipeline.GetSignature());
-		m_Bandle->SetPipelineState(m_Pipeline.Get());
+		m_Bandle->SetPipelineState(m_Pipeline.GetPipeline());
 		m_Bandle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		m_Bandle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());

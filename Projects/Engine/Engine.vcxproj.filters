@@ -20,19 +20,16 @@
     <Filter Include="Source File\Core">
       <UniqueIdentifier>{b2dc48d9-9cb2-4ca5-9f32-51f07b9a3998}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source File\GpuResources\Buffers">
+      <UniqueIdentifier>{e3cef8ce-7a77-4011-91db-9c4c1e6ea992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuResources\ShaderData">
+      <UniqueIdentifier>{2d6e09c8-46b4-481b-8146-b761e600e867}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="UploadBuffer.cpp">
-      <Filter>Source File\GpuResources</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceHeap.cpp">
       <Filter>Source File\GpuHeaps</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilBuffer.cpp">
-      <Filter>Source File\GpuResources</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source File\GpuResources</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source File</Filter>
@@ -64,9 +61,6 @@
     <ClCompile Include="WinApp.cpp">
       <Filter>Source File\Core</Filter>
     </ClCompile>
-    <ClCompile Include="PipelineStateObject.cpp">
-      <Filter>Source File\Core</Filter>
-    </ClCompile>
     <ClCompile Include="DataAverage.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
@@ -82,25 +76,31 @@
     <ClCompile Include="CommandList.cpp">
       <Filter>Source File\Core</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicsPipeline.cpp">
+      <Filter>Source File\GpuResources</Filter>
+    </ClCompile>
+    <ClCompile Include="UploadBuffer.cpp">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilBuffer.cpp">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderInput.cpp">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderSignature.cpp">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderBinary.cpp">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GpuResource.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
-    <ClInclude Include="UploadBuffer.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTargetBuffer.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceHeap.h">
       <Filter>Source File\GpuHeaps</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilBuffer.h">
-      <Filter>Source File\GpuResources</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Source File\GpuResources</Filter>
     </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>Source File</Filter>
@@ -135,12 +135,6 @@
     <ClInclude Include="WinApp.h">
       <Filter>Source File\Core</Filter>
     </ClInclude>
-    <ClInclude Include="InputElement.h">
-      <Filter>Source File\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineStateObject.h">
-      <Filter>Source File\Core</Filter>
-    </ClInclude>
     <ClInclude Include="DataAverage.h">
       <Filter>Source File</Filter>
     </ClInclude>
@@ -161,6 +155,36 @@
     </ClInclude>
     <ClInclude Include="CommandList.h">
       <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsPipeline.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuResource.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderInput.h">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderData.h">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderSignature.h">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderBinary.h">
+      <Filter>Source File\GpuResources\ShaderData</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

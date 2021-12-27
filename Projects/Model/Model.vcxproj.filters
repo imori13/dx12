@@ -7,9 +7,6 @@
     <ClInclude Include="File.h">
       <Filter>SourceFile\File</Filter>
     </ClInclude>
-    <ClInclude Include="PipelineInitializer.h">
-      <Filter>SourceFile</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>SourceFile</Filter>
     </ClInclude>
@@ -38,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="FileInput.cpp">
       <Filter>SourceFile\File</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineInitializer.cpp">
-      <Filter>SourceFile</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>SourceFile</Filter>

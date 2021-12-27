@@ -3,7 +3,6 @@
 #include "Command.h"
 #include "App_ImGui.h"
 #include "ResourceManager.h"
-#include "PipelineInitializer.h"
 #include "Renderer.h"
 #include "Vector3.h"
 #include "Vector2.h"
@@ -57,16 +56,16 @@ void App::Startup(void)
 	ResourceManager::LoadMesh(path + L"Cube.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
 
-	ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
-	ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
+	//ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
+	//ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
-	PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
+	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 500000;
+	constexpr int64_t count = 5000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;

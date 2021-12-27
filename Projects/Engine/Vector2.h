@@ -4,17 +4,17 @@
 class Vector2
 {
 public:
-	Vector2::Vector2() noexcept(false)
+	Vector2() noexcept(false)
 		: vec(0, 0)
 	{
 	}
 
-	Vector2::Vector2(float value) noexcept(false)
+	Vector2(float value) noexcept(false)
 		: vec(value, value)
 	{
 	}
 
-	Vector2::Vector2(float value_x, float value_y) noexcept(false)
+	Vector2(float value_x, float value_y) noexcept(false)
 		: vec(value_x, value_y)
 	{
 
@@ -54,7 +54,7 @@ public:
 	static Vector2 left();
 
 private:
-	Vector2::Vector2(const Eigen::Vector2f& vector)
+	Vector2(const Eigen::Vector2f& vector)
 		: vec(0, 0)
 	{
 		this->vec = vector;
