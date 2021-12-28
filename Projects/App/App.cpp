@@ -44,6 +44,32 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
+	{
+		ShaderData s;
+		s.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
+		s.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
+
+		s.ShaderInput.SetElement(0, SI_Semantic::POSITION, 0, SI_Stride::Float3, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::NORMAL, 0, SI_Stride::Float3, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::TEXCOORD, 0, SI_Stride::Float2, SI_Class::Vertex);
+		s.ShaderInput.SetElement(0, SI_Semantic::TANGENT, 0, SI_Stride::Float3, SI_Class::Vertex);
+
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 1, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 2, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 3, SI_Stride::Float4, SI_Class::Instance);
+		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 4, SI_Stride::Float4, SI_Class::Instance);
+
+		s.ShaderSignature.SetSignature(s.VertexShader.GetBlob());
+
+		PipelineCreater::SetShader(s);
+		PipelineCreater::SetRasterizerDesc();
+		PipelineCreater::SetBlendDesc();
+		PipelineCreater::SetDepthStencil(true);
+		auto pipeline = PipelineCreater::CreatePipeline();
+
+		ResourceManager::LoadPipeline(L"DefaultPipeline", pipeline);
+	}
+
 	std::wstring path = L"Textures/";
 	ResourceManager::LoadTexture(path + L"pixel.png");
 	ResourceManager::LoadTexture(path + L"neko.jpg");

@@ -2,41 +2,7 @@
 #include "Debug.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
-
-namespace
-{
-	bool isCreate = false;
-	GraphicsPipeline s_Pipeline;
-
-	void AA()
-	{
-		if(isCreate) { return; }
-
-		static ShaderData s;
-		s.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
-		s.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
-
-		s.ShaderInput.SetElement(0, SI_Semantic::POSITION, 0, SI_Stride::Float3, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::NORMAL, 0, SI_Stride::Float3, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::TEXCOORD, 0, SI_Stride::Float2, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::TANGENT, 0, SI_Stride::Float3, SI_Class::Vertex);
-
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 1, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 2, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 3, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 4, SI_Stride::Float4, SI_Class::Instance);
-
-		s.ShaderSignature.SetSignature(s.VertexShader.GetBlob());
-
-		PipelineCreater::SetShader(s);
-		PipelineCreater::SetRasterizerDesc();
-		PipelineCreater::SetBlendDesc();
-		PipelineCreater::SetDepthStencil(true);
-		s_Pipeline = PipelineCreater::CreatePipeline();
-
-		isCreate = true;
-	}
-}
+#include "ResourceManager.h"
 
 void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 {
@@ -134,8 +100,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &textureView, handle.CPU);
 	}
 
-	AA();
-	m_Pipeline = s_Pipeline;
+	m_Pipeline = ResourceManager::GetPipeline(L"DefaultPipeline");
 
 	{
 		m_Bandle = Command::CreateBandle();
