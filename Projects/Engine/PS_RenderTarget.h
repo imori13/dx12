@@ -25,7 +25,7 @@ public:
 	uint8_t GetRtvNum() const noexcept { return m_RtvNum; }
 
 private:
-	void Default() noexcept(false);
+	void Default() noexcept;
 
 	std::array<DXGI_FORMAT, MAX_RTV_COUNT> m_RtvFormat;
 	D3D12_BLEND_DESC m_BlendDesc;

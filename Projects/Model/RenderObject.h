@@ -17,8 +17,10 @@ public:
 	void Initialize(const Matrix4x4& view, const Matrix4x4& projection) noexcept;
 	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData);
 private:
-	ID3D12GraphicsCommandList* m_Bandle;
-	Pipeline m_Pipeline;
+	ID3D12GraphicsCommandList* m_TexBandle;
+	ID3D12GraphicsCommandList* m_ColliderBandle;
+	Pipeline m_TexPipeline;
+	Pipeline m_ColliderPipeline;
 
 	ResourceHeap m_ResourceHeap;
 	UploadBuffer m_VertexBuffer;
@@ -27,9 +29,11 @@ private:
 	UploadBuffer m_CameraBuffer;
 	UploadBuffer m_LightBuffer;
 	UploadBuffer m_MaterialBuffer;
+	UploadBuffer m_ColliderBuffer;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 
 	CameraData* m_CameraData;
+	LightData* m_LightData;
 	std::vector<DirectX::XMFLOAT4X4*> m_InstanceData;
 
 	int32_t m_IndexCount;

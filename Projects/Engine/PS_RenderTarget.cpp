@@ -33,7 +33,7 @@ namespace
 	}
 }
 
-void PS_RenderTarget::Default() noexcept(false)
+void PS_RenderTarget::Default() noexcept
 {
 	for(uint8_t i = 0; i < MAX_RTV_COUNT; ++i)
 	{

@@ -15,13 +15,25 @@
     <Filter Include="SourceFile">
       <UniqueIdentifier>{4ae547b8-b73f-4394-b9e7-6289ad452b8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Texture">
+      <UniqueIdentifier>{9b6c6605-5a7b-4e1a-9dfd-258579b96585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\NotTexture">
+      <UniqueIdentifier>{79089fd2-eb71-448c-a263-35fee7e78ba2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="iMoriDefaultVS.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="TexVS.hlsl">
+      <Filter>Shaders\Texture</Filter>
     </FxCompile>
-    <FxCompile Include="iMoriDefaultPS.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="TexPS.hlsl">
+      <Filter>Shaders\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="NotTexVS.hlsl">
+      <Filter>Shaders\NotTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="NotTexPS.hlsl">
+      <Filter>Shaders\NotTexture</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -33,8 +45,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="iMoriDefaultHeader.hlsli">
+    <None Include="DefaultH.hlsli">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="TexH.hlsli">
+      <Filter>Shaders\Texture</Filter>
+    </None>
+    <None Include="NotTexH.hlsli">
+      <Filter>Shaders\NotTexture</Filter>
     </None>
   </ItemGroup>
 </Project>

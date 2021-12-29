@@ -1,8 +1,8 @@
-#include "iMoriDefaultHeader.hlsli"
+#include "TexH.hlsli"
 
-PSOutput main(VSOutput input)
+Default_PSOutput main(Default_VSOutput input)
 {
-    PSOutput output = (PSOutput) 0;
+    Default_PSOutput output = (Default_PSOutput) 0;
     
     float3 N = normalize(input.Normal);
     float3 L = normalize(LightPosition - input.WorldPos.xyz);

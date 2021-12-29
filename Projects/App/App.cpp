@@ -45,27 +45,41 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
+	SS_InputLayout inputLayout{};
+
+	inputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float3, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float3, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float2, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float3, SI_Class::Vertex);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float4, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float4, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float4, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float4, SI_Class::Instance);
+
+	PipelineState pipeline;
+
 	{
 		PS_ShaderState shaderState;
-		shaderState.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
-		shaderState.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
-
-		shaderState.InputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float3, SI_Class::Vertex);
-		shaderState.InputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float3, SI_Class::Vertex);
-		shaderState.InputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float2, SI_Class::Vertex);
-		shaderState.InputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float3, SI_Class::Vertex);
-
-		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float4, SI_Class::Instance);
-		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float4, SI_Class::Instance);
-		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float4, SI_Class::Instance);
-		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float4, SI_Class::Instance);
-
+		shaderState.VertexShader.LoadShader(L"TexVS.cso");
+		shaderState.PixelShader.LoadShader(L"TexPS.cso");
+		shaderState.InputLayout = inputLayout;
 		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
 
-		PipelineState pipeline;
 		pipeline.ShaderState = shaderState;
+		ResourceManager::LoadPipeline(L"Tex", pipeline.Create());
+	}
 
-		ResourceManager::LoadPipeline(L"DefaultPipeline", pipeline.Create());
+	{
+		PS_ShaderState shaderState;
+		shaderState.VertexShader.LoadShader(L"NotTexVS.cso");
+		shaderState.PixelShader.LoadShader(L"NotTexPS.cso");
+		shaderState.InputLayout = inputLayout;
+		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
+
+		pipeline.ShaderState = shaderState;
+		pipeline.Rasterizer.SetCulling(false);
+		pipeline.Rasterizer.SetSolidMode(false);
+		ResourceManager::LoadPipeline(L"Collider", pipeline.Create());
 	}
 
 	std::wstring path = L"Textures/";
@@ -76,9 +90,9 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
-	//ResourceManager::LoadMesh(path + L"umaru.obj");
+	ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
-	//ResourceManager::LoadMesh(path + L"g36.obj");
+	ResourceManager::LoadMesh(path + L"g36.obj");
 
 	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
@@ -122,7 +136,8 @@ void App::Startup(void)
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
-	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
+	Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
+	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
 }
 
 void App::Cleanup(void)
@@ -174,6 +189,31 @@ void App::RenderScene(void)
 			.translation(data.position);
 	}
 	Renderer::Draw(cmdList, L"Cube2", matrix);
+
+	constexpr uint32_t g36Count = 1;
+	constexpr float g36half = g36Count / 2.0f;
+	matrix.resize(g36Count);
+	for(auto i = 0u; i < g36Count; ++i)
+	{
+		matrix.at(i) = Matrix4x4::identity()
+			.scale(Vector3::one() * 70)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
+			.translation(Vector3((i - g36half + 0.5f) * 30.0f, -0.5f, 20));
+	}
+	Renderer::Draw(cmdList, L"g36", matrix);
+
+	constexpr uint32_t umaruCount = 2;
+	constexpr float umaruhalf = umaruCount / 2.0f;
+	matrix.resize(umaruCount);
+	for(auto i = 0u; i < umaruCount; ++i)
+	{
+		matrix.at(i) = Matrix4x4::identity()
+			.scale(Vector3::one() * 0.2f)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
+			.translation(Vector3((i - umaruhalf + 0.5f) * 30.0f, -0.5f, 20));
+	}
+
+	Renderer::Draw(cmdList, L"umaru", matrix);
 
 	{
 		TimeStamp::Stop();
