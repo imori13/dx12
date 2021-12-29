@@ -65,6 +65,7 @@ void App::Startup(void)
 		shaderState.InputLayout = inputLayout;
 		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
 
+		// Tex
 		pipeline.ShaderState = shaderState;
 		ResourceManager::LoadPipeline(L"Tex", pipeline.Create());
 	}
@@ -76,7 +77,11 @@ void App::Startup(void)
 		shaderState.InputLayout = inputLayout;
 		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
 
+		// NotTex
 		pipeline.ShaderState = shaderState;
+		ResourceManager::LoadPipeline(L"NotTex", pipeline.Create());
+
+		// Collider
 		pipeline.Rasterizer.SetCulling(false);
 		pipeline.Rasterizer.SetSolidMode(false);
 		ResourceManager::LoadPipeline(L"Collider", pipeline.Create());
@@ -100,7 +105,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 5000;
+	constexpr int64_t count = 500000;
 	constexpr int32_t range = 500;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -134,9 +139,14 @@ void App::Startup(void)
 	for(int64_t i = 0; i < count; ++i)
 		renderDataVector2.at(i).rotationSpeed = Random::Next();
 
-	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
-	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
-	Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
+	//Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
+	//Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
+	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
+	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
+
+	Renderer::Load(L"Cube", L"Cube.obj", count);
+	Renderer::Load(L"Cube2", L"Cube.obj", count);
+	Renderer::Load(L"g36", L"g36.obj",  count);
 	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
 }
 
@@ -158,7 +168,7 @@ void App::UpdateGUI()
 
 void App::RenderScene(void)
 {
-	auto cmdList = Renderer::Begin(camera.GetViewMatrix(), camera.GetProjMatrix());
+	auto cmdList = Renderer::Begin(camera);
 
 	std::vector<Matrix4x4> matrix;
 	matrix.resize(renderDataVector.size());

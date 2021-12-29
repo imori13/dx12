@@ -1,5 +1,6 @@
 #pragma once
 #include "DataAverage.h"
+#include "RenderObject.h"
 #include <imgui.h>
 #include <implot.h>
 
@@ -34,7 +35,7 @@ namespace AppGui
 	void DebugViewEnable()
 	{
 
-		ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(250, 500), ImGuiCond_Once);
 		ImGui::Begin("DebugWindow");
 		{
 			ImGui::Text("Hello World!");
@@ -54,6 +55,7 @@ namespace AppGui
 				ImGui::Unindent();
 			}
 			ImGui::Checkbox("Sync", &GameCore::g_IsSync);
+			ImGui::Checkbox("DrawCollider", &RenderObject::DrawCollider);
 		}
 		ImGui::End();
 	}

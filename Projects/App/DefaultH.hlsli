@@ -35,8 +35,17 @@ cbuffer CameraData : register(b0)
 
 cbuffer SceneData : register(b1)
 {
-    float3 LightPosition : packoffset(c0);
+    float3 LightDirection : packoffset(c0);
     float3 LightColor : packoffset(c1);
     float3 CameraPosition : packoffset(c2);
     float3 CameraDirection : packoffset(c3);
+}
+
+cbuffer MaterialData : register(b2)
+{
+    float3 Ambient : packoffset(c0);
+    float3 Diffuse : packoffset(c1);
+    float Alpha : packoffset(c1.w);
+    float3 Specular : packoffset(c2);
+    float Shininess : packoffset(c2.w);
 }

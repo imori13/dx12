@@ -11,7 +11,7 @@
 
 namespace
 {
-	constexpr bool s_GUI_ENABLE = false;
+	constexpr bool s_GUI_ENABLE = true;
 	bool s_ViewportsEnable;
 }
 

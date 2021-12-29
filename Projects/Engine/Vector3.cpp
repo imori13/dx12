@@ -128,6 +128,11 @@ float* Vector3::data()
 	return vec.data();
 }
 
+DirectX::XMFLOAT3 Vector3::xmfloat3() const
+{
+	return DirectX::XMFLOAT3{ vec.data() };
+}
+
 Vector3 Vector3::zero() { return Vector3(0); }
 Vector3 Vector3::one() { return Vector3(1); }
 Vector3 Vector3::up() { return Vector3(0, 1, 0); }

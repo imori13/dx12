@@ -44,7 +44,7 @@ struct alignas(256) CameraData
 
 struct alignas(256) LightData
 {
-	DirectX::XMFLOAT3 LightPosition;
+	DirectX::XMFLOAT3 LightDirection;
 	float _1{};
 	DirectX::XMFLOAT3 LightColor;
 	float _2{};

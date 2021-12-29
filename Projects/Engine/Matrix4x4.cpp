@@ -1,6 +1,6 @@
 #include "Matrix4x4.h"
 
-namespace 
+namespace
 {
 	const Eigen::Matrix4f IDENTITY = Eigen::Matrix4f::Identity();
 }
@@ -62,6 +62,12 @@ Matrix4x4 Matrix4x4::transpose() const
 Matrix4x4 Matrix4x4::inverse() const
 {
 	return matrix.inverse();
+}
+
+Vector3 Matrix4x4::vector3() const
+{
+	auto hoge = matrix * Eigen::Vector4f(1, 1, 1, 1);
+	return Vector3(hoge.x(), hoge.y(), hoge.z());
 }
 
 float& Matrix4x4::at(uint8_t row, uint8_t col)

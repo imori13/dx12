@@ -5,8 +5,9 @@
 	"CBV( b0 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 	"CBV( b1 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 	"CBV( b2 , visibility = SHADER_VISIBILITY_PIXEL ), " \
+	"CBV( b3 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 
-cbuffer ModelData : register(b2)
+cbuffer ModelData : register(b3)
 {
     float4 Color : packoffset(c0);
 }

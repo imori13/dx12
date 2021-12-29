@@ -14,6 +14,8 @@ public:
 	void Create(float fovDeg, float nearZ, float farZ) noexcept;
 	void Update();
 
+	const Vector3& GetPosition() const noexcept { return m_Position; }
+	const Vector3& GetRotate() const noexcept { return m_Rotate; }
 	const Matrix4x4& GetViewMatrix() const noexcept { return m_ViewMatrix; }
 	const Matrix4x4& GetProjMatrix() const noexcept { return m_ProjMatrix; }
 private:

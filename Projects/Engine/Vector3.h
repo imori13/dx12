@@ -45,6 +45,8 @@ struct Vector3
 	const float* data() const;
 	float* data();
 
+	DirectX::XMFLOAT3 xmfloat3() const;
+
 	Vector3 normalized() const;
 	float length() const;
 	float lengthSquared() const;

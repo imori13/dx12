@@ -30,11 +30,12 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	{
 		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
 
-		auto textureName = (!material.DiffuseMap.empty()) ? (material.DiffuseMap) : (L"body_tex.tga");
-		auto texture = ResourceManager::GetTexture(textureName);
-
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-		renderObject.Create(mesh, material, texture, objectCount);
+		renderObject.Create(mesh, objectCount);
+
+		//auto texture = ResourceManager::GetTexture(material.DiffuseMap);
+		//auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
+		//renderObject.Create(mesh, material, texture, objectCount);
 	}
 }
 
@@ -47,13 +48,13 @@ void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstr
 	}
 }
 
-gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(Matrix4x4 view, Matrix4x4 proj)
+gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 {
 	for(auto& model : s_RenderObjects)
 	{
 		for(auto& mesh : model.second)
 		{
-			mesh.Initialize(view, proj);
+			mesh.Initialize(camera);
 		}
 	}
 

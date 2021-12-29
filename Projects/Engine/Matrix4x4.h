@@ -26,6 +26,7 @@ public:
 	DirectX::XMFLOAT4X4 data() const;
 	Matrix4x4 transpose() const;
 	Matrix4x4 inverse() const;
+	Vector3 vector3() const;
 
 	static Matrix4x4 identity();
 
