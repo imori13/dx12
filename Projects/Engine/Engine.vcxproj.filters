@@ -23,7 +23,10 @@
     <Filter Include="Source File\GpuResources\Buffers">
       <UniqueIdentifier>{e3cef8ce-7a77-4011-91db-9c4c1e6ea992}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source File\GpuResources\ShaderData">
+    <Filter Include="Source File\GpuResources\PipelineState">
+      <UniqueIdentifier>{a0536b89-257d-4b64-96c2-b9a7a11a7a3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuResources\PipelineState\ShaderState">
       <UniqueIdentifier>{2d6e09c8-46b4-481b-8146-b761e600e867}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -76,7 +79,7 @@
     <ClCompile Include="CommandList.cpp">
       <Filter>Source File\Core</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsPipeline.cpp">
+    <ClCompile Include="Pipeline.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
     <ClCompile Include="UploadBuffer.cpp">
@@ -88,14 +91,23 @@
     <ClCompile Include="DepthStencilBuffer.cpp">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderInput.cpp">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClCompile Include="SS_InputLayout.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderSignature.cpp">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClCompile Include="SS_RootSignature.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderBinary.cpp">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClCompile Include="SS_Binary.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_DepthStencil.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_Rasterizer.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_RenderTarget.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,7 +168,7 @@
     <ClInclude Include="CommandList.h">
       <Filter>Source File\Core</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsPipeline.h">
+    <ClInclude Include="Pipeline.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
     <ClInclude Include="UploadBuffer.h">
@@ -174,17 +186,26 @@
     <ClInclude Include="DepthStencilBuffer.h">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderInput.h">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClInclude Include="SS_InputLayout.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderData.h">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClInclude Include="SS_RootSignature.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderSignature.h">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClInclude Include="SS_Binary.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderBinary.h">
-      <Filter>Source File\GpuResources\ShaderData</Filter>
+    <ClInclude Include="PS_DepthStencil.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_Rasterizer.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_ShaderState.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_RenderTarget.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

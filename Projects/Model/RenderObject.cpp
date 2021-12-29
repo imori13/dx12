@@ -79,7 +79,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_LightBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
 	}
 
-	// Material¶¬
+	//  Material¶¬
 	{
 		m_MaterialBuffer.Create(sizeof(ModelMaterial), sizeof(ModelMaterial));
 
@@ -105,8 +105,8 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	{
 		m_Bandle = Command::CreateBandle();
 
-		m_Bandle->SetGraphicsRootSignature(m_Pipeline.GetSignature());
-		m_Bandle->SetPipelineState(m_Pipeline.GetPipeline());
+		m_Bandle->SetGraphicsRootSignature(m_Pipeline.Signature.Get());
+		m_Bandle->SetPipelineState(m_Pipeline.Pipeine.Get());
 		m_Bandle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		m_Bandle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
@@ -131,14 +131,14 @@ void RenderObject::Initialize(const Matrix4x4& view, const Matrix4x4& projection
 
 void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
 {
-	const auto size = matrixData.size();
+	const int32_t size = gsl::narrow<int32_t>(matrixData.size());
 
 #pragma omp parallel for
 	for(auto i = 0; i < size; ++i)
 		*m_InstanceData.at(i) = matrixData[i].data();
 
-	cmdList->SetGraphicsRootSignature(m_Pipeline.GetSignature());
+	cmdList->SetGraphicsRootSignature(m_Pipeline.Signature.Get());
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 	cmdList->ExecuteBundle(m_Bandle);
-	cmdList->DrawIndexedInstanced(m_IndexCount, size, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(m_IndexCount, gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
 }

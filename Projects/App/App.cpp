@@ -10,13 +10,14 @@
 #include "Input.h"
 #include "Random.h"
 #include "TimeStamp.h"
+#include "Pipeline.h"
 
 struct RenderData
 {
 	Vector3 position;
 	Vector3 rotation;
 	Vector3 scale;
-	float rotationSpeed;
+	float rotationSpeed = 0;
 };
 
 class App : public GameCore::IGameApp
@@ -45,29 +46,26 @@ void App::Startup(void)
 	App_ImGui::Initialize();
 
 	{
-		ShaderData s;
-		s.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
-		s.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
+		PS_ShaderState shaderState;
+		shaderState.VertexShader.LoadShader(L"iMoriDefaultVS.cso");
+		shaderState.PixelShader.LoadShader(L"iMoriDefaultPS.cso");
 
-		s.ShaderInput.SetElement(0, SI_Semantic::POSITION, 0, SI_Stride::Float3, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::NORMAL, 0, SI_Stride::Float3, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::TEXCOORD, 0, SI_Stride::Float2, SI_Class::Vertex);
-		s.ShaderInput.SetElement(0, SI_Semantic::TANGENT, 0, SI_Stride::Float3, SI_Class::Vertex);
+		shaderState.InputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float3, SI_Class::Vertex);
+		shaderState.InputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float3, SI_Class::Vertex);
+		shaderState.InputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float2, SI_Class::Vertex);
+		shaderState.InputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float3, SI_Class::Vertex);
 
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 1, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 2, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 3, SI_Stride::Float4, SI_Class::Instance);
-		s.ShaderInput.SetElement(1, SI_Semantic::TEXCOORD, 4, SI_Stride::Float4, SI_Class::Instance);
+		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float4, SI_Class::Instance);
+		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float4, SI_Class::Instance);
+		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float4, SI_Class::Instance);
+		shaderState.InputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float4, SI_Class::Instance);
 
-		s.ShaderSignature.SetSignature(s.VertexShader.GetBlob());
+		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
 
-		PipelineCreater::SetShader(s);
-		PipelineCreater::SetRasterizerDesc();
-		PipelineCreater::SetBlendDesc();
-		PipelineCreater::SetDepthStencil(true);
-		auto pipeline = PipelineCreater::CreatePipeline();
+		PipelineState pipeline;
+		pipeline.ShaderState = shaderState;
 
-		ResourceManager::LoadPipeline(L"DefaultPipeline", pipeline);
+		ResourceManager::LoadPipeline(L"DefaultPipeline", pipeline.Create());
 	}
 
 	std::wstring path = L"Textures/";
@@ -81,9 +79,6 @@ void App::Startup(void)
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
-
-	//ResourceManager::LoadShader(L"iMoriDefaultVS.cso");
-	//ResourceManager::LoadShader(L"iMoriDefaultPS.cso");
 
 	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 

@@ -4,7 +4,7 @@
 #include "Texture.h"
 #include "Matrix4x4.h"
 #include "Command.h"
-#include "GraphicsPipeline.h"
+#include "Pipeline.h"
 
 class RenderObject
 {
@@ -18,7 +18,7 @@ public:
 	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData);
 private:
 	ID3D12GraphicsCommandList* m_Bandle;
-	GraphicsPipeline m_Pipeline;
+	Pipeline m_Pipeline;
 
 	ResourceHeap m_ResourceHeap;
 	UploadBuffer m_VertexBuffer;

@@ -11,13 +11,13 @@ namespace
 {
 
 	std::unordered_map<std::wstring, Texture> s_Textures;
-	std::unordered_map<std::wstring, GraphicsPipeline> s_Pipelines;
+	std::unordered_map<std::wstring, Pipeline> s_Pipelines;
 	std::unordered_map<std::wstring, Model> s_AssimpModels;
 }
 
 namespace ResourceManager
 {
-	void LoadPipeline(const std::wstring_view pipelineName, GraphicsPipeline pipeline)
+	void LoadPipeline(const std::wstring_view pipelineName, Pipeline pipeline)
 	{
 		s_Pipelines.try_emplace(pipelineName.data());
 		s_Pipelines.at(pipelineName.data()) = pipeline;
@@ -62,7 +62,7 @@ namespace ResourceManager
 		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
 	}
 
-	GraphicsPipeline GetPipeline(const std::wstring_view pipelineName) noexcept
+	Pipeline GetPipeline(const std::wstring_view pipelineName) noexcept
 	{
 		return s_Pipelines.at(pipelineName.data());
 	}

@@ -103,22 +103,25 @@
     <ClCompile Include="DataAverage.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
-    <ClCompile Include="GraphicsPipeline.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="PS_DepthStencil.cpp" />
+    <ClCompile Include="PS_RenderTarget.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ResourceHeap.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ShaderBinary.cpp" />
-    <ClCompile Include="ShaderSignature.cpp" />
+    <ClCompile Include="PS_Rasterizer.cpp" />
+    <ClCompile Include="SS_Binary.cpp" />
+    <ClCompile Include="SS_RootSignature.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeStamp.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
-    <ClCompile Include="ShaderInput.cpp" />
+    <ClCompile Include="SS_InputLayout.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -133,14 +136,17 @@
     <ClInclude Include="DataAverage.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="Matrix4x4.h" />
-    <ClInclude Include="GraphicsPipeline.h" />
+    <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="PS_DepthStencil.h" />
+    <ClInclude Include="PS_RenderTarget.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="ResourceHeap.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTargetBuffer.h" />
-    <ClInclude Include="ShaderBinary.h" />
-    <ClInclude Include="ShaderData.h" />
-    <ClInclude Include="ShaderSignature.h" />
+    <ClInclude Include="PS_Rasterizer.h" />
+    <ClInclude Include="SS_Binary.h" />
+    <ClInclude Include="PS_ShaderState.h" />
+    <ClInclude Include="SS_RootSignature.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimeStamp.h" />
@@ -149,7 +155,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
-    <ClInclude Include="ShaderInput.h" />
+    <ClInclude Include="SS_InputLayout.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
