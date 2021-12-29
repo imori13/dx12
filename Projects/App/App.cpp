@@ -146,8 +146,8 @@ void App::Startup(void)
 
 	Renderer::Load(L"Cube", L"Cube.obj", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", count);
-	Renderer::Load(L"g36", L"g36.obj",  count);
-	Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
+	Renderer::Load(L"g36", L"g36.obj", count);
+	Renderer::Load(L"umaru", L"umaru.obj", count);
 }
 
 void App::Cleanup(void)
@@ -180,7 +180,7 @@ void App::RenderScene(void)
 
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(data.scale)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed)
+			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
@@ -194,7 +194,7 @@ void App::RenderScene(void)
 
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(data.scale)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed)
+			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
@@ -207,7 +207,7 @@ void App::RenderScene(void)
 	{
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(Vector3::one() * 70)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
+			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
 			.translation(Vector3((i - g36half + 0.5f) * 30.0f, -0.5f, 20));
 	}
 	Renderer::Draw(cmdList, L"g36", matrix);
@@ -219,7 +219,7 @@ void App::RenderScene(void)
 	{
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(Vector3::one() * 0.2f)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
+			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
 			.translation(Vector3((i - umaruhalf + 0.5f) * 30.0f, -0.5f, 20));
 	}
 

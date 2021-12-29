@@ -243,7 +243,8 @@ void RenderObject::Create(const ModelMesh& mesh, int32_t objectCount)
 	{
 		m_ColliderBuffer.Create(256, 256);
 		DirectX::XMFLOAT4* collider = static_cast<DirectX::XMFLOAT4*>(m_ColliderBuffer.Map());
-		*collider = DirectX::XMFLOAT4{ 0.5f,1.0f,0.5f,1.0f };
+		constexpr float rate = 1.5f;
+		*collider = DirectX::XMFLOAT4{ 0.5f * rate,1.0f * rate,0.5f * rate,1.0f * rate };
 
 		// ƒrƒ…[İ’è
 		m_ColliderBuffer.CreateConstantView(m_ResourceHeap.GetNextHandle());
