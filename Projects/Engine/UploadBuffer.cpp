@@ -2,7 +2,6 @@
 #include "GraphicsCore.h"
 #include "Debug.h"
 
-
 void UploadBuffer::Create(size_t bufferSize, size_t strideSize)
 {
 	m_BufferSize = gsl::narrow<uint32_t>(bufferSize);

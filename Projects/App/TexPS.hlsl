@@ -6,7 +6,7 @@ Default_PSOutput main(Default_VSOutput input)
     
     float3 N = normalize(input.Normal);
     float3 L = normalize(LightDirection);
-    float3 V = normalize(-CameraDirection);
+    float3 V = normalize(CameraPosition - input.WorldPos.xyz);
     
     float3 R = normalize(-reflect(V, N));
     

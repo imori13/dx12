@@ -207,5 +207,8 @@
     <ClInclude Include="PS_RenderTarget.h">
       <Filter>Source File\GpuResources\PipelineState</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

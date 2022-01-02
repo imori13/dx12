@@ -95,9 +95,9 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
 	path = L"Models/";
-	ResourceManager::LoadMesh(path + L"umaru.obj");
 	ResourceManager::LoadMesh(path + L"Cube.obj");
-	ResourceManager::LoadMesh(path + L"g36.obj");
+	//ResourceManager::LoadMesh(path + L"umaru.obj");
+	//ResourceManager::LoadMesh(path + L"g36.obj");
 
 	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
@@ -105,8 +105,8 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 500000;
-	constexpr int32_t range = 500;
+	constexpr int64_t count = 500;
+	constexpr int32_t range = 100;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
 
@@ -139,15 +139,10 @@ void App::Startup(void)
 	for(int64_t i = 0; i < count; ++i)
 		renderDataVector2.at(i).rotationSpeed = Random::Next();
 
-	//Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
-	//Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
+	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
+	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
-
-	Renderer::Load(L"Cube", L"Cube.obj", count);
-	Renderer::Load(L"Cube2", L"Cube.obj", count);
-	Renderer::Load(L"g36", L"g36.obj", count);
-	Renderer::Load(L"umaru", L"umaru.obj", count);
 }
 
 void App::Cleanup(void)
@@ -180,7 +175,7 @@ void App::RenderScene(void)
 
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(data.scale)
-			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
@@ -194,36 +189,36 @@ void App::RenderScene(void)
 
 		matrix.at(i) = Matrix4x4::identity()
 			.scale(data.scale)
-			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
+			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
 	Renderer::Draw(cmdList, L"Cube2", matrix);
 
-	constexpr uint32_t g36Count = 1;
-	constexpr float g36half = g36Count / 2.0f;
-	matrix.resize(g36Count);
-	for(auto i = 0u; i < g36Count; ++i)
-	{
-		matrix.at(i) = Matrix4x4::identity()
-			.scale(Vector3::one() * 70)
-			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
-			.translation(Vector3((i - g36half + 0.5f) * 30.0f, -0.5f, 20));
-	}
-	Renderer::Draw(cmdList, L"g36", matrix);
+	//constexpr uint32_t g36Count = 1;
+	//constexpr float g36half = g36Count / 2.0f;
+	//matrix.resize(g36Count);
+	//for(auto i = 0u; i < g36Count; ++i)
+	//{
+	//	matrix.at(i) = Matrix4x4::identity()
+	//		.scale(Vector3::one() * 70)
+	//		.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.05f)
+	//		.translation(Vector3((i - g36half + 0.5f) * 30.0f, -0.5f, 20));
+	//}
+	//Renderer::Draw(cmdList, L"g36", matrix);
 
-	constexpr uint32_t umaruCount = 2;
-	constexpr float umaruhalf = umaruCount / 2.0f;
-	matrix.resize(umaruCount);
-	for(auto i = 0u; i < umaruCount; ++i)
-	{
-		matrix.at(i) = Matrix4x4::identity()
-			.scale(Vector3::one() * 0.2f)
-			//.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.5f)
-			.translation(Vector3((i - umaruhalf + 0.5f) * 30.0f, -0.5f, 20));
-	}
+	//constexpr uint32_t umaruCount = 2;
+	//constexpr float umaruhalf = umaruCount / 2.0f;
+	//matrix.resize(umaruCount);
+	//for(auto i = 0u; i < umaruCount; ++i)
+	//{
+	//	matrix.at(i) = Matrix4x4::identity()
+	//		.scale(Vector3::one() * 0.2f)
+	//		.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * 0.05f)
+	//		.translation(Vector3((i - umaruhalf + 0.5f) * 30.0f, -0.5f, 20));
+	//}
 
-	Renderer::Draw(cmdList, L"umaru", matrix);
+	//Renderer::Draw(cmdList, L"umaru", matrix);
 
 	{
 		TimeStamp::Stop();

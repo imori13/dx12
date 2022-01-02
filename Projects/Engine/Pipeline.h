@@ -6,8 +6,8 @@
 
 struct Pipeline
 {
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> Pipeine;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> Signature;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> PipelineState;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature;
 };
 
 struct PipelineState

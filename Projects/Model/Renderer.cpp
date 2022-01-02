@@ -30,12 +30,9 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	{
 		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
 
+		auto texture = ResourceManager::GetTexture(material.DiffuseMap);
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-		renderObject.Create(mesh, objectCount);
-
-		//auto texture = ResourceManager::GetTexture(material.DiffuseMap);
-		//auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
-		//renderObject.Create(mesh, material, texture, objectCount);
+		renderObject.Create(mesh, material, texture, objectCount);
 	}
 }
 

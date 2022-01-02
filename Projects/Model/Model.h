@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning (disable : 4324)
 
 struct ModelMeshVertex	// メッシュ用頂点
 {
@@ -15,7 +16,6 @@ struct ModelMesh	// モデル用メッシュ
 	uint32_t MaterialId = 0;
 };
 
-#pragma warning (disable : 4324)
 struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
 	DirectX::XMFLOAT3 Ambient = { 0.1f,0.1f,0.1f };
@@ -27,7 +27,6 @@ struct alignas(256) ModelMaterial	// モデル用マテリアル
 
 	std::wstring DiffuseMap;
 };
-#pragma warning (default : 4324)
 
 struct Model	// モデル
 {
@@ -35,7 +34,6 @@ struct Model	// モデル
 	std::vector<ModelMaterial> ModelMaterials;
 };
 
-#pragma warning (disable : 4324)
 struct alignas(256) CameraData
 {
 	DirectX::XMFLOAT4X4 View;
@@ -53,4 +51,8 @@ struct alignas(256) LightData
 	DirectX::XMFLOAT3 CameraDirection;
 	float _4{};
 };
-#pragma warning (default : 4324)
+
+struct alignas(256) OutlineData
+{
+	DirectX::XMFLOAT4 OutlineColor;
+};
