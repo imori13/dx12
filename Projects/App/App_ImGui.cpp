@@ -62,9 +62,12 @@ namespace App_ImGui
 
 		AppGui::Update();
 		AppGui::DebugViewEnable();
+
+		ImGui::Begin("Implot");
 		AppGui::FillEnable();
 		AppGui::FramePieEnable();
 		AppGui::FrameViewrEnable();
+		ImGui::End();
 	}
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

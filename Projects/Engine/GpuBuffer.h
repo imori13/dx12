@@ -80,7 +80,6 @@ protected:
 			nullptr,
 			IID_PPV_ARGS(&m_pResource));
 		ENSURES(hr, "Buffer¶¬");
-
 		// set address
 		m_GpuAddress = m_pResource->GetGPUVirtualAddress();
 

@@ -38,7 +38,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	// material
 	m_MaterialBuffer.Create(m_ResourceHeap.GetNextHandle());
 	m_MaterialBuffer.MemCopy(material);
-	m_MaterialBuffer.data()->Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_MaterialBuffer.data()->Color = DirectX::XMFLOAT4(0.5f, 1.0f, 0.5f, 1.0f);
 
 	// Textureƒrƒ…[İ’è
 	{
