@@ -48,12 +48,12 @@ void PS_RenderTarget::Default() noexcept
 	m_RtvNum = 1;
 }
 
-void PS_RenderTarget::SetRtvFormat(uint8_t rtvIndex, RTV_Format format)
+void PS_RenderTarget::SetRtvFormat(uint8_t rtvIndex, RTV_Format format) noexcept
 {
 	m_RtvFormat.at(rtvIndex) = static_cast<DXGI_FORMAT>(format);
 }
 
-void PS_RenderTarget::SetRtvBlend(uint8_t rtvIndex, RTV_Blend blend)
+void PS_RenderTarget::SetRtvBlend(uint8_t rtvIndex, RTV_Blend blend) noexcept
 {
 	gsl::at(m_BlendDesc.RenderTarget, rtvIndex) = ToDesc(blend);
 }

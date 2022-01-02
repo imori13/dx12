@@ -82,9 +82,6 @@
     <ClCompile Include="Pipeline.cpp">
       <Filter>Source File\GpuResources</Filter>
     </ClCompile>
-    <ClCompile Include="UploadBuffer.cpp">
-      <Filter>Source File\GpuResources\Buffers</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClCompile>
@@ -171,16 +168,13 @@
     <ClInclude Include="Pipeline.h">
       <Filter>Source File\GpuResources</Filter>
     </ClInclude>
-    <ClInclude Include="UploadBuffer.h">
-      <Filter>Source File\GpuResources\Buffers</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="RenderTargetBuffer.h">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="GpuResource.h">
+    <ClInclude Include="GpuBuffer.h">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="DepthStencilBuffer.h">
@@ -208,6 +202,12 @@
       <Filter>Source File\GpuResources\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
       <Filter>Source File\GpuResources\Buffers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,4 @@
 #pragma once
-#include "UploadBuffer.h"
 #include "RenderObject.h"
 #include "Camera.h"
 #include "Matrix4x4.h"

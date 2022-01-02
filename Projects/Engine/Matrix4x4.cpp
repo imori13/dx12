@@ -66,7 +66,7 @@ Matrix4x4 Matrix4x4::inverse() const
 
 Vector3 Matrix4x4::vector3() const
 {
-	auto hoge = matrix * Eigen::Vector4f(1, 1, 1, 1);
+	const auto hoge = matrix * Eigen::Vector4f(1, 1, 1, 1);
 	return Vector3(hoge.x(), hoge.y(), hoge.z());
 }
 

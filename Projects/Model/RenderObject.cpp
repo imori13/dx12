@@ -20,49 +20,24 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_ResourceHeap.Create(heapCount, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 	}
 
-	// í∏ì_èÓïÒMap
-	{
-		const auto span = gsl::make_span(mesh.Vertices);
+	// vertex
+	m_VertexBuffer.Create(gsl::narrow<uint32_t>(mesh.Vertices.size()));
+	m_VertexBuffer.MemCopy(mesh.Vertices);
 
-		m_VertexBuffer.Create(span.size_bytes(), sizeof(ModelMeshVertex));
-		void* ptr = m_VertexBuffer.Map();
-		memcpy(ptr, span.data(), span.size_bytes());
-		m_VertexBuffer.UnMap();
-	}
+	// instance
+	m_InstanceBuffer.Create(objectCount);
 
-	// instanceMap
-	{
-		m_InstanceData.resize(objectCount);
+	// index
+	m_IndexBuffer.Create(gsl::narrow<uint32_t>(mesh.Indices.size()));
+	m_IndexBuffer.MemCopy(mesh.Indices);
 
-		constexpr auto InstanceStrideSize = sizeof(DirectX::XMFLOAT4X4);
-		m_InstanceBuffer.Create(InstanceStrideSize * objectCount, InstanceStrideSize);
-		auto gpuVirtualAddress = reinterpret_cast<D3D12_GPU_VIRTUAL_ADDRESS>(m_InstanceBuffer.Map());
-		for(auto i = 0; i < objectCount; ++i)
-		{
-			m_InstanceData.at(i) = reinterpret_cast<DirectX::XMFLOAT4X4*>(gpuVirtualAddress);
-
-			gpuVirtualAddress += InstanceStrideSize;
-		}
-	}
-
-	// IndexèÓïÒMap
-	{
-		const auto span = gsl::make_span(mesh.Indices);
-		m_IndexCount = gsl::narrow<int32_t>(span.size());
-
-		m_IndexBuffer.Create(span.size_bytes(), sizeof(uint32_t));
-		void* ptr = m_IndexBuffer.Map();
-		memcpy(ptr, span.data(), span.size_bytes());
-		m_IndexBuffer.UnMap();
-	}
-
-	// CameraBufferê∂ê¨
+	// camera
 	m_CameraBuffer.Create(m_ResourceHeap.GetNextHandle());
-	// LightBufferê∂ê¨
+	// light
 	m_LightBuffer.Create(m_ResourceHeap.GetNextHandle());
-	//  Materialê∂ê¨
+	// material
 	m_MaterialBuffer.Create(m_ResourceHeap.GetNextHandle());
-	memcpy(m_MaterialBuffer.GetData(), &material, sizeof(material));
+	m_MaterialBuffer.MemCopy(material);
 
 	// TextureÉrÉÖÅ[ê›íË
 	{
@@ -73,9 +48,9 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &textureView, handle.CPU);
 	}
 
-	// Outline
+	// outline
 	m_OutlineBuffer.Create(m_ResourceHeap.GetNextHandle());
-	m_OutlineBuffer.GetData()->OutlineColor = DirectX::XMFLOAT4{ 0.5f,1.0f,0.5f,1.0f };
+	m_OutlineBuffer.MemCopy(OutlineData{ DirectX::XMFLOAT4{ 0.5f,1.0f,0.5f,1.0f } });
 
 	m_TexPipeline = ResourceManager::GetPipeline(L"NotTex");
 
@@ -86,14 +61,16 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_TexBundle->SetPipelineState(m_TexPipeline.PipelineState.Get());
 		m_TexBundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		m_TexBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
-		m_TexBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetVertexView());
-		m_TexBundle->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
+		m_TexBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetView());
+		m_TexBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+		m_TexBundle->IASetIndexBuffer(&m_IndexBuffer.GetView());
 
 		m_TexBundle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-		m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetBufferLocation());
-		m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetBufferLocation());
-		m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetBufferLocation());
+		m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
+		m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
+		m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
+
+		m_TexBundle->SetGraphicsRootConstantBufferView(3, m_OutlineBuffer.GetGpuAddress());
 		//m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 		m_TexBundle->Close();
@@ -108,14 +85,15 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_ColliderBundle->SetPipelineState(m_ColliderPipeline.PipelineState.Get());
 		m_ColliderBundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		m_ColliderBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetVertexView());
-		m_ColliderBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetVertexView());
-		m_ColliderBundle->IASetIndexBuffer(&m_IndexBuffer.GetIndexView());
+		m_ColliderBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetView());
+		m_ColliderBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+		m_ColliderBundle->IASetIndexBuffer(&m_IndexBuffer.GetView());
 
 		m_ColliderBundle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
-		m_ColliderBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetBufferLocation());
-		m_ColliderBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetBufferLocation());
-		m_ColliderBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetBufferLocation());
+		m_ColliderBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
+		m_ColliderBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
+		m_ColliderBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
+		m_ColliderBundle->SetGraphicsRootConstantBufferView(3, m_OutlineBuffer.GetGpuAddress());
 
 		m_ColliderBundle->Close();
 	}
@@ -123,13 +101,13 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 
 void RenderObject::Initialize(const Camera& camera) noexcept
 {
-	m_CameraBuffer.GetData()->View = camera.GetViewMatrix().data();
-	m_CameraBuffer.GetData()->Proj = camera.GetProjMatrix().data();
+	m_CameraBuffer.data()->View = camera.GetViewMatrix().data();
+	m_CameraBuffer.data()->Proj = camera.GetProjMatrix().data();
 
-	m_LightBuffer.GetData()->LightDirection = DirectX::XMFLOAT3(Vector3::one().normalized().data());
-	m_LightBuffer.GetData()->LightColor = { 1.0f,1.0f,1.0f };
-	m_LightBuffer.GetData()->CameraPosition = camera.GetPosition().xmfloat3();
-	m_LightBuffer.GetData()->CameraDirection = camera.GetRotate().xmfloat3();
+	m_LightBuffer.data()->LightDirection = DirectX::XMFLOAT3(Vector3::one().normalized().data());
+	m_LightBuffer.data()->LightColor = { 1.0f,1.0f,1.0f };
+	m_LightBuffer.data()->CameraPosition = camera.GetPosition().xmfloat3();
+	m_LightBuffer.data()->CameraDirection = camera.GetRotate().xmfloat3();
 }
 
 void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
@@ -138,19 +116,18 @@ void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::
 
 #pragma omp parallel for
 	for(auto i = 0; i < size; ++i)
-		*m_InstanceData.at(i) = matrixData[i].data();
+		*m_InstanceBuffer.at(i) = matrixData[i].data();
 
 	cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 
 	cmdList->SetGraphicsRootSignature(m_TexPipeline.RootSignature.Get());
 	cmdList->ExecuteBundle(m_TexBundle);
-	cmdList->DrawIndexedInstanced(m_IndexCount, gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
+	cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
 
 	if(DrawCollider)
 	{
 		cmdList->SetGraphicsRootSignature(m_ColliderPipeline.RootSignature.Get());
 		cmdList->ExecuteBundle(m_ColliderBundle);
-		cmdList->SetGraphicsRootConstantBufferView(3, m_OutlineBuffer.GetBufferLocation());
-		cmdList->DrawIndexedInstanced(m_IndexCount, gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
+		cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
 	}
 }

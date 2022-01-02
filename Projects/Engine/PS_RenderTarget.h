@@ -16,8 +16,8 @@ public:
 		Default();
 	}
 
-	void SetRtvFormat(uint8_t rtvIndex, RTV_Format format);
-	void SetRtvBlend(uint8_t rtvIndex, RTV_Blend blend);
+	void SetRtvFormat(uint8_t rtvIndex, RTV_Format format) noexcept;
+	void SetRtvBlend(uint8_t rtvIndex, RTV_Blend blend) noexcept;
 	void SetRtvNum(uint8_t rtvNum) noexcept;
 
 	std::array<DXGI_FORMAT, MAX_RTV_COUNT> GetRtvFormat() const noexcept { return m_RtvFormat; }

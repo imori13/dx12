@@ -1,38 +1,26 @@
 #pragma once
-#include "GpuResource.h"
+#include "GpuBuffer.h"
 
 template<typename T>
-class ConstantBuffer : GpuResource
+class ConstantBuffer : public GpuBuffer<T>
 {
 public:
-	ConstantBuffer() noexcept
-		: m_Constant(nullptr)
-		, m_ConstantView{}
-	{}
+	void Create(Handle_CPU_GPU handle)
+	{
+		constexpr auto strideSize = sizeof(T);
+		constexpr auto elementCount = 1;
 
-	void Create(Handle_CPU_GPU handle);
+		// Buffer
+		GpuBuffer::CreateBuffer(elementCount);
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetBufferLocation() const noexcept { return m_GpuAddress; }
-	gsl::not_null<T*> GetData() const noexcept { return m_Constant; }
+		// View
+		m_View.BufferLocation = GetGpuAddress();
+		m_View.SizeInBytes = strideSize * elementCount;
+		Graphics::g_pDevice->CreateConstantBufferView(&m_View, handle.CPU);
+	}
+
+	const D3D12_CONSTANT_BUFFER_VIEW_DESC& GetView() const noexcept { return m_View; }
 
 private:
-	D3D12_CONSTANT_BUFFER_VIEW_DESC m_ConstantView;
-	T* m_Constant;
-
+	D3D12_CONSTANT_BUFFER_VIEW_DESC m_View{};
 };
-
-template<typename T>
-void ConstantBuffer<T>::Create(Handle_CPU_GPU handle)
-{
-	constexpr auto bufferSize = sizeof(T);
-
-	// Buffer
-	CreateBuffer(bufferSize);
-
-	// View
-	m_ConstantView = GetCBufferView(m_GpuAddress, bufferSize);
-	Graphics::g_pDevice->CreateConstantBufferView(&m_ConstantView, handle.CPU);
-
-	// Map
-	m_pResource->Map(0, nullptr, &static_cast<void*>(m_Constant));
-}

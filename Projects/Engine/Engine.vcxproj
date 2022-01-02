@@ -118,7 +118,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeStamp.cpp" />
-    <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="SS_InputLayout.cpp" />
@@ -131,8 +130,9 @@
     <ClInclude Include="DepthStencilBuffer.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GameCore.h" />
-    <ClInclude Include="GpuResource.h" />
+    <ClInclude Include="GpuBuffer.h" />
     <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="DataAverage.h" />
     <ClInclude Include="MyMath.h" />
@@ -152,11 +152,11 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimeStamp.h" />
     <ClInclude Include="TranslationBarrirUtil.h" />
-    <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="SS_InputLayout.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

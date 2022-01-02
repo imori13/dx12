@@ -1,8 +1,7 @@
 #pragma once
-#include "GpuResource.h"
 #include "GraphicsCore.h"
 
-class RenderTargetBuffer : GpuResource
+class RenderTargetBuffer
 {
 public:
 	RenderTargetBuffer() noexcept
