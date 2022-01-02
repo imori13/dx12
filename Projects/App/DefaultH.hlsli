@@ -43,9 +43,9 @@ cbuffer SceneData : register(b1)
 
 cbuffer MaterialData : register(b2)
 {
-    float3 Ambient : packoffset(c0);
-    float3 Diffuse : packoffset(c1);
-    float Alpha : packoffset(c1.w);
-    float3 Specular : packoffset(c2);
-    float Shininess : packoffset(c2.w);
+    float4 Color : packoffset(c0);
+    float3 Ambient : packoffset(c1);
+    float3 Diffuse : packoffset(c2);
+    float3 Specular : packoffset(c3);
+    float Shininess : packoffset(c3.w);
 }

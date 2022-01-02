@@ -38,6 +38,7 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 	// material
 	m_MaterialBuffer.Create(m_ResourceHeap.GetNextHandle());
 	m_MaterialBuffer.MemCopy(material);
+	m_MaterialBuffer.data()->Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Textureƒrƒ…[Ý’è
 	{
@@ -47,10 +48,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		const auto textureView = texture.GetView();
 		Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &textureView, handle.CPU);
 	}
-
-	// outline
-	m_OutlineBuffer.Create(m_ResourceHeap.GetNextHandle());
-	m_OutlineBuffer.MemCopy(OutlineData{ DirectX::XMFLOAT4{ 0.5f,1.0f,0.5f,1.0f } });
 
 	m_TexPipeline = ResourceManager::GetPipeline(L"NotTex");
 
@@ -69,8 +66,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
 		m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
 		m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
-
-		m_TexBundle->SetGraphicsRootConstantBufferView(3, m_OutlineBuffer.GetGpuAddress());
 		//m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 		m_TexBundle->Close();
@@ -93,7 +88,6 @@ void RenderObject::Create(const ModelMesh& mesh, const ModelMaterial& material, 
 		m_ColliderBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
 		m_ColliderBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
 		m_ColliderBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
-		m_ColliderBundle->SetGraphicsRootConstantBufferView(3, m_OutlineBuffer.GetGpuAddress());
 
 		m_ColliderBundle->Close();
 	}

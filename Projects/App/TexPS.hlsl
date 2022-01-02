@@ -15,7 +15,7 @@ Default_PSOutput main(Default_VSOutput input)
     float3 diffuse = LightColor * Diffuse * saturate(dot(L, N));
     float3 specular = LightColor * Specular * pow(saturate(dot(L, R)), Shininess);
     
-    output.Color = float4(color.rgb * max(ambient, (diffuse + specular)), color.a * Alpha);
+    output.Color = float4(color.rgb * Color.rgb * max(ambient, (diffuse + specular)), color.a * Color.a);
 
     return output;
 }

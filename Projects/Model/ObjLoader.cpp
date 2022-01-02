@@ -252,10 +252,10 @@ namespace ObjLoader
 				material.Shininess = std::stof(splitLine.at(0));
 			}
 
-			if(header == L"d")
-			{
-				material.Alpha = std::stof(splitLine.at(0));
-			}
+			//if(header == L"d")
+			//{
+			//	material.Alpha = std::stof(splitLine.at(0));
+			//}
 		}
 
 		file.Close();

@@ -18,10 +18,11 @@ struct ModelMesh	// モデル用メッシュ
 
 struct alignas(256) ModelMaterial	// モデル用マテリアル
 {
+	DirectX::XMFLOAT4 Color = { 1.0f,1.0f,1.0f,1.0f };
 	DirectX::XMFLOAT3 Ambient = { 0.1f,0.1f,0.1f };
-	float _{};
+	float _1{};
 	DirectX::XMFLOAT3 Diffuse = { 0.5f,0.5f,0.5f };
-	float Alpha = 1;
+	float _2{};
 	DirectX::XMFLOAT3 Specular = { 0.1f,0.1f,0.1f };
 	float Shininess = 0;
 

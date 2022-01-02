@@ -38,7 +38,6 @@ private:
 	ConstantBuffer<CameraData> m_CameraBuffer;
 	ConstantBuffer<LightData> m_LightBuffer;
 	ConstantBuffer<ModelMaterial> m_MaterialBuffer;
-	ConstantBuffer<OutlineData> m_OutlineBuffer;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 };
