@@ -27,6 +27,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PreBuildEvent>
       <Command>
