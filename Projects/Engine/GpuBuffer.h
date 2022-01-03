@@ -50,18 +50,20 @@ public:
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress() const noexcept { return m_GpuAddress; }
 
-	gsl::not_null<T*> data() noexcept { return m_Datas.front(); }
-	gsl::not_null<T*> at(uint32_t i) noexcept { return m_Datas.at(i); }
+	T& data() noexcept { return *m_Datas.front(); }
+	T& at(uint32_t i) noexcept { return *m_Datas.at(i); }
 	size_t size() const noexcept { return m_Datas.size(); }
 
 	void MemCopy(const gsl::span<const T> span) noexcept
 	{
-		memcpy(at(0), span.data(), span.size_bytes());
+		const auto size = span.size_bytes();
+		memcpy_s(&data(), size, span.data(), size);
 	}
 
 	void MemCopy(const T& data) noexcept
 	{
-		memcpy(at(0), &data, sizeof(T));
+		constexpr auto size = sizeof(T);
+		memcpy_s(&this->data(), size, &data, size);
 	}
 
 protected:

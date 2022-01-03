@@ -113,7 +113,7 @@ namespace GameCore
 		// メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-		//_CrtSetBreakAlloc(266);
+		//_CrtSetBreakAlloc(13712);
 #endif
 
 		LOGLINE("■■■ 初期化 開始 ■■■");

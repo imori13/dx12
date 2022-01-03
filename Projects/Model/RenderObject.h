@@ -32,7 +32,6 @@ private:
 
 	VertexBuffer<ModelMeshVertex> m_VertexBuffer;
 	VertexBuffer<DirectX::XMFLOAT4X4> m_InstanceBuffer;
-
 	IndexBuffer<uint32_t> m_IndexBuffer;
 
 	ConstantBuffer<CameraData> m_CameraBuffer;
