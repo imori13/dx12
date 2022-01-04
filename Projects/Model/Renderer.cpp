@@ -55,15 +55,15 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 		}
 	}
 
-	auto cmdList = Command::BeginMain();
+	const auto& cmdList = Command::BeginMain();
 
 	// リソースバリア
-	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	cmdList->ResourceBarrier(1, &barrier);
 
 	// レンダーターゲットの設定
-	const auto rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	const auto dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	const D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+	const D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 	// クリア
@@ -80,7 +80,7 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
 	// リソースバリア
-	auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	cmdList->ResourceBarrier(1, &barrier);
 
 	Command::EndMain();

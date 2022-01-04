@@ -1,13 +1,8 @@
 #include "Matrix4x4.h"
 
-namespace
-{
-	const Eigen::Matrix4f IDENTITY = Eigen::Matrix4f::Identity();
-}
-
 Matrix4x4 Matrix4x4::identity()
 {
-	return IDENTITY;
+	return Eigen::Matrix4f::Identity();
 }
 
 Matrix4x4& Matrix4x4::operator+=(const Matrix4x4& m)

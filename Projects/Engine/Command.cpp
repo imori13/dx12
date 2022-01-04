@@ -68,7 +68,7 @@ namespace Command
 		return s_MainCmdList.Get();
 	}
 
-	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t threadNum) noexcept
+	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t) noexcept
 	{
 		std::vector<ID3D12GraphicsCommandList*> retVec;
 		const auto size = s_SubCmdList.size();
@@ -115,7 +115,7 @@ namespace Command
 		ENSURES(hr);
 
 		std::vector<ID3D12CommandList*> executeCmdList = { s_MainCmdList.Get()};
-		s_pCmdQueue->ExecuteCommandLists(executeCmdList.size(), executeCmdList.data());
+		s_pCmdQueue->ExecuteCommandLists(gsl::narrow<uint32_t>(executeCmdList.size()), executeCmdList.data());
 	}
 
 	void EndSub()
@@ -130,7 +130,7 @@ namespace Command
 
 			executeCmdList.emplace_back(cmdList.Get());
 		}
-		s_pCmdQueue->ExecuteCommandLists(executeCmdList.size(), executeCmdList.data());
+		s_pCmdQueue->ExecuteCommandLists(gsl::narrow<uint32_t>(executeCmdList.size()), executeCmdList.data());
 
 		//WaitForGpu();
 		BeginMain();

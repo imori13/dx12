@@ -164,7 +164,7 @@ namespace Display
 		// Windowed -> Fullscreen
 		else
 		{
-			DXGI_MODE_DESC desc;
+			DXGI_MODE_DESC desc{};
 			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 			desc.Width = 1920;
 			desc.Height = 1080;
@@ -213,8 +213,8 @@ namespace Display
 	{
 		g_Viewport.TopLeftX = 0;
 		g_Viewport.TopLeftY = 0;
-		g_Viewport.Width = width;
-		g_Viewport.Height = height;
+		g_Viewport.Width = gsl::narrow<float>(width);
+		g_Viewport.Height = gsl::narrow<float>(height);
 		g_Viewport.MinDepth = 0.0f;
 		g_Viewport.MaxDepth = 1.0f;
 		g_Scissor.left = 0;

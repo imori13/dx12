@@ -86,15 +86,17 @@ protected:
 		m_GpuAddress = m_pResource->GetGPUVirtualAddress();
 
 		// map
-		uint8_t* ptr = nullptr;
-		m_pResource->Map(0, nullptr, &static_cast<void*>(ptr));
+		void* ptr = nullptr;
+		m_pResource->Map(0, nullptr, &ptr);
+
+		uint64_t address = reinterpret_cast<uint64_t>(ptr);
 
 		// collect in vector
 		m_Datas.resize(elementCount);
 		for(auto i = 0; i < m_Datas.size(); ++i)
 		{
-			m_Datas.at(i) = reinterpret_cast<T*>(ptr);
-			ptr += strideSize;
+			m_Datas.at(i) = reinterpret_cast<T*>(address);
+			address += strideSize;
 		}
 	}
 

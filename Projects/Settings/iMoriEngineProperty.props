@@ -4,8 +4,9 @@
   <PropertyGroup>
     <OutDir>$(SolutionDir)\Build\$(Platform)\$(Configuration)\Output\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Build\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Settings\iMoriEngineRuleset.ruleset</CodeAnalysisRuleSet>
+    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -13,7 +14,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>
       </ShowIncludes>
-      <EnablePREfast>true</EnablePREfast>
+      <EnablePREfast>false</EnablePREfast>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -27,7 +28,6 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -38,6 +38,9 @@
     </FxCompile>
     <PostBuildEvent />
     <PostBuildEvent />
+    <CustomBuild>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
