@@ -1,5 +1,6 @@
 #pragma once
 #include "GpuBuffer.h"
+#include "ResourceHeap.h"
 
 template<typename T>
 class ConstantBuffer : public GpuBuffer<T>

@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector2.h"
-#include <dinput.h>
 
 enum class Keys
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include <Eigen/Eigen>
 
 class Vector2
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include "ResourceHeap.h"
 
 namespace Graphics
 {

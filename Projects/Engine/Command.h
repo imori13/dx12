@@ -20,7 +20,7 @@ namespace Command
 
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle();
 
-	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList() noexcept;
-	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t threadNum) noexcept;
+	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList();
+	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t threadNum);
 	gsl::not_null<ID3D12CommandQueue*> GetCmdQueue() noexcept;
 };

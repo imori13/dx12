@@ -1,7 +1,5 @@
 #pragma once
 
-#include <deque>
-
 enum class Average
 {
 	None = 2,

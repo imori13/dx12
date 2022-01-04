@@ -1,8 +1,6 @@
 #pragma once
 #include "MyMath.h"
 
-#include <Eigen/Eigen>
-
 struct Vector3
 {
 	explicit Vector3() noexcept(false)

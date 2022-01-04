@@ -12,6 +12,9 @@
 #include <DirectXTK12/DDSTextureLoader.h>
 #include <DirectXTK12/WICTextureLoader.h>
 #include <DirectXTK12/ResourceUploadBatch.h>
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
+#include <Eigen/Eigen>
 
 // WindowsSDK
 #define DIRECTINPUT_VERSION 0x0800	// DirectXInput version
@@ -24,12 +27,15 @@
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
 #include <wrl/client.h>
+#include <dinput.h>
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #endif
 
 #include <cstdint>
 #include <vector>
+#include <deque>
+#include <map>
 #include <memory>
 #include <string>
 #include <iostream>

@@ -1,6 +1,7 @@
 #include "Command.h"
 #include "Display.h"
 #include "Debug.h"
+#include "GraphicsCore.h"
 #include <omp.h>
 
 namespace
@@ -63,12 +64,12 @@ namespace Command
 		}
 	}
 
-	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList() noexcept
+	gsl::not_null<ID3D12GraphicsCommandList*> GetMainCmdList()
 	{
 		return s_MainCmdList.Get();
 	}
 
-	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t) noexcept
+	std::vector<ID3D12GraphicsCommandList*> GetSubCmdList(uint32_t)
 	{
 		std::vector<ID3D12GraphicsCommandList*> retVec;
 		const auto size = s_SubCmdList.size();

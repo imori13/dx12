@@ -1,4 +1,6 @@
 #pragma once
+
+#pragma warning (push)
 #pragma warning (disable : 4324)
 
 struct ModelMeshVertex	// メッシュ用頂点
@@ -57,3 +59,5 @@ struct alignas(256) OutlineData
 {
 	DirectX::XMFLOAT4 OutlineColor;
 };
+
+#pragma warning (pop)

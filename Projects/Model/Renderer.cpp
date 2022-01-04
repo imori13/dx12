@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "RenderObject.h"
 #include "ResourceManager.h"
 #include "Command.h"
 #include "Display.h"

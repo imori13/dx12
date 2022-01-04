@@ -1,10 +1,7 @@
 #pragma once
-#include <tchar.h>
-#include <system_error>
-#include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
 
-#pragma warning (disable : 26447)
+#pragma warning (push)
+#pragma warning (disable : 26447)	// noexcept‚ð‹­§
 
 namespace
 {
@@ -81,8 +78,7 @@ namespace
 			Print("\n");
 		}
 
-		const auto title = boost::format("DEBUG_ERROR -> %s [ line : %lu ]") % FileName(file).c_str() % line;
-		MessageBoxA(nullptr, error_text.c_str(), title.str().c_str(), MB_OK | MB_ICONERROR);
+		MessageBoxA(nullptr, error_text.c_str(), (boost::format("DEBUG_ERROR -> %s [ line : %lu ]") % FileName(file).c_str() % line).str().c_str(), MB_OK | MB_ICONERROR);
 	}
 
 	constexpr inline bool Check(bool flag) noexcept { return flag; }
@@ -138,6 +134,8 @@ namespace
 		__debugbreak();
 	}
 }
+
+#pragma warning (pop)
 
 // Public
 #ifdef _DEBUG

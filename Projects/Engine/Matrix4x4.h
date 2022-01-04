@@ -1,8 +1,6 @@
 #pragma once
 #include "Vector3.h"
 
-#include <Eigen/Core>
-
 #define EIGEN_DEFAULT_TO_ROW_MAJOR
 
 class Matrix4x4

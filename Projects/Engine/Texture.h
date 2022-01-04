@@ -1,7 +1,4 @@
 #pragma once
-#include "ResourceHeap.h"
-
-#include "GraphicsCore.h"
 
 class Texture
 {

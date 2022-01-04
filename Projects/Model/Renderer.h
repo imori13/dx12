@@ -1,10 +1,6 @@
 #pragma once
-#include "RenderObject.h"
-#include "Camera.h"
 #include "Matrix4x4.h"
 #include "Camera.h"
-
-#include <map>
 
 namespace Renderer
 {

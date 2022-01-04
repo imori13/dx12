@@ -62,17 +62,17 @@ namespace ResourceManager
 		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
 	}
 
-	Pipeline GetPipeline(const std::wstring_view pipelineName) noexcept
+	Pipeline GetPipeline(const std::wstring_view pipelineName)
 	{
 		return s_Pipelines.at(pipelineName.data());
 	}
 
-	Texture GetTexture(const std::wstring_view texutreName) noexcept
+	Texture GetTexture(const std::wstring_view texutreName)
 	{
 		return s_Textures.at(texutreName.data());
 	}
 
-	Model GetMesh(const std::wstring_view modelName) noexcept
+	Model GetMesh(const std::wstring_view modelName)
 	{
 		return s_AssimpModels.at(modelName.data());
 	}

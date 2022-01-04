@@ -11,7 +11,7 @@ namespace
 
 namespace TimeStamp
 {
-	void Begin() noexcept
+	void Begin()
 	{
 		s_CPUTimers.emplace_back().start();
 	}

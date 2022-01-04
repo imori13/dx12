@@ -36,13 +36,3 @@ namespace GameCore
 		app_class app = app_class();\
         return GameCore::RunApplication(app, hInstance, width, height ); \
     }
-
-
-//#ifdef _DEBUG
-//#define CREATE_APPLICATION( app_class , width, height) \
-//    int main() \
-//    { \
-//		app_class app = app_class(); \
-//		return GameCore::RunApplication(app, nullptr, width, height ); \
-//    }
-//#else
