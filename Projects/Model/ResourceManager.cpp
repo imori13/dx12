@@ -50,7 +50,7 @@ namespace ResourceManager
 		//if(path.Extension == L".obj")
 		//	flag = ObjLoader::LoadFile(model, path.FileName, path.ParentPath);
 		//else
-		flag = AssimpTest::LoadMesh(model, path.RelativePath);
+		flag = AssimpTest::LoadMesh(&model, path.RelativePath);
 
 		LOGLINE(L"%s 読み込み[ %s ] 頂点数[ %d ] インデックス数[ %d ]",
 				path.FileName.c_str(),

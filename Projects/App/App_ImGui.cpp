@@ -11,7 +11,8 @@
 
 namespace
 {
-	constexpr bool s_GUI_ENABLE = false;
+	constexpr bool s_GUI_ENABLE = true;
+	bool s_ViewGUI = true;
 	bool s_ViewportsEnable;
 }
 
@@ -56,18 +57,27 @@ namespace App_ImGui
 	void Update()
 	{
 		if(!s_GUI_ENABLE) { return; }
+
+		if(Input::IsKeyDown(Keys::U))
+		{
+			s_ViewGUI = !s_ViewGUI;
+		}
+
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		AppGui::Update();
-		AppGui::DebugViewEnable();
+		if(s_ViewGUI)
+		{
+			AppGui::Update();
+			AppGui::DebugViewEnable();
 
-		ImGui::Begin("Implot");
-		AppGui::FillEnable();
-		AppGui::FramePieEnable();
-		AppGui::FrameViewrEnable();
-		ImGui::End();
+			ImGui::Begin("Implot");
+			AppGui::FillEnable();
+			AppGui::FramePieEnable();
+			AppGui::FrameViewrEnable();
+			ImGui::End();
+		}
 	}
 
 	void Render(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)

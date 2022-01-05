@@ -69,7 +69,11 @@ public:
 		// material
 		m_MaterialBuffer.Create(m_ResourceHeap.GetNextHandle());
 		m_MaterialBuffer.MemCopy(material);
-		m_MaterialBuffer.data().Color = DirectX::XMFLOAT4(0.5f, 1.0f, 0.5f, 1.0f);
+		//m_MaterialBuffer.data().Color = DirectX::XMFLOAT4(0.5f, 1.0f, 0.5f, 1.0f);
+		m_MaterialBuffer.data().Ambient = (Vector3::one() * 0.875f).xmfloat3();
+		m_MaterialBuffer.data().Diffuse = (Vector3::one() * 0.9f).xmfloat3();
+		m_MaterialBuffer.data().Specular = (Vector3::one() * 0.0f).xmfloat3();
+		m_MaterialBuffer.data().Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// Textureƒrƒ…[Ý’è
 		{
@@ -79,7 +83,8 @@ public:
 			Graphics::g_pDevice->CreateShaderResourceView(texture.Get(), &texture.GetView(), handle.CPU);
 		}
 
-		m_TexPipeline = ResourceManager::GetPipeline(L"NotTex");
+		//m_TexPipeline = ResourceManager::GetPipeline(L"NotTex");
+		m_TexPipeline = ResourceManager::GetPipeline(L"Tex");
 
 		{
 			m_TexBundle = Command::CreateBandle();
@@ -96,7 +101,7 @@ public:
 			m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
-			//m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+			m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 			m_TexBundle->Close();
 		}
@@ -127,7 +132,8 @@ public:
 		m_CameraBuffer.data().View = camera.GetViewMatrix().data();
 		m_CameraBuffer.data().Proj = camera.GetProjMatrix().data();
 
-		m_LightBuffer.data().LightDirection = DirectX::XMFLOAT3(Vector3::one().normalized().data());
+		m_LightBuffer.data().LightDirection = DirectX::XMFLOAT3(0.1f, 0, -1);
+		//m_LightBuffer.data().LightDirection = DirectX::XMFLOAT3(Vector3::one().normalized().data());
 		m_LightBuffer.data().LightColor = { 1.0f,1.0f,1.0f };
 		m_LightBuffer.data().CameraPosition = camera.GetPosition().xmfloat3();
 		m_LightBuffer.data().CameraDirection = camera.GetRotate().xmfloat3();

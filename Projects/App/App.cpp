@@ -98,6 +98,14 @@ void App::Startup(void)
 	ResourceManager::LoadMesh(path + L"Cube.obj");
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
+	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_beltoff_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/face_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/hair_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/pistol_tex.tga");
+	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/sword_tex.tga");
 
 	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
 
@@ -141,6 +149,7 @@ void App::Startup(void)
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
+	Renderer::Load(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
 }
@@ -194,6 +203,15 @@ void App::RenderScene(void)
 			.translation(data.position);
 	}
 	Renderer::Draw(cmdList, L"Cube2", matrix);
+
+	std::vector<Matrix4x4> armaredMaidenMatrix;
+	armaredMaidenMatrix.resize(1);
+	armaredMaidenMatrix.at(0) =
+		Matrix4x4::identity()
+		.scale(Vector3::one())
+		.rotation(Vector3::zero())
+		.translation(Vector3(0, -5, 5));
+	Renderer::Draw(cmdList, L"ArmoredMaiden", armaredMaidenMatrix);
 
 	//constexpr uint32_t g36Count = 1;
 	//constexpr float g36half = g36Count / 2.0f;
