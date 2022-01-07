@@ -74,7 +74,8 @@ struct SkeletonVertex	// メッシュ用頂点
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexCoord;
 	DirectX::XMFLOAT3 Tangent;
-	std::array<SkeletonJoint, MAX_BONE_INFLUENCE> Bones;
+	uint8_t id[2];
+	float weight[2];
 };
 
 struct Bone

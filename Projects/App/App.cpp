@@ -45,72 +45,74 @@ void App::Startup(void)
 {
 	App_ImGui::Initialize();
 
-	SS_InputLayout inputLayout{};
-
-	inputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
-
-	PipelineState pipeline;
-
 	{
-		PS_ShaderState shaderState;
-		shaderState.VertexShader.LoadShader(L"TexVS.cso");
-		shaderState.PixelShader.LoadShader(L"TexPS.cso");
-		shaderState.InputLayout = inputLayout;
-		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
+		SS_InputLayout inputLayout{};
 
-		// Tex
-		pipeline.ShaderState = shaderState;
-		ResourceManager::LoadPipeline(L"Tex", pipeline.Create());
+		inputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		inputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		inputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+		inputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
+
+		PipelineState pipeline;
+
+		{
+			PS_ShaderState shaderState;
+			shaderState.VertexShader.LoadShader(L"TexVS.cso");
+			shaderState.PixelShader.LoadShader(L"TexPS.cso");
+			shaderState.InputLayout = inputLayout;
+			shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
+
+			// Tex
+			pipeline.ShaderState = shaderState;
+			ResourceManager::LoadPipeline(L"Tex", pipeline.Create());
+		}
+
+		{
+			PS_ShaderState shaderState;
+			shaderState.VertexShader.LoadShader(L"NotTexVS.cso");
+			shaderState.PixelShader.LoadShader(L"NotTexPS.cso");
+			shaderState.InputLayout = inputLayout;
+			shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
+
+			// NotTex
+			pipeline.ShaderState = shaderState;
+			ResourceManager::LoadPipeline(L"NotTex", pipeline.Create());
+
+			// Collider
+			pipeline.Rasterizer.SetCulling(false);
+			pipeline.Rasterizer.SetSolidMode(false);
+			ResourceManager::LoadPipeline(L"Collider", pipeline.Create());
+		}
 	}
 
 	{
+		SS_InputLayout skinIL{};
+
+		skinIL.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::BLENDINDICES, 0, SI_Format::UInt_RG_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::BLENDWEIGHT, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
+		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
+
 		PS_ShaderState shaderState;
-		shaderState.VertexShader.LoadShader(L"NotTexVS.cso");
-		shaderState.PixelShader.LoadShader(L"NotTexPS.cso");
-		shaderState.InputLayout = inputLayout;
+		shaderState.VertexShader.LoadShader(L"SkinVS.cso");
+		shaderState.PixelShader.LoadShader(L"SkinPS.cso");
+		shaderState.InputLayout = skinIL;
 		shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
-
-		// NotTex
-		pipeline.ShaderState = shaderState;
-		ResourceManager::LoadPipeline(L"NotTex", pipeline.Create());
-
-		// Collider
-		pipeline.Rasterizer.SetCulling(false);
-		pipeline.Rasterizer.SetSolidMode(false);
-		ResourceManager::LoadPipeline(L"Collider", pipeline.Create());
+		
+		PipelineState skinPipeline;
+		skinPipeline.ShaderState = shaderState;
+		ResourceManager::LoadPipeline(L"Skin", skinPipeline.Create());
 	}
-
-	//{
-	//	SS_InputLayout skinIL{};
-
-	//	skinIL.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	//	skinIL.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	//	skinIL.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
-	//	skinIL.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-	//	skinIL.AddElement(0, SI_Semantic::BLENDINDICES, 0, SI_Format::UInt_RG_16, SI_Class::Vertex);
-	//	skinIL.AddElement(0, SI_Semantic::BLENDWEIGHT, 0, SI_Format::UInt_R_8, SI_Class::Vertex);
-	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
-	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
-
-	//	PS_ShaderState shaderState;
-	//	shaderState.VertexShader.LoadShader(L"SkinVS.cso");
-	//	shaderState.PixelShader.LoadShader(L"SkinPS.cso");
-	//	shaderState.InputLayout = inputLayout;
-	//	shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
-	//	
-	//	PipelineState skinPipeline;
-	//	skinPipeline.ShaderState = shaderState;
-	//	ResourceManager::LoadPipeline(L"Skin", skinPipeline.Create());
-	//}
 
 	std::wstring path = L"Textures/";
 	ResourceManager::LoadTexture(path + L"pixel.png");
@@ -127,8 +129,8 @@ void App::Startup(void)
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
 
-	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
-	//ResourceManager::LoadSkinMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
+	//ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
+	ResourceManager::LoadSkinMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_beltoff_tex.tga");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
@@ -179,8 +181,8 @@ void App::Startup(void)
 
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
-	Renderer::Load(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
-	//Renderer::LoadSkeleton(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
+	//Renderer::Load(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
+	Renderer::LoadSkeleton(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
 
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
@@ -209,32 +211,32 @@ void App::RenderScene(void)
 	std::vector<Matrix4x4> matrix;
 	matrix.resize(renderDataVector.size());
 
-#pragma omp parallel for
-	for(auto i = 0; i < matrix.size(); ++i)
-	{
-		auto& data = renderDataVector.at(i);
-
-		matrix.at(i) = Matrix4x4::identity()
-			.scale(data.scale)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
-			.rotation(data.rotation)
-			.translation(data.position);
-	}
-	Renderer::Draw(cmdList, L"Cube", matrix);
-
-	matrix.resize(renderDataVector2.size());
-#pragma omp parallel for
-	for(auto i = 0; i < matrix.size(); ++i)
-	{
-		auto& data = renderDataVector2.at(i);
-
-		matrix.at(i) = Matrix4x4::identity()
-			.scale(data.scale)
-			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
-			.rotation(data.rotation)
-			.translation(data.position);
-	}
-	Renderer::Draw(cmdList, L"Cube2", matrix);
+//#pragma omp parallel for
+//	for(auto i = 0; i < matrix.size(); ++i)
+//	{
+//		auto& data = renderDataVector.at(i);
+//
+//		matrix.at(i) = Matrix4x4::identity()
+//			.scale(data.scale)
+//			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
+//			.rotation(data.rotation)
+//			.translation(data.position);
+//	}
+//	Renderer::Draw(cmdList, L"Cube", matrix);
+//
+//	matrix.resize(renderDataVector2.size());
+//#pragma omp parallel for
+//	for(auto i = 0; i < matrix.size(); ++i)
+//	{
+//		auto& data = renderDataVector2.at(i);
+//
+//		matrix.at(i) = Matrix4x4::identity()
+//			.scale(data.scale)
+//			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
+//			.rotation(data.rotation)
+//			.translation(data.position);
+//	}
+//	Renderer::Draw(cmdList, L"Cube2", matrix);
 
 	std::vector<Matrix4x4> armaredMaidenMatrix;
 	armaredMaidenMatrix.resize(1);

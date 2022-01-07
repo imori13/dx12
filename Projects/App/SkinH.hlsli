@@ -9,8 +9,8 @@ struct Default_VSInput
     float3 Normal : NORMAL;
     float2 TexCoord : TEXCOORD;
     float3 Tangent : TANGENT;
-    min16uint2 boneno : BLENDINDICES;
-    min16uint weight : BLENDWEIGHT;
+    uint2 boneno : BLENDINDICES;
+    float2 weight : BLENDWEIGHT;
     
     float4 World0 : TEXCOORD1;
     float4 World1 : TEXCOORD2;
@@ -31,13 +31,13 @@ struct Default_PSOutput
     float4 Color : SV_TARGET0;
 };
 
+	//"CBV( b3 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 
 #define RSDEF \
 	"RootFlags( ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT )," \
 	"CBV( b0 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 	"CBV( b1 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 	"CBV( b2 , visibility = SHADER_VISIBILITY_PIXEL ), " \
-	"CBV( b3 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 	"StaticSampler( s0, " \
 		"visibility = SHADER_VISIBILITY_PIXEL, " \
 		"filter = FILTER_MIN_MAG_MIP_LINEAR )," \
@@ -66,10 +66,10 @@ cbuffer MaterialData : register(b2)
     float Shininess : packoffset(c3.w);
 }
 
-cbuffer BoneData : register(b3)
-{
-    float4x4 bones[256];
-}
+//cbuffer BoneData : register(b3)
+//{
+//    float4x4 bones[256];
+//}
 
 SamplerState ColorSmp : register(s0);
 Texture2D ColorMap : register(t0);

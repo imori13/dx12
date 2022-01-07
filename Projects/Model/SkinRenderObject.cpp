@@ -104,8 +104,8 @@ public:
 			m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
-			m_TexBundle->SetGraphicsRootConstantBufferView(3, m_BoneBuffer.GetGpuAddress());
-			m_TexBundle->SetGraphicsRootDescriptorTable(4, m_TextureGpuHandle);
+			//m_TexBundle->SetGraphicsRootConstantBufferView(3, m_BoneBuffer.GetGpuAddress());
+			m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
 
 			m_TexBundle->Close();
 		}

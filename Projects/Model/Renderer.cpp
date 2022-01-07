@@ -55,28 +55,36 @@ void Renderer::LoadSkeleton(std::wstring_view assetName, std::wstring_view model
 
 void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
 {
-	// StaticMesh
-	{
-		auto& meshVec = s_RenderObjects[assetName.data()];
-		for(auto& mesh : meshVec)
-		{
-			mesh.Draw(cmdList, matrixData);
-		}
-	}
-
-	//// SkinMesh
+	//// StaticMesh
 	//{
-	//	auto& meshVec = s_SkinRenderObjects[assetName.data()];
+	//	auto& meshVec = s_RenderObjects[assetName.data()];
 	//	for(auto& mesh : meshVec)
 	//	{
 	//		mesh.Draw(cmdList, matrixData);
 	//	}
 	//}
+
+	// SkinMesh
+	{
+		auto& meshVec = s_SkinRenderObjects[assetName.data()];
+		for(auto& mesh : meshVec)
+		{
+			mesh.Draw(cmdList, matrixData);
+		}
+	}
 }
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 {
 	for(auto& model : s_RenderObjects)
+	{
+		for(auto& mesh : model.second)
+		{
+			mesh.Initialize(camera);
+		}
+	}
+
+	for(auto& model : s_SkinRenderObjects)
 	{
 		for(auto& mesh : model.second)
 		{
