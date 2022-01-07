@@ -28,6 +28,9 @@
     <ClInclude Include="Camera.h">
       <Filter>SourceFile</Filter>
     </ClInclude>
+    <ClInclude Include="SkinRenderObject.h">
+      <Filter>SourceFile\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinRenderObject.cpp">
+      <Filter>SourceFile\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

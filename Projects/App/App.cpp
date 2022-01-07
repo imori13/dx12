@@ -47,14 +47,14 @@ void App::Startup(void)
 
 	SS_InputLayout inputLayout{};
 
-	inputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float3, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float3, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float2, SI_Class::Vertex);
-	inputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float3, SI_Class::Vertex);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float4, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float4, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float4, SI_Class::Instance);
-	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float4, SI_Class::Instance);
+	inputLayout.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+	inputLayout.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	inputLayout.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
 
 	PipelineState pipeline;
 
@@ -87,6 +87,31 @@ void App::Startup(void)
 		ResourceManager::LoadPipeline(L"Collider", pipeline.Create());
 	}
 
+	//{
+	//	SS_InputLayout skinIL{};
+
+	//	skinIL.AddElement(0, SI_Semantic::POSITION, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	//	skinIL.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	//	skinIL.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+	//	skinIL.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
+	//	skinIL.AddElement(0, SI_Semantic::BLENDINDICES, 0, SI_Format::UInt_RG_16, SI_Class::Vertex);
+	//	skinIL.AddElement(0, SI_Semantic::BLENDWEIGHT, 0, SI_Format::UInt_R_8, SI_Class::Vertex);
+	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
+	//	skinIL.AddElement(1, SI_Semantic::TEXCOORD, 4, SI_Format::Float_RGBA_32, SI_Class::Instance);
+
+	//	PS_ShaderState shaderState;
+	//	shaderState.VertexShader.LoadShader(L"SkinVS.cso");
+	//	shaderState.PixelShader.LoadShader(L"SkinPS.cso");
+	//	shaderState.InputLayout = inputLayout;
+	//	shaderState.RootSignature.SetSignature(shaderState.VertexShader.GetBlob());
+	//	
+	//	PipelineState skinPipeline;
+	//	skinPipeline.ShaderState = shaderState;
+	//	ResourceManager::LoadPipeline(L"Skin", skinPipeline.Create());
+	//}
+
 	std::wstring path = L"Textures/";
 	ResourceManager::LoadTexture(path + L"pixel.png");
 	ResourceManager::LoadTexture(path + L"neko.jpg");
@@ -94,11 +119,16 @@ void App::Startup(void)
 	ResourceManager::LoadTexture(path + L"umaru.jpg");
 	ResourceManager::LoadTexture(path + L"gf_g36_dif_04.png");
 
+	//PMDLoader::Load(L"Models/初音ミク.pmd");
+	//ResourceManager::LoadMesh(path + L"Models/初音ミク.pmd");
+
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"Cube.obj");
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
+
 	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
+	//ResourceManager::LoadSkinMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_beltoff_tex.tga");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
 	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
@@ -150,6 +180,8 @@ void App::Startup(void)
 	Renderer::Load(L"Cube", L"Cube.obj", L"neko.jpg", count);
 	Renderer::Load(L"Cube2", L"Cube.obj", L"neko2.jpg", count);
 	Renderer::Load(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
+	//Renderer::LoadSkeleton(L"ArmoredMaiden", L"ArmoredMaiden.fbx", 1);
+
 	//Renderer::Load(L"g36", L"g36.obj", L"gf_g36_dif_04.png", count);
 	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg", count);
 }

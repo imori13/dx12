@@ -3,6 +3,8 @@
 #pragma warning (push)
 #pragma warning (disable : 4324)
 
+constexpr uint32_t MAX_BONE_INFLUENCE = 4;
+
 struct ModelMeshVertex	// メッシュ用頂点
 {
 	DirectX::XMFLOAT3 Position;
@@ -58,6 +60,41 @@ struct alignas(256) LightData
 struct alignas(256) OutlineData
 {
 	DirectX::XMFLOAT4 OutlineColor;
+};
+
+struct SkeletonJoint
+{
+	uint8_t id;
+	float weight;
+};
+
+struct SkeletonVertex	// メッシュ用頂点
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT2 TexCoord;
+	DirectX::XMFLOAT3 Tangent;
+	std::array<SkeletonJoint, MAX_BONE_INFLUENCE> Bones;
+};
+
+struct Bone
+{
+	const char* name;
+	DirectX::XMFLOAT4X4 matrix;
+};
+
+struct SkeletonMesh	// モデル用メッシュ
+{
+	std::vector<SkeletonVertex> Vertices;
+	std::vector<uint32_t> Indices;
+	std::vector<Bone> bones;
+	uint32_t MaterialId = 0;
+};
+
+struct SkeletonModel	// モデル
+{
+	std::vector<SkeletonMesh> ModelMeshes;
+	std::vector<ModelMaterial> ModelMaterials;
 };
 
 #pragma warning (pop)

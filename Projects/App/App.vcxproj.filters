@@ -35,6 +35,12 @@
     <FxCompile Include="NotTexPS.hlsl">
       <Filter>Shaders\NotTexture</Filter>
     </FxCompile>
+    <FxCompile Include="SkinVS.hlsl">
+      <Filter>Shaders\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinPS.hlsl">
+      <Filter>Shaders\Texture</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_ImGui.h">
@@ -53,6 +59,9 @@
     </None>
     <None Include="NotTexH.hlsli">
       <Filter>Shaders\NotTexture</Filter>
+    </None>
+    <None Include="SkinH.hlsli">
+      <Filter>Shaders\Texture</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -4,10 +4,12 @@
 #include "Command.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
+#include "SkinRenderObject.h"
 
 namespace
 {
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
+	std::map<std::wstring, std::vector<SkinRenderObject>> s_SkinRenderObjects;
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, int32_t objectCount)
@@ -37,13 +39,39 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	}
 }
 
+void Renderer::LoadSkeleton(std::wstring_view assetName, std::wstring_view modelName, int32_t objectCount)
+{
+	auto model = ResourceManager::GetSkinMesh(modelName);
+
+	for(const auto& mesh : model.ModelMeshes)
+	{
+		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
+
+		auto texture = ResourceManager::GetTexture((material.DiffuseMap.empty()) ? (L"pixel.png") : (material.DiffuseMap));
+		auto& skinMesh = s_SkinRenderObjects[assetName.data()].emplace_back();
+		skinMesh.Create(mesh, material, texture, objectCount);
+	}
+}
+
 void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
 {
-	auto& meshVec = s_RenderObjects[assetName.data()];
-	for(auto& mesh : meshVec)
+	// StaticMesh
 	{
-		mesh.Draw(cmdList, matrixData);
+		auto& meshVec = s_RenderObjects[assetName.data()];
+		for(auto& mesh : meshVec)
+		{
+			mesh.Draw(cmdList, matrixData);
+		}
 	}
+
+	//// SkinMesh
+	//{
+	//	auto& meshVec = s_SkinRenderObjects[assetName.data()];
+	//	for(auto& mesh : meshVec)
+	//	{
+	//		mesh.Draw(cmdList, matrixData);
+	//	}
+	//}
 }
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)

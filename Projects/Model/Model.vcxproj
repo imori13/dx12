@@ -93,6 +93,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="SkinRenderObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpTest.cpp" />
@@ -103,6 +104,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SkinRenderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
