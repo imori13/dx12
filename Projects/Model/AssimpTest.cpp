@@ -188,31 +188,14 @@ namespace AssimpTest
 
 	void LoadBones(ModelMesh* destMesh, const aiMesh& pSourceMesh)
 	{
-		//auto& bones = destMesh->Vertices.at(i_vertex).Bones;
-		//for(auto i_bone = 0; i_bone < bones.size(); ++i_vertex)
-		//{
-		//	// 影響ボーンが規定値以上なら無視
-		//	if(i_bone >= boneSpan[i_bone]->mNumWeights)
-		//	{
-		//		LOGLINE("%d番目のボーンを無視しました", i_bone);
-		//		continue;
-		//	}
-		//	bones.at(i_bone).id = boneSpan[i_bone]->mNumWeights[];
-		//	bones.at(i_bone).weight = ;
-		//}
-
 		const auto& boneSpan = gsl::make_span(pSourceMesh.mBones, pSourceMesh.mNumBones);
 
-		// vectorをboneの数に合わせてresize
-		//destMesh->bones.resize(pSourceMesh.mNumBones);
+
 
 		for(auto i = 0; i < boneSpan.size(); ++i)
 		{
 			const auto& bone = boneSpan[i];
-			
 			const auto& name = bone->mName.C_Str();
-			//destMesh->bones.at(i).name = bone->mName.C_Str();
-			//destMesh->bones.at(i).matrix = bone->mOffsetMatrix.;
 
 			const auto& weightSpan = gsl::make_span(bone->mWeights, bone->mNumWeights);
 			for(auto j = 0; j < weightSpan.size(); ++j)

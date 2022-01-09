@@ -9,8 +9,8 @@ struct Default_VSInput
     float3 Normal : NORMAL;
     float2 TexCoord : TEXCOORD;
     float3 Tangent : TANGENT;
-    uint2 boneno : BLENDINDICES;
-    float2 weight : BLENDWEIGHT;
+    uint4 boneno : BLENDINDICES;
+    float4 weight : BLENDWEIGHT;
     
     float4 World0 : TEXCOORD1;
     float4 World1 : TEXCOORD2;

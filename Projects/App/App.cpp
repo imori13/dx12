@@ -96,8 +96,8 @@ void App::Startup(void)
 		skinIL.AddElement(0, SI_Semantic::NORMAL, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
 		skinIL.AddElement(0, SI_Semantic::TEXCOORD, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
 		skinIL.AddElement(0, SI_Semantic::TANGENT, 0, SI_Format::Float_RGB_32, SI_Class::Vertex);
-		skinIL.AddElement(0, SI_Semantic::BLENDINDICES, 0, SI_Format::UInt_RG_32, SI_Class::Vertex);
-		skinIL.AddElement(0, SI_Semantic::BLENDWEIGHT, 0, SI_Format::Float_RG_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::BLENDINDICES, 0, SI_Format::UInt_RGBA_32, SI_Class::Vertex);
+		skinIL.AddElement(0, SI_Semantic::BLENDWEIGHT, 0, SI_Format::Float_RGBA_32, SI_Class::Vertex);
 		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 1, SI_Format::Float_RGBA_32, SI_Class::Instance);
 		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 2, SI_Format::Float_RGBA_32, SI_Class::Instance);
 		skinIL.AddElement(1, SI_Semantic::TEXCOORD, 3, SI_Format::Float_RGBA_32, SI_Class::Instance);
