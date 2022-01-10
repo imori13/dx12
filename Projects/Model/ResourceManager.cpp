@@ -1,7 +1,5 @@
 ﻿#include "ResourceManager.h"
 #include "File.h"
-#include "ObjLoader.h"
-#include "TimeStamp.h"
 #include "AssimpTest.h"
 #include "Debug.h"
 
@@ -9,7 +7,6 @@
 
 namespace
 {
-
 	std::unordered_map<std::wstring, Texture> s_Textures;
 	std::unordered_map<std::wstring, Pipeline> s_Pipelines;
 	std::unordered_map<std::wstring, Model> s_AssimpModels;
@@ -27,6 +24,13 @@ namespace ResourceManager
 	{
 		const auto& path = File::LoadPath(textureName);
 
+		// 存在するなら無視
+		if(s_Textures.find(path.FileName) != s_Textures.end())
+		{
+			LOGLINE(L"WARNING : 重複キー skip load texture [%s]", path.FileName.c_str());
+			return;
+		}
+
 		s_Textures.try_emplace(path.FileName);
 		auto& texture = s_Textures.at(path.FileName);
 
@@ -38,8 +42,6 @@ namespace ResourceManager
 
 	void LoadMesh(const std::wstring_view modelName)
 	{
-		TimeStamp::Begin();
-
 		const auto& path = File::LoadPath(modelName);
 
 		s_AssimpModels.try_emplace(path.FileName);
@@ -47,19 +49,23 @@ namespace ResourceManager
 
 		bool flag = false;
 
-		//if(path.Extension == L".obj")
-		//	flag = ObjLoader::LoadFile(model, path.FileName, path.ParentPath);
-		//else
 		flag = AssimpTest::LoadMesh(&model, path.RelativePath);
+		ENSURES(flag, L"モデル読み込み [%s]", path.RelativePath);
 
-		LOGLINE(L"%s 読み込み[ %s ] 頂点数[ %d ] インデックス数[ %d ]",
-				path.FileName.c_str(),
-				(flag) ? (L"成功") : (L"失敗"),
-				model.ModelMeshes.at(0).Vertices.size(),
-				model.ModelMeshes.at(0).Indices.size());
+		for(const auto& mat : model.ModelMaterials)
+		{
+			const auto& texturepath = path.ParentPath + mat.DiffuseMap;
+			if(!File::Exists(texturepath))
+			{
+				LOGLINE(L"WARNING : model[%s] に紐づけられたtexture[%s] が見つかりませんでした。",
+						path.RelativePath,
+						texturepath);
+				return;
+			}
 
-		const auto time = TimeStamp::End();
-		LOGLINE(L"モデル[%s]読み込み時間 : %.2fms", path.FileName.c_str(), time);
+			if(!mat.DiffuseMap.empty())
+			{ LoadTexture(texturepath); }
+		}
 	}
 
 	Pipeline GetPipeline(const std::wstring_view pipelineName)

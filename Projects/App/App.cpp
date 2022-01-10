@@ -96,20 +96,9 @@ void App::Startup(void)
 
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"Cube.obj");
+	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
-	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_beltoff_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/face_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/hair_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/pistol_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/sword_tex.tga");
-
-	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
-
-	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 
 	camera.Create(90, 0.01f, 1000.0f);
 
