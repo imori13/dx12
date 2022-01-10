@@ -116,6 +116,13 @@ namespace AssimpTest
 				DirectX::XMFLOAT2(pTexCoord.x, pTexCoord.y),
 				DirectX::XMFLOAT3(pTangent.x, pTangent.y, pTangent.z)
 			};
+
+			// ボーン変換
+			for(auto i_vertexbone = 0; i_vertexbone < MAX_BONE_INFLUENCE; ++i_vertexbone)
+			{
+				destMesh->Vertices.at(i_vertex).id[i_vertexbone] = -1;
+				destMesh->Vertices.at(i_vertex).weight[i_vertexbone] = 0.0f;
+			}
 		}
 
 		// インデックスを格納
@@ -186,26 +193,72 @@ namespace AssimpTest
 		}
 	}
 
-	void LoadBones(ModelMesh* destMesh, const aiMesh& pSourceMesh)
+	void LoadBones(SkeletonMesh* destMesh, const aiMesh& pSourceMesh)
 	{
+		std::map<std::string, BoneInfo> bone_map{};
+		uint32_t bone_counter{};
+
 		const auto& boneSpan = gsl::make_span(pSourceMesh.mBones, pSourceMesh.mNumBones);
-
-
-
-		for(auto i = 0; i < boneSpan.size(); ++i)
+		for(auto i_bone = 0; i_bone < boneSpan.size(); ++i_bone)
 		{
-			const auto& bone = boneSpan[i];
+			const auto& bone = boneSpan[i_bone];
 			const auto& name = bone->mName.C_Str();
 
-			const auto& weightSpan = gsl::make_span(bone->mWeights, bone->mNumWeights);
-			for(auto j = 0; j < weightSpan.size(); ++j)
-			{
-				const auto& weight = weightSpan[j];
+			int bone_id = -1;
 
-				auto& vertexId = weight.mVertexId;
-				auto& w = weight.mWeight;
+			// read bone
+			if(bone_map.find(name) == bone_map.end())
+			{
+				// convert to xmfloat4x4
+				const auto& m = bone->mOffsetMatrix;
+				const DirectX::XMFLOAT4X4 xmmatrix(
+					m.a1, m.a2, m.a3, m.a4,
+					m.b1, m.b2, m.b3, m.b4,
+					m.c1, m.c2, m.c3, m.c4,
+					m.d1, m.d2, m.d3, m.d4);
+
+				BoneInfo boneinfo = {};
+				boneinfo.id = bone_counter;
+				boneinfo.matrix = xmmatrix;
+				// add
+				bone_map[name] = boneinfo;
+				// set bone_id
+				bone_id = bone_counter;
+
+				++bone_counter;
+			}
+			else
+			{
+				bone_id = bone_map[name].id;
+			}
+
+			ENSURES(bone_id != -1);
+
+			// write boneinfo to vertex
+			const auto& weightSpan = gsl::make_span(bone->mWeights, bone->mNumWeights);
+			for(auto i_weight = 0; i_weight < weightSpan.size(); ++i_weight)
+			{
+				// weight data
+				const auto& weight = weightSpan[i_weight];
+
+				// vertex
+				auto& vertex = destMesh->Vertices.at(weight.mVertexId);
+
+				// insert data in an empty space
+				for(int i_vertex = 0; i_vertex < MAX_BONE_INFLUENCE; ++i_vertex)
+				{
+					const auto& is_space = vertex.id[i_vertex] > 10000;
+					if(is_space)	// default space
+					{
+						vertex.id[i_vertex] = bone_id;
+						vertex.weight[i_vertex] = weight.mWeight;
+						break;	// id inserted
+					}
+				}
 			}
 		}
+
+		// ボーン抽出 終了
 	}
 
 	bool AssimpTest::LoadMesh(Model* model, std::wstring_view fileName)
@@ -250,7 +303,7 @@ namespace AssimpTest
 		for(auto i = 0u; i < model->ModelMeshes.size(); ++i)
 		{
 			ParseMesh(&model->ModelMeshes.at(i), *meshSpan[i]);
-			LoadBones(&model->ModelMeshes.at(i), *meshSpan[i]);
+			//LoadBones(&model->ModelMeshes.at(i), *meshSpan[i]);
 		}
 
 		// マテリアルデータを変換
@@ -305,7 +358,7 @@ namespace AssimpTest
 		for(auto i = 0u; i < model->ModelMeshes.size(); ++i)
 		{
 			ParseMesh(&model->ModelMeshes.at(i), *meshSpan[i]);
-			//LoadBones(&model->ModelMeshes.at(i) ,*meshSpan[i]);
+			LoadBones(&model->ModelMeshes.at(i), *meshSpan[i]);
 		}
 
 		// マテリアルデータを変換
@@ -316,8 +369,6 @@ namespace AssimpTest
 
 		// 正常終了
 		return true;
-
-		return false;
 	}
 }
 

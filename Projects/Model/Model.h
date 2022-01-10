@@ -74,13 +74,19 @@ struct SkeletonVertex	// メッシュ用頂点
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexCoord;
 	DirectX::XMFLOAT3 Tangent;
-	uint8_t id[MAX_BONE_INFLUENCE];
+	uint32_t id[MAX_BONE_INFLUENCE];
 	float weight[MAX_BONE_INFLUENCE];
 };
 
 struct Bone
 {
 	const char* name;
+	DirectX::XMFLOAT4X4 matrix;
+};
+
+struct BoneInfo
+{
+	uint32_t id;
 	DirectX::XMFLOAT4X4 matrix;
 };
 
