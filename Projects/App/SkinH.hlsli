@@ -38,6 +38,7 @@ struct Default_PSOutput
 	"CBV( b0 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 	"CBV( b1 , visibility = SHADER_VISIBILITY_PIXEL ), " \
 	"CBV( b2 , visibility = SHADER_VISIBILITY_PIXEL ), " \
+	"CBV( b3 , visibility = SHADER_VISIBILITY_VERTEX ), " \
 	"StaticSampler( s0, " \
 		"visibility = SHADER_VISIBILITY_PIXEL, " \
 		"filter = FILTER_MIN_MAG_MIP_LINEAR )," \
@@ -66,10 +67,10 @@ cbuffer MaterialData : register(b2)
     float Shininess : packoffset(c3.w);
 }
 
-//cbuffer BoneData : register(b3)
-//{
-//    float4x4 bones[256];
-//}
+cbuffer BoneData : register(b3)
+{
+    float4x4 bones[256];
+}
 
 SamplerState ColorSmp : register(s0);
 Texture2D ColorMap : register(t0);

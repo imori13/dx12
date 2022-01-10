@@ -6,10 +6,9 @@ template<typename T>
 class ConstantBuffer : public GpuBuffer<T>
 {
 public:
-	void Create(Handle_CPU_GPU handle)
+	void Create(Handle_CPU_GPU handle, uint32_t elementCount = 1)
 	{
 		constexpr auto strideSize = sizeof(T);
-		constexpr auto elementCount = 1;
 
 		// Buffer
 		GpuBuffer::CreateBuffer(elementCount);

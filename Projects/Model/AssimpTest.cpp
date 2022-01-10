@@ -211,11 +211,16 @@ namespace AssimpTest
 			{
 				// convert to xmfloat4x4
 				const auto& m = bone->mOffsetMatrix;
+				//const DirectX::XMFLOAT4X4 xmmatrix(
+				//	m.a1, m.a2, m.a3, m.a4,
+				//	m.b1, m.b2, m.b3, m.b4,
+				//	m.c1, m.c2, m.c3, m.c4,
+				//	m.d1, m.d2, m.d3, m.d4);
 				const DirectX::XMFLOAT4X4 xmmatrix(
-					m.a1, m.a2, m.a3, m.a4,
-					m.b1, m.b2, m.b3, m.b4,
-					m.c1, m.c2, m.c3, m.c4,
-					m.d1, m.d2, m.d3, m.d4);
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1);
 
 				BoneInfo boneinfo = {};
 				boneinfo.id = bone_counter;
@@ -224,6 +229,10 @@ namespace AssimpTest
 				bone_map[name] = boneinfo;
 				// set bone_id
 				bone_id = bone_counter;
+
+				BoneData boneData{};
+				boneData.matrix = xmmatrix;
+				destMesh->BoneMatrix.emplace_back(boneData);
 
 				++bone_counter;
 			}
@@ -258,7 +267,57 @@ namespace AssimpTest
 			}
 		}
 
+		// 
+		{
+			//bone_map[]
+			//	//model->ModelMeshes.at(i).BoneMatrix
+		}
+
 		// ボーン抽出 終了
+	}
+
+	std::shared_ptr<Node> createNode(const aiNode* const n, aiMesh** mesh)
+	{
+		auto node = std::make_shared<Node>();
+
+		node->name = n->mName.C_Str();
+
+		for(u_int i = 0; i < n->mNumMeshes; ++i)
+		{
+			//node->mesh.push_back(createMesh(mesh[n->mMeshes[i]]));
+		}
+
+		const auto& m = n->mTransformation;
+		const DirectX::XMFLOAT4X4 xmmatrix(
+			m.a1, m.a2, m.a3, m.a4,
+			m.b1, m.b2, m.b3, m.b4,
+			m.c1, m.c2, m.c3, m.c4,
+			m.d1, m.d2, m.d3, m.d4);
+
+		node->matrix = xmmatrix;
+		// 初期値を保存しておく
+		node->matrix_orig = node->matrix;
+
+		for(u_int i = 0; i < n->mNumChildren; ++i)
+		{
+			node->children.emplace_back(createNode(n->mChildren[i], mesh));
+		}
+
+		return node;
+	}
+
+	void createNodeInfo(const std::shared_ptr<Node>& node,
+					std::map<std::string, std::shared_ptr<Node> >& node_index,
+					std::vector<std::shared_ptr<Node> >& node_list)
+	{
+
+		node_index.insert(std::make_pair(node->name, node));
+		node_list.push_back(node);
+
+		for(auto& child : node->children)
+		{
+			createNodeInfo(child, node_index, node_list);
+		}
 	}
 
 	bool AssimpTest::LoadMesh(Model* model, std::wstring_view fileName)
@@ -353,6 +412,20 @@ namespace AssimpTest
 		model->ModelMeshes.resize(meshSpan.size());
 		model->ModelMaterials.clear();
 		model->ModelMaterials.resize(materialSpan.size());
+
+		// 親子関係にあるノード
+		std::shared_ptr<Node> node;
+		// 名前からノードを探す用(アニメーションで使う)
+		std::map<std::string, std::shared_ptr<Node> > node_index;
+		// 親子関係を解除した状態(全ノードの行列を更新する時に使う)
+		std::vector<std::shared_ptr<Node> > node_list;
+
+		node = createNode(pScene.mRootNode, pScene.mMeshes);
+
+		// ノードを名前から探せるようにする
+		createNodeInfo(node,
+					   node_index,
+					   node_list);
 
 		// メッシュデータを変換
 		for(auto i = 0u; i < model->ModelMeshes.size(); ++i)

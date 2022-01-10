@@ -11,11 +11,6 @@
 #include "Command.h"
 #include "ResourceHeap.h"
 
-struct BoneData
-{
-	DirectX::XMFLOAT4X4 matrixArray[256];
-};
-
 class SkinRenderObject::Impl
 {
 public:
@@ -41,7 +36,7 @@ public:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
 
-	void Create(const SkeletonMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
+	void Create(SkeletonMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 	{
 		// ヒープ生成
 		{
@@ -76,7 +71,9 @@ public:
 		m_MaterialBuffer.data().Specular = (Vector3::one() * 0.0f).xmfloat3();
 		m_MaterialBuffer.data().Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		// Bone
-		m_BoneBuffer.Create(m_ResourceHeap.GetNextHandle());
+		mesh.BoneMatrix.resize(256);	// 検証用
+		m_BoneBuffer.Create(m_ResourceHeap.GetNextHandle(), mesh.BoneMatrix.size());
+		m_BoneBuffer.MemCopy(mesh.BoneMatrix);
 
 		// Textureビュー設定
 		{
@@ -104,8 +101,9 @@ public:
 			m_TexBundle->SetGraphicsRootConstantBufferView(0, m_CameraBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(1, m_LightBuffer.GetGpuAddress());
 			m_TexBundle->SetGraphicsRootConstantBufferView(2, m_MaterialBuffer.GetGpuAddress());
-			//m_TexBundle->SetGraphicsRootConstantBufferView(3, m_BoneBuffer.GetGpuAddress());
-			m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+			m_TexBundle->SetGraphicsRootConstantBufferView(3, m_BoneBuffer.GetGpuAddress());
+			//m_TexBundle->SetGraphicsRootDescriptorTable(3, m_TextureGpuHandle);
+			m_TexBundle->SetGraphicsRootDescriptorTable(4, m_TextureGpuHandle);
 
 			m_TexBundle->Close();
 		}
@@ -144,7 +142,7 @@ SkinRenderObject::SkinRenderObject() noexcept(false)
 {
 }
 
-void SkinRenderObject::Create(const SkeletonMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
+void SkinRenderObject::Create(SkeletonMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 {
 	m_pImpl->Create(mesh, material, texture, objectCount);
 }

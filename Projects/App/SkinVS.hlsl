@@ -5,14 +5,24 @@ Default_VSOutput main(Default_VSInput input)
 {
     Default_VSOutput output = (Default_VSOutput) 0;
 
-    //float w = (float) input.weight / 100.0f;
-    //matrix bm = bones[input.boneno[0]] * w + bones[input.boneno[1]] * (1.0f - w);
+    float4 totalPosition = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        if (input.boneno[i] == -1) 
+            continue;
+        if (input.boneno[i] >= 256)
+        {
+            totalPosition = float4(input.Position, 1.0f);
+            break;
+        }
+        float4 localPosition = mul(bones[input.boneno[i]], float4(input.Position, 1.0f));
+        totalPosition += localPosition * input.weight[i];
+    }
 
     float4x4 World = float4x4(input.World0, input.World1, input.World2, input.World3);
     
-    float4 localPos = float4(input.Position, 1.0f);
-    //float4 skinPos = mul(bm, localPos);
-    float4 worldPos = mul(World, localPos);
+    //float4 localPos = float4(input.Position, 1.0f);
+    float4 worldPos = mul(World, totalPosition);
     float4 viewPos = mul(View, worldPos);
     float4 projPos = mul(Proj, viewPos);
 

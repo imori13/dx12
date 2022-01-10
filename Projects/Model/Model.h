@@ -60,12 +60,6 @@ struct alignas(256) OutlineData
 	DirectX::XMFLOAT4 OutlineColor;
 };
 
-//struct VertexBoneData
-//{
-//	uint8_t id;
-//	float weight;
-//};
-
 constexpr uint32_t MAX_BONE_INFLUENCE = 4;
 
 struct SkeletonVertex	// メッシュ用頂点
@@ -78,15 +72,14 @@ struct SkeletonVertex	// メッシュ用頂点
 	float weight[MAX_BONE_INFLUENCE];
 };
 
-struct Bone
-{
-	const char* name;
-	DirectX::XMFLOAT4X4 matrix;
-};
-
 struct BoneInfo
 {
 	uint32_t id;
+	DirectX::XMFLOAT4X4 matrix;
+};
+
+struct alignas(256) BoneData
+{
 	DirectX::XMFLOAT4X4 matrix;
 };
 
@@ -94,7 +87,7 @@ struct SkeletonMesh	// モデル用メッシュ
 {
 	std::vector<SkeletonVertex> Vertices;
 	std::vector<uint32_t> Indices;
-	std::vector<Bone> bones;
+	std::vector<BoneData> BoneMatrix;
 	uint32_t MaterialId = 0;
 };
 
@@ -102,6 +95,19 @@ struct SkeletonModel	// モデル
 {
 	std::vector<SkeletonMesh> ModelMeshes;
 	std::vector<ModelMaterial> ModelMaterials;
+};
+
+struct Node
+{
+	std::string name;
+	std::vector<SkeletonMesh> mesh;
+	
+	DirectX::XMFLOAT4X4 matrix;
+	DirectX::XMFLOAT4X4 matrix_orig;
+	DirectX::XMFLOAT4X4 global_matrix;
+	DirectX::XMFLOAT4X4 invert_matrix;
+
+	std::vector<std::shared_ptr<Node>> children;
 };
 
 #pragma warning (pop)

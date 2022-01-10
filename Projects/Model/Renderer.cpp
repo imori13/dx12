@@ -43,7 +43,7 @@ void Renderer::LoadSkeleton(std::wstring_view assetName, std::wstring_view model
 {
 	auto model = ResourceManager::GetSkinMesh(modelName);
 
-	for(const auto& mesh : model.ModelMeshes)
+	for(auto& mesh : model.ModelMeshes)
 	{
 		const auto& material = model.ModelMaterials.at(mesh.MaterialId);
 
