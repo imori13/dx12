@@ -13,7 +13,8 @@ public:
 	RenderObject() noexcept(false);
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount);
 	void Initialize(const Camera& camera);
-	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData);
+	void Draw(gsl::span<Matrix4x4> matrixData);
+	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList);
 private:
 	class Impl;
 	std::shared_ptr<Impl> m_pImpl;

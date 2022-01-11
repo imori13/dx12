@@ -96,20 +96,9 @@ void App::Startup(void)
 
 	path = L"Models/";
 	ResourceManager::LoadMesh(path + L"Cube.obj");
+	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
 	//ResourceManager::LoadMesh(path + L"umaru.obj");
 	//ResourceManager::LoadMesh(path + L"g36.obj");
-	ResourceManager::LoadMesh(L"Models/ArmoredMaiden/ArmoredMaiden.fbx");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_beltoff_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/body_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/equipment_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/face_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/hair_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/pistol_tex.tga");
-	ResourceManager::LoadTexture(L"Models/ArmoredMaiden/sword_tex.tga");
-
-	//PipelineInitializer::Initialize(L"iMoriDefaultVS.cso", L"iMoriDefaultPS.cso");
-
-	//Renderer::Load(L"umaru", L"umaru.obj", L"umaru.jpg");
 
 	camera.Create(90, 0.01f, 1000.0f);
 
@@ -188,7 +177,7 @@ void App::RenderScene(void)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
-	Renderer::Draw(cmdList, L"Cube", matrix);
+	Renderer::Draw(L"Cube", matrix);
 
 	matrix.resize(renderDataVector2.size());
 #pragma omp parallel for
@@ -202,7 +191,13 @@ void App::RenderScene(void)
 			.rotation(data.rotation)
 			.translation(data.position);
 	}
-	Renderer::Draw(cmdList, L"Cube2", matrix);
+
+	// draw = space key
+	if(Input::IsKeyHold(Keys::Space))
+	{
+		Renderer::Draw(L"Cube", matrix);
+	}
+	//Renderer::Draw(cmdList, L"Cube2", matrix);
 
 	std::vector<Matrix4x4> armaredMaidenMatrix;
 	armaredMaidenMatrix.resize(1);
@@ -211,7 +206,7 @@ void App::RenderScene(void)
 		.scale(Vector3::one())
 		.rotation(Vector3::zero())
 		.translation(Vector3(0, -5, 5));
-	Renderer::Draw(cmdList, L"ArmoredMaiden", armaredMaidenMatrix);
+	Renderer::Draw(L"ArmoredMaiden", armaredMaidenMatrix);
 
 	//constexpr uint32_t g36Count = 1;
 	//constexpr float g36half = g36Count / 2.0f;
@@ -237,6 +232,8 @@ void App::RenderScene(void)
 	//}
 
 	//Renderer::Draw(cmdList, L"umaru", matrix);
+
+	Renderer::SendCommand(cmdList);
 
 	{
 		TimeStamp::Stop();

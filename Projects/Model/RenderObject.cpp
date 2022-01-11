@@ -13,6 +13,22 @@
 
 bool RenderObject::DrawCollider = true;
 
+namespace
+{
+	void Resize(VertexBuffer<DirectX::XMFLOAT4X4>* instanceBuffer, uint32_t count)
+	{
+		std::vector<DirectX::XMFLOAT4X4> copyData;
+		copyData.resize(instanceBuffer->size());
+		for(auto i = 0; i < instanceBuffer->size(); ++i)
+		{
+			copyData.at(i) = DirectX::XMFLOAT4X4(instanceBuffer->at(i));
+		}
+
+		instanceBuffer->Create(count);
+		instanceBuffer->MemCopy(copyData);
+	}
+}
+
 class RenderObject::Impl
 {
 public:
@@ -20,6 +36,7 @@ public:
 		: m_TextureGpuHandle{}
 		, m_TexBundle(nullptr)
 		, m_ColliderBundle(nullptr)
+		, m_DrawCount(0)
 	{
 	}
 
@@ -39,6 +56,8 @@ public:
 	ConstantBuffer<ModelMaterial> m_MaterialBuffer;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
+
+	uint32_t m_DrawCount;
 
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 	{
@@ -94,7 +113,7 @@ public:
 			m_TexBundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			m_TexBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetView());
-			m_TexBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+			//m_TexBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
 			m_TexBundle->IASetIndexBuffer(&m_IndexBuffer.GetView());
 
 			m_TexBundle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
@@ -116,7 +135,7 @@ public:
 			m_ColliderBundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			m_ColliderBundle->IASetVertexBuffers(0, 1, &m_VertexBuffer.GetView());
-			m_ColliderBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+			//m_ColliderBundle->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
 			m_ColliderBundle->IASetIndexBuffer(&m_IndexBuffer.GetView());
 
 			m_ColliderBundle->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
@@ -137,26 +156,41 @@ public:
 		m_LightBuffer.data().LightColor = { 1.0f,1.0f,1.0f };
 		m_LightBuffer.data().CameraPosition = camera.GetPosition().xmfloat3();
 		m_LightBuffer.data().CameraDirection = camera.GetRotate().xmfloat3();
+
+		m_DrawCount = 0;
 	}
-	void Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
+
+	void Draw(gsl::span<Matrix4x4> matrixData)
 	{
 		const int32_t size = gsl::narrow<int32_t>(matrixData.size());
 
-#pragma omp parallel for
-		for(auto i = 0; i < size; ++i)
-			m_InstanceBuffer.at(i) = matrixData[i].data();
+		m_DrawCount += size;
+		if(m_InstanceBuffer.size() < m_DrawCount)
+ 			Resize(&m_InstanceBuffer, m_DrawCount);
 
+		const auto& offset = m_DrawCount - size;
+
+		//#pragma omp parallel for
+		for(auto i = 0; i < size; ++i)
+			m_InstanceBuffer.at(offset + i) = matrixData[i].data();
+
+	}
+
+	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+	{
 		cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 
 		cmdList->SetGraphicsRootSignature(m_TexPipeline.RootSignature.Get());
 		cmdList->ExecuteBundle(m_TexBundle);
-		cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
+		cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+		cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), m_DrawCount, 0, 0, 0);
 
 		if(DrawCollider)
 		{
 			cmdList->SetGraphicsRootSignature(m_ColliderPipeline.RootSignature.Get());
 			cmdList->ExecuteBundle(m_ColliderBundle);
-			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), gsl::narrow_cast<uint32_t>(size), 0, 0, 0);
+			cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
+			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), m_DrawCount, 0, 0, 0);
 		}
 	}
 };
@@ -176,7 +210,12 @@ void RenderObject::Initialize(const Camera& camera)
 	m_pImpl->Initialize(camera);
 }
 
-void RenderObject::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
+void RenderObject::Draw(gsl::span<Matrix4x4> matrixData)
 {
-	m_pImpl->Draw(cmdList, matrixData);
+	m_pImpl->Draw(matrixData);
+}
+
+void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+{
+	m_pImpl->SendCommand(cmdList);
 }

@@ -52,6 +52,7 @@ public:
 
 	T& data() noexcept { return *m_Datas.front(); }
 	T& at(uint32_t i) { return *m_Datas.at(i); }
+	const T& at(uint32_t i) const { return *m_Datas.at(i); }
 	size_t size() const noexcept { return m_Datas.size(); }
 
 	void MemCopy(const gsl::span<const T> span) noexcept
@@ -72,6 +73,8 @@ protected:
 		constexpr auto strideSize = sizeof(T);
 		const auto heap = GetDefaultHeapProp();
 		const auto resDesc = GetDefaultResourceDesc(elementCount * strideSize);
+
+		m_pResource = nullptr;
 
 		// create buffer
 		const auto hr = Graphics::g_pDevice->CreateCommittedResource(

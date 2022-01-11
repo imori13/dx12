@@ -37,12 +37,23 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	}
 }
 
-void Renderer::Draw(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
+void Renderer::Draw(std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
 {
 	auto& meshVec = s_RenderObjects[assetName.data()];
 	for(auto& mesh : meshVec)
 	{
-		mesh.Draw(cmdList, matrixData);
+		mesh.Draw(matrixData);
+	}
+}
+
+void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
+{
+	for(auto& model : s_RenderObjects)
+	{
+		for(auto& mesh : model.second)
+		{
+			mesh.SendCommand(cmdList);
+		}
 	}
 }
 

@@ -8,14 +8,13 @@ namespace File
 {
 	const bool Exists(std::wstring_view name)
 	{
-		const bool flag = boost::filesystem::exists(name.data());
-		ENSURES(flag, L"ファイル検索 [ %s ]", name.data());
-		return flag;
+		return boost::filesystem::exists(name.data());
 	}
 
 	const Path LoadPath(std::wstring_view name)
 	{
-		Exists(name);
+		const bool flag = Exists(name);
+		ENSURES(flag, L"ファイル検索 [ %s ]", name.data());
 
 		boost::filesystem::wpath boostPath = name.data();
 
@@ -27,7 +26,14 @@ namespace File
 
 		std::vector<std::wstring> splitLine;
 		boost::algorithm::split(splitLine, name, boost::is_any_of("/"), boost::token_compress_on);
-		path.ParentPath = splitLine.at(0) + L"/";
+		splitLine.pop_back();	// ファイル名をpopbackしてディレクトリを取得する
+
+		std::wstring parentpath = L"";
+		for(const auto& split : splitLine)
+		{
+			parentpath += split + L"/";
+		}
+		path.ParentPath = parentpath;
 
 		return path;
 	}
