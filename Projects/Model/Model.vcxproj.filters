@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="FileInput.h">
+      <Filter>SourceFile\File</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>SourceFile\File</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpTest.h">
+      <Filter>SourceFile\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderObject.h">
+      <Filter>SourceFile\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>SourceFile\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="File.cpp">
+      <Filter>SourceFile\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FileInput.cpp">
+      <Filter>SourceFile\File</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>SourceFile\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpTest.cpp">
+      <Filter>SourceFile\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderObject.cpp">
+      <Filter>SourceFile\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>SourceFile\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SourceFile">
+      <UniqueIdentifier>{80fa10ed-f40b-462f-b9ea-53a1655cb6a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\Model">
+      <UniqueIdentifier>{b0c940b4-cdc1-41b4-8503-7334476269b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\File">
+      <UniqueIdentifier>{532a16f1-d338-47a8-baed-9b7794d79cab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile\Render">
+      <UniqueIdentifier>{dbd7dfc8-9064-40fb-8810-31480d322af1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

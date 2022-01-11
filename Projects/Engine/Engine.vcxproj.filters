@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source File">
+      <UniqueIdentifier>{ee791911-2b90-41fb-8150-a88fc102ddf5}</UniqueIdentifier>
+      <Extensions>h;cpp;</Extensions>
+    </Filter>
+    <Filter Include="Source File\GpuResources">
+      <UniqueIdentifier>{267e6507-0fea-4957-bac3-9766ccd86e33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuHeaps">
+      <UniqueIdentifier>{59c55f4f-429a-49ca-9cc7-c0171c19ace5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Math">
+      <UniqueIdentifier>{4a66361b-fbfe-40ae-83c7-1a656b5a0070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Device">
+      <UniqueIdentifier>{342a92ca-2b14-4bee-8c64-d23ee6df01d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\Core">
+      <UniqueIdentifier>{b2dc48d9-9cb2-4ca5-9f32-51f07b9a3998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuResources\Buffers">
+      <UniqueIdentifier>{e3cef8ce-7a77-4011-91db-9c4c1e6ea992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuResources\PipelineState">
+      <UniqueIdentifier>{a0536b89-257d-4b64-96c2-b9a7a11a7a3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source File\GpuResources\PipelineState\ShaderState">
+      <UniqueIdentifier>{2d6e09c8-46b4-481b-8146-b761e600e867}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ResourceHeap.cpp">
+      <Filter>Source File\GpuHeaps</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source File\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCore.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsCore.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source File\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="WinApp.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DataAverage.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeStamp.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source File\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandList.cpp">
+      <Filter>Source File\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
+      <Filter>Source File\GpuResources</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilBuffer.cpp">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="SS_InputLayout.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClCompile>
+    <ClCompile Include="SS_RootSignature.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClCompile>
+    <ClCompile Include="SS_Binary.cpp">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_DepthStencil.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_Rasterizer.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="PS_RenderTarget.cpp">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ResourceHeap.h">
+      <Filter>Source File\GpuHeaps</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCore.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCore.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Source File\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApp.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DataAverage.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeStamp.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="TranslationBarrirUtil.h">
+      <Filter>Source File</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath.h">
+      <Filter>Source File\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Source File\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandList.h">
+      <Filter>Source File\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Source File\GpuResources</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="SS_InputLayout.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClInclude>
+    <ClInclude Include="SS_RootSignature.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClInclude>
+    <ClInclude Include="SS_Binary.h">
+      <Filter>Source File\GpuResources\PipelineState\ShaderState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_DepthStencil.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_Rasterizer.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_ShaderState.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PS_RenderTarget.h">
+      <Filter>Source File\GpuResources\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Source File\GpuResources\Buffers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

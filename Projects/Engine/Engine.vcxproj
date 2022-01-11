@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{4be9100c-c251-455d-bcf2-9b9ddbd4485e}</ProjectGuid>
+    <RootNamespace>Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Settings\iMoriEngineProperty.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Settings\iMoriEngineProperty.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <SDLCheck>true</SDLCheck>
+      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <OmitFramePointers>true</OmitFramePointers>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandList.cpp" />
+    <ClCompile Include="DepthStencilBuffer.cpp" />
+    <ClCompile Include="Display.cpp" />
+    <ClCompile Include="GameCore.cpp" />
+    <ClCompile Include="GraphicsCore.cpp" />
+    <ClCompile Include="DataAverage.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="PS_DepthStencil.cpp" />
+    <ClCompile Include="PS_RenderTarget.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="ResourceHeap.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PS_Rasterizer.cpp" />
+    <ClCompile Include="SS_Binary.cpp" />
+    <ClCompile Include="SS_RootSignature.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimeStamp.cpp" />
+    <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="SS_InputLayout.cpp" />
+    <ClCompile Include="WinApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandList.h" />
+    <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="DepthStencilBuffer.h" />
+    <ClInclude Include="Display.h" />
+    <ClInclude Include="GameCore.h" />
+    <ClInclude Include="GpuBuffer.h" />
+    <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="DataAverage.h" />
+    <ClInclude Include="MyMath.h" />
+    <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="PS_DepthStencil.h" />
+    <ClInclude Include="PS_RenderTarget.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="ResourceHeap.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="RenderTargetBuffer.h" />
+    <ClInclude Include="PS_Rasterizer.h" />
+    <ClInclude Include="SS_Binary.h" />
+    <ClInclude Include="PS_ShaderState.h" />
+    <ClInclude Include="SS_RootSignature.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimeStamp.h" />
+    <ClInclude Include="TranslationBarrirUtil.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="SS_InputLayout.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="WinApp.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

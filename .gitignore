@@ -74,7 +74,6 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
 *.iobj
 *.pch
 *.pdb
@@ -360,4 +359,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # ユーザー定義
-!DirectX12_Study2/DirectX12_Study2/Resources/Models/*
+#*.obj
+!Resources/*.obj
+!Projects/App/App.vcxproj.user

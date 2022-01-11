@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="App.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+    <ClCompile Include="App_ImGui.cpp">
+      <Filter>SourceFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{90cc14d6-c71d-4ab3-92db-41e3961be231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceFile">
+      <UniqueIdentifier>{4ae547b8-b73f-4394-b9e7-6289ad452b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Texture">
+      <UniqueIdentifier>{9b6c6605-5a7b-4e1a-9dfd-258579b96585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\NotTexture">
+      <UniqueIdentifier>{79089fd2-eb71-448c-a263-35fee7e78ba2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="TexVS.hlsl">
+      <Filter>Shaders\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="TexPS.hlsl">
+      <Filter>Shaders\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="NotTexVS.hlsl">
+      <Filter>Shaders\NotTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="NotTexPS.hlsl">
+      <Filter>Shaders\NotTexture</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App_ImGui.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+    <ClInclude Include="App_ImGui_Method.h">
+      <Filter>SourceFile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DefaultH.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="TexH.hlsli">
+      <Filter>Shaders\Texture</Filter>
+    </None>
+    <None Include="NotTexH.hlsli">
+      <Filter>Shaders\NotTexture</Filter>
+    </None>
+  </ItemGroup>
+</Project>
