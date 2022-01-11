@@ -361,3 +361,4 @@ FodyWeavers.xsd
 # ユーザー定義
 #*.obj
 !Resources/*.obj
+!Projects/App/App.vcxproj.user
