@@ -28,6 +28,9 @@
     <ClInclude Include="Camera.h">
       <Filter>SourceFile</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>SourceFile</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SourceFile">
@@ -67,6 +73,9 @@
     </Filter>
     <Filter Include="SourceFile\Render">
       <UniqueIdentifier>{dbd7dfc8-9064-40fb-8810-31480d322af1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{537e4807-75e6-4eb2-9e65-0d6403deb97d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

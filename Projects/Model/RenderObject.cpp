@@ -1,7 +1,6 @@
 #include "RenderObject.h"
 #include "Debug.h"
 #include "Display.h"
-#include "TranslationBarrirUtil.h"
 #include "ResourceManager.h"
 #include "Random.h"
 #include "Pipeline.h"
@@ -181,7 +180,6 @@ public:
 			cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
 			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), size, 0, 0, 0);
 		}
-
 	}
 };
 

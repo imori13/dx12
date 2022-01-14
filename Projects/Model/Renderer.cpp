@@ -9,6 +9,7 @@ namespace
 {
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
 	std::map<std::wstring, std::vector<Matrix4x4>> s_DrawList;
+	std::mutex s_Mutex;
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, int32_t objectCount)
@@ -38,11 +39,17 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 	}
 }
 
-void Renderer::Draw(std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
+void Renderer::Draw(std::wstring_view assetName, Matrix4x4 matrixData)
 {
-	for(auto& itr : matrixData)
-		s_DrawList[assetName.data()].emplace_back(itr);
+	std::lock_guard<std::mutex> lock(s_Mutex);
+	s_DrawList[assetName.data()].emplace_back(matrixData);
 }
+
+//void Renderer::Draw(std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
+//{
+//	for(auto& m : matrixData)
+//		Draw(assetName, m);
+//}
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 {
@@ -56,26 +63,7 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 		}
 	}
 
-	const auto& cmdList = Command::BeginMain();
-
-	// リソースバリア
-	const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	cmdList->ResourceBarrier(1, &barrier);
-
-	// レンダーターゲットの設定
-	const D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	const D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
-	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
-
-	// クリア
-	const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
-	cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
-	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	cmdList->RSSetViewports(1, &Display::g_Viewport);
-	cmdList->RSSetScissorRects(1, &Display::g_Scissor);
-
-	return cmdList;
+	return Command::GetMainCmdList();
 }
 
 void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
@@ -88,10 +76,4 @@ void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 			mesh.DrawArray(cmdList, vec);
 		}
 	}
-
-	// リソースバリア
-	const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	cmdList->ResourceBarrier(1, &barrier);
-
-	Command::EndMain();
 }

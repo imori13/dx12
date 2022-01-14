@@ -51,6 +51,7 @@ namespace GameCore
 
 		game.UpdateGUI();
 
+
 		// XVˆ—
 		{
 			TimeStamp::Begin();
@@ -64,7 +65,13 @@ namespace GameCore
 		{
 			TimeStamp::Begin();
 
+			// Command Start
+			Command::BeginMain();
+
 			game.RenderScene();
+
+			// Command End
+			Command::EndMain();
 
 			DataAverage::Set(L"Render", TimeStamp::End(), Average::VeryLow);
 		}
