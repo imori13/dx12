@@ -37,7 +37,6 @@ public:
 		: m_TextureGpuHandle{}
 		, m_TexBundle(nullptr)
 		, m_ColliderBundle(nullptr)
-		, m_DrawCount(0)
 	{
 	}
 
@@ -57,8 +56,6 @@ public:
 	ConstantBuffer<ModelMaterial> m_MaterialBuffer;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureGpuHandle;
-
-	uint32_t m_DrawCount;
 
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 	{
@@ -157,37 +154,32 @@ public:
 		m_LightBuffer.data().LightColor = { 1.0f,1.0f,1.0f };
 		m_LightBuffer.data().CameraPosition = camera.GetPosition().xmfloat3();
 		m_LightBuffer.data().CameraDirection = camera.GetRotate().xmfloat3();
-
-		m_DrawCount = 0;
 	}
 
 	void DrawArray(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
 	{
 		const int32_t size = gsl::narrow<int32_t>(matrixData.size());
 
-		m_DrawCount += size;
-		if(m_InstanceBuffer.size() < m_DrawCount)
-			Resize(&m_InstanceBuffer, m_DrawCount);
-
-		const auto& offset = m_DrawCount - size;
+		if(m_InstanceBuffer.size() < size)
+			Resize(&m_InstanceBuffer, size);
 
 #pragma omp parallel for
 		for(auto i = 0; i < size; ++i)
-			m_InstanceBuffer.at(offset + i) = matrixData[i].data();
+			m_InstanceBuffer.at(i) = matrixData[i].data();
 
 		cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 
 		cmdList->SetGraphicsRootSignature(m_TexPipeline.RootSignature.Get());
 		cmdList->ExecuteBundle(m_TexBundle);
 		cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
-		cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), m_DrawCount, 0, 0, 0);
+		cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), size, 0, 0, 0);
 
 		if(DrawCollider)
 		{
 			cmdList->SetGraphicsRootSignature(m_ColliderPipeline.RootSignature.Get());
 			cmdList->ExecuteBundle(m_ColliderBundle);
 			cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
-			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), m_DrawCount, 0, 0, 0);
+			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), size, 0, 0, 0);
 		}
 
 	}
