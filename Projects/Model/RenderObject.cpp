@@ -160,24 +160,20 @@ public:
 		m_DrawCount = 0;
 	}
 
-	void Draw(gsl::span<Matrix4x4> matrixData)
+	void DrawArray(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
 	{
 		const int32_t size = gsl::narrow<int32_t>(matrixData.size());
 
 		m_DrawCount += size;
 		if(m_InstanceBuffer.size() < m_DrawCount)
- 			Resize(&m_InstanceBuffer, m_DrawCount);
+			Resize(&m_InstanceBuffer, m_DrawCount);
 
 		const auto& offset = m_DrawCount - size;
 
-		//#pragma omp parallel for
+#pragma omp parallel for
 		for(auto i = 0; i < size; ++i)
 			m_InstanceBuffer.at(offset + i) = matrixData[i].data();
 
-	}
-
-	void SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
-	{
 		cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 
 		cmdList->SetGraphicsRootSignature(m_TexPipeline.RootSignature.Get());
@@ -192,6 +188,7 @@ public:
 			cmdList->IASetVertexBuffers(1, 1, &m_InstanceBuffer.GetView());
 			cmdList->DrawIndexedInstanced(gsl::narrow<uint32_t>(m_IndexBuffer.size()), m_DrawCount, 0, 0, 0);
 		}
+
 	}
 };
 
@@ -210,12 +207,7 @@ void RenderObject::Initialize(const Camera& camera)
 	m_pImpl->Initialize(camera);
 }
 
-void RenderObject::Draw(gsl::span<Matrix4x4> matrixData)
+void RenderObject::DrawArray(gsl::not_null<ID3D12GraphicsCommandList*> cmdList, gsl::span<Matrix4x4> matrixData)
 {
-	m_pImpl->Draw(matrixData);
-}
-
-void RenderObject::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
-{
-	m_pImpl->SendCommand(cmdList);
+	m_pImpl->DrawArray(cmdList, matrixData);
 }

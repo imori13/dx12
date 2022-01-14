@@ -8,6 +8,7 @@
 namespace
 {
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
+	std::map<std::wstring, std::vector<Matrix4x4>> s_DrawList;
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, int32_t objectCount)
@@ -39,26 +40,26 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, in
 
 void Renderer::Draw(std::wstring_view assetName, gsl::span<Matrix4x4> matrixData)
 {
-	auto& meshVec = s_RenderObjects[assetName.data()];
-	for(auto& mesh : meshVec)
-	{
-		mesh.Draw(matrixData);
-	}
+	for(auto& itr : matrixData)
+		s_DrawList[assetName.data()].emplace_back(itr);
 }
 
 void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
-	for(auto& model : s_RenderObjects)
-	{
-		for(auto& mesh : model.second)
-		{
-			mesh.SendCommand(cmdList);
-		}
-	}
+	//for(auto& model : s_RenderObjects)
+	//{
+	//	for(auto& mesh : model.second)
+	//	{
+	//		auto& vec = s_DrawList[model.first];
+	//		mesh.DrawArray(cmdList, vec);
+	//	}
+	//}
 }
 
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 {
+	s_DrawList.clear();
+
 	for(auto& model : s_RenderObjects)
 	{
 		for(auto& mesh : model.second)
@@ -91,6 +92,15 @@ gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 
 void Renderer::End(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
 {
+	for(auto& model : s_RenderObjects)
+	{
+		for(auto& mesh : model.second)
+		{
+			auto& vec = s_DrawList[model.first];
+			mesh.DrawArray(cmdList, vec);
+		}
+	}
+
 	// リソースバリア
 	const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	cmdList->ResourceBarrier(1, &barrier);
