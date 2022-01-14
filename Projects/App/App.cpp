@@ -103,8 +103,8 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 100000;
-	constexpr int32_t range = 1000;
+	constexpr int64_t count = 1000;
+	constexpr int32_t range = 100;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
 
@@ -186,7 +186,7 @@ void App::RenderScene(void)
 	std::vector<Matrix4x4> matrix;
 	matrix.resize(renderDataVector.size());
 
-	#pragma omp parallel for
+#pragma omp parallel for
 	for(auto i = 0; i < matrix.size(); ++i)
 	{
 		auto& data = renderDataVector.at(i);
@@ -200,7 +200,7 @@ void App::RenderScene(void)
 	}
 
 	matrix.resize(renderDataVector2.size());
-	#pragma omp parallel for
+#pragma omp parallel for
 	for(auto i = 0; i < matrix.size(); ++i)
 	{
 		auto& data = renderDataVector2.at(i);

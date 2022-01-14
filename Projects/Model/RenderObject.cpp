@@ -14,13 +14,13 @@ bool RenderObject::DrawCollider = true;
 
 namespace
 {
-	void Resize(VertexBuffer<DirectX::XMFLOAT4X4>* instanceBuffer, uint32_t count)
+	void Resize(VertexBuffer<Matrix4x4>* instanceBuffer, uint32_t count)
 	{
-		std::vector<DirectX::XMFLOAT4X4> copyData;
+		std::vector<Matrix4x4> copyData;
 		copyData.resize(instanceBuffer->size());
 		for(auto i = 0; i < instanceBuffer->size(); ++i)
 		{
-			copyData.at(i) = DirectX::XMFLOAT4X4(instanceBuffer->at(i));
+			copyData.at(i) = instanceBuffer->at(i);
 		}
 
 		Command::WaitForGpu();
@@ -47,7 +47,7 @@ public:
 	ResourceHeap m_ResourceHeap;
 
 	VertexBuffer<ModelMeshVertex> m_VertexBuffer;
-	VertexBuffer<DirectX::XMFLOAT4X4> m_InstanceBuffer;
+	VertexBuffer<Matrix4x4> m_InstanceBuffer;
 	IndexBuffer<uint32_t> m_IndexBuffer;
 
 	ConstantBuffer<CameraData> m_CameraBuffer;
@@ -164,7 +164,7 @@ public:
 
 #pragma omp parallel for
 		for(auto i = 0; i < size; ++i)
-			m_InstanceBuffer.at(i) = matrixData[i].data();
+			m_InstanceBuffer.at(i) = matrixData[i];
 
 		cmdList->SetDescriptorHeaps(1, m_ResourceHeap.GetAddress());
 
