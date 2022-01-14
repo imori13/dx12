@@ -233,8 +233,6 @@ void App::RenderScene(void)
 
 	//Renderer::Draw(cmdList, L"umaru", matrix);
 
-	//Renderer::SendCommand(cmdList);
-
 	{
 		TimeStamp::Stop();
 		App_ImGui::Render(cmdList);

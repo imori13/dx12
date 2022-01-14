@@ -44,18 +44,6 @@ void Renderer::Draw(std::wstring_view assetName, gsl::span<Matrix4x4> matrixData
 		s_DrawList[assetName.data()].emplace_back(itr);
 }
 
-void Renderer::SendCommand(gsl::not_null<ID3D12GraphicsCommandList*> cmdList)
-{
-	//for(auto& model : s_RenderObjects)
-	//{
-	//	for(auto& mesh : model.second)
-	//	{
-	//		auto& vec = s_DrawList[model.first];
-	//		mesh.DrawArray(cmdList, vec);
-	//	}
-	//}
-}
-
 gsl::not_null<ID3D12GraphicsCommandList*> Renderer::Begin(const Camera& camera)
 {
 	s_DrawList.clear();

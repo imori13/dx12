@@ -74,7 +74,7 @@ protected:
 		const auto heap = GetDefaultHeapProp();
 		const auto resDesc = GetDefaultResourceDesc(elementCount * strideSize);
 
-		m_pResource = nullptr;
+		m_pResource.Reset();
 
 		// create buffer
 		const auto hr = Graphics::g_pDevice->CreateCommittedResource(

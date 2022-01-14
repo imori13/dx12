@@ -24,6 +24,7 @@ namespace
 			copyData.at(i) = DirectX::XMFLOAT4X4(instanceBuffer->at(i));
 		}
 
+		Command::WaitForGpu();
 		instanceBuffer->Create(count);
 		instanceBuffer->MemCopy(copyData);
 	}
