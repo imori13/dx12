@@ -31,6 +31,12 @@
     <ClInclude Include="GameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="File.cpp">
@@ -58,6 +64,12 @@
       <Filter>SourceFile</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>

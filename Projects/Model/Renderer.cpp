@@ -4,12 +4,16 @@
 #include "Command.h"
 #include "Display.h"
 #include "TranslationBarrirUtil.h"
+#include "VertexBuffer.h"
+#include "GameObject.h"
 
 namespace
 {
 	std::map<std::wstring, std::vector<RenderObject>> s_RenderObjects;
 	std::map<std::wstring, std::vector<Matrix4x4>> s_DrawList;
 	std::mutex s_Mutex;
+
+	VertexBuffer<Matrix4x4> instanceBuffer;
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, std::wstring_view texturename, int32_t objectCount)
@@ -23,6 +27,12 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, st
 		auto& renderObject = s_RenderObjects[assetName.data()].emplace_back();
 		renderObject.Create(mesh, model.ModelMaterials.at(mesh.MaterialId), texture, objectCount);
 	}
+}
+
+// position‚Ìƒƒ‚ƒŠ‚ğQÆ‚³‚¹‚é
+void Add(GameObject& gameObject)
+{
+	gameObject.transform = &instanceBuffer.at(0);
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, int32_t objectCount)

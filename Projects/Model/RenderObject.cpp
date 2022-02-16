@@ -14,7 +14,7 @@ bool RenderObject::DrawCollider = true;
 
 namespace
 {
-	void Resize(VertexBuffer<Matrix4x4>* instanceBuffer, uint32_t count)
+	void Resize(gsl::not_null<VertexBuffer<Matrix4x4>*> instanceBuffer, uint32_t count)
 	{
 		std::vector<Matrix4x4> copyData;
 		copyData.resize(instanceBuffer->size());
