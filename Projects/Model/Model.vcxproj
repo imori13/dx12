@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="AssimpTest.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileInput.h" />
     <ClInclude Include="GameObject.h" />
@@ -100,6 +101,7 @@
   <ItemGroup>
     <ClCompile Include="AssimpTest.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="GameObject.cpp" />

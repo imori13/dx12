@@ -32,7 +32,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, st
 // position‚Ìƒƒ‚ƒŠ‚ğQÆ‚³‚¹‚é
 void Add(GameObject& gameObject)
 {
-	gameObject.transform = &instanceBuffer.at(0);
+	//gameObject.transform = &instanceBuffer.at(0);
 }
 
 void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, int32_t objectCount)

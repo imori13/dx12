@@ -1,26 +1,52 @@
 #pragma once
-#include "Transform.h"
-#include "Matrix4x4.h"
+#include "Component.h"
+
+// https://qiita.com/harayuu10/items/bf6d73353efa45212200
+
+class Component;
 
 class GameObject
 {
 public:
 	GameObject() noexcept {};
-	virtual ~GameObject() {};
+	~GameObject()
+	{
 
-	GameObject(const GameObject&) = delete;
-	GameObject(GameObject&&) = delete;
-	GameObject& operator=(const GameObject&) = delete;
-	GameObject& operator=(GameObject&&) = delete;
+	};
 
-	virtual void Start() = 0;
-	virtual void Update() = 0;
-	virtual void Draw() = 0;
-	//void Draw(Renderer renderer);	// Ç…ÇµÇΩÇ¢
-//
-//public:
-//	Transform transfrom;
+	void Update();
+	void Draw();
 
-public:
-	Matrix4x4* transform;
+	template<class T> T* AddComponent()
+	{
+		T* buff = new T();
+
+		m_ComponentList.push_back(buff);
+
+		// êeÇéwíË
+		buff->Parent = this;
+		buff->Start();
+
+		return buff;
+	}
+
+	template<class T> T* GetComponent()
+	{
+		for(auto& component : m_ComponentList)
+		{
+			T* buff = dynamic_cast<T*>(component);
+
+			if(buff != nullptr)
+			{
+				// GetComponent ê¨å˜
+				return buffer;
+			}
+		}
+
+		// GetComponent é∏îs
+		return nullptr;
+	}
+
+private:
+	std::list<Component*> m_ComponentList;
 };
