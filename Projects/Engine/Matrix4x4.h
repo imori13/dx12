@@ -31,7 +31,7 @@ public:
 	float& at(uint8_t row, uint8_t col);
 	const float& at(uint8_t row, uint8_t col) const;
 
-	// ƒ‚ƒfƒ‹s—ñ
+	// ãƒ¢ãƒ‡ãƒ«è¡Œåˆ—
 	Matrix4x4 scale(const Vector3& vec) const;
 	Matrix4x4 scale(float x, float y, float z) const;
 	Matrix4x4 translation(const Vector3& vec) const;
@@ -42,9 +42,9 @@ public:
 	Matrix4x4 rotateY(float radian) const;
 	Matrix4x4 rotateZ(float radian) const;
 	Matrix4x4 rotateAxis(const Vector3& vector, float radian) const;
-	// ƒrƒ…[s—ñ
+	// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
 	Matrix4x4 lookAt(const Vector3& cameraPos, const Vector3& targetPos, const Vector3& upward) const;
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
 	Matrix4x4 parrallelProjection(float top, float bottom, float right, float left, float Near, float Far) const;
 	Matrix4x4 perspectiveProjection(float fovRad, float aspect, float Near, float Far) const;
 private:

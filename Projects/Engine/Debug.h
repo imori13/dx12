@@ -1,7 +1,7 @@
 #pragma once
 
 #pragma warning (push)
-#pragma warning (disable : 26447)	// noexcept‚ğ‹­§
+#pragma warning (disable : 26447)	// noexceptã‚’å¼·åˆ¶
 
 namespace
 {
@@ -24,7 +24,7 @@ namespace
 	inline void Printf(const boost::format& format) noexcept { Print(format.str().c_str()); }
 	inline void Printf(const boost::wformat& format) noexcept { Print(format.str().c_str()); }
 
-	// Ä‹Nˆ—‚ÅBoost::format‚É•ÏŠ· https://theolizer.com/cpp-school2/cpp-school2-30/
+	// å†èµ·å‡¦ç†ã§Boost::formatã«å¤‰æ› https://theolizer.com/cpp-school2/cpp-school2-30/
 	template<typename PARAM_FIRST, typename... PARAMETER>
 	inline void Printf(boost::format& format, PARAM_FIRST paramFirst, PARAMETER... parameterT) noexcept
 	{ Printf(format % paramFirst, parameterT...); }

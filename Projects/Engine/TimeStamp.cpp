@@ -20,7 +20,7 @@ namespace TimeStamp
 	{
 		const auto& timer = s_CPUTimers.back();
 
-		// ‘å‚«‚È‘Ò‹@ŠÔ‚Í–³‹‚·‚é narrow_cast
+		// å¤§ããªå¾…æ©Ÿæ™‚é–“ã¯ç„¡è¦–ã™ã‚‹ narrow_cast
 		const float retVal = gsl::narrow_cast<float>(timer.elapsed().wall);
 
 		s_CPUTimers.pop_back();

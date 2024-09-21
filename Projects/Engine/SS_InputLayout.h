@@ -4,7 +4,7 @@ enum class SI_Semantic : uint8_t;
 enum class SI_Format : uint8_t;
 enum class SI_Class : uint8_t;
 
-// シェーダーの入力データ
+// 繧ｷ繧ｧ繝ｼ繝繝ｼ縺ｮ蜈･蜉帙ョ繝ｼ繧ｿ
 class SS_InputLayout
 {
 public:

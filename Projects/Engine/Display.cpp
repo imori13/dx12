@@ -34,12 +34,12 @@ namespace Display
 	{
 		HRESULT hr{};
 
-		// ƒXƒƒbƒvƒ`ƒFƒCƒ“‚Ì¶¬
+		// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã®ç”Ÿæˆ
 		{
-			// DXGIƒtƒ@ƒNƒgƒŠ[‚Ì¶¬
+			// DXGIãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ç”Ÿæˆ
 			Microsoft::WRL::ComPtr<IDXGIFactory4> pFactory = nullptr;
 			hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
-			ENSURES(hr, "DXGIFactory¶¬");
+			ENSURES(hr, "DXGIFactoryç”Ÿæˆ");
 
 			BOOL allowTearing = FALSE;
 			if(SUCCEEDED(hr))
@@ -56,12 +56,12 @@ namespace Display
 			g_AppWidth = WinApp::g_Width;
 			g_AppHeight = WinApp::g_Height;
 
-			// ƒXƒƒbƒvƒ`ƒFƒCƒ“‚Ìİ’è
+			// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã®è¨­å®š
 			DXGI_SWAP_CHAIN_DESC desc = {};
 			desc.Windowed = !s_IsFullscreen;
 			desc.BufferDesc.Width = g_AppWidth;
 			desc.BufferDesc.Height = g_AppHeight;
-			desc.BufferDesc.RefreshRate.Numerator = s_RefreshRate;		// ƒŠƒtƒŒƒbƒVƒ…ƒŒ[ƒg
+			desc.BufferDesc.RefreshRate.Numerator = s_RefreshRate;		// ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒ¬ãƒ¼ãƒˆ
 			desc.BufferDesc.RefreshRate.Denominator = 1;
 			desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -76,24 +76,24 @@ namespace Display
 			desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			desc.Flags |= s_TearingSupport ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0;
 
-			// ƒXƒƒbƒvƒ`ƒFƒCƒ“‚Ì¶¬
+			// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã®ç”Ÿæˆ
 			Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 			hr = pFactory->CreateSwapChain(Command::GetCmdQueue(), &desc, &pSwapChain);
-			ENSURES(hr, "SwapChain¶¬");
+			ENSURES(hr, "SwapChainç”Ÿæˆ");
 
-			// DXGI‚ÌAlt+Enter‚ğ‹Ö~‚·‚é(CreateSwapchain‚ÌŒã‚ÉŒÄ‚Ô)
+			// DXGIã®Alt+Enterã‚’ç¦æ­¢ã™ã‚‹(CreateSwapchainã®å¾Œã«å‘¼ã¶)
 			hr = pFactory->MakeWindowAssociation(WinApp::g_hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER);
-			ENSURES(hr, "DXGIfullscreenn–³Œø‰»");
+			ENSURES(hr, "DXGIfullscreennç„¡åŠ¹åŒ–");
 
-			// IDXGISwapChain3‚ğæ“¾
+			// IDXGISwapChain3ã‚’å–å¾—
 			hr = pSwapChain->QueryInterface(IID_PPV_ARGS(s_pSwapChain.GetAddressOf()));
-			ENSURES(hr, "SwapChainæ“¾");
+			ENSURES(hr, "SwapChainå–å¾—");
 
-			// ƒoƒbƒNƒoƒbƒtƒ@”Ô†‚ğæ“¾
+			// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ç•ªå·ã‚’å–å¾—
 			g_FrameIndex = s_pSwapChain->GetCurrentBackBufferIndex();
 		}
 
-		// RSV/DSV‚Ì¶¬
+		// RSV/DSVã®ç”Ÿæˆ
 		s_RenderTargetHeap.Create(gsl::narrow<uint32_t>(g_RenderTargetBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 		s_DepthStencilHeap.Create(gsl::narrow<uint32_t>(g_DepthStencilBuffer.size()), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
@@ -109,7 +109,7 @@ namespace Display
 	{
 		const uint32_t presentFlags = (interval == 0 && s_TearingSupport && !s_IsFullscreen) ? DXGI_PRESENT_ALLOW_TEARING : 0;
 
-		// ‰æ–Ê‚É•\¦
+		// ç”»é¢ã«è¡¨ç¤º
 		const auto hr = s_pSwapChain->Present(interval, presentFlags);
 		ENSURES(hr);
 	}
@@ -123,23 +123,23 @@ namespace Display
 	{
 		Command::WaitForGpu();
 
-		// ƒŠƒ\[ƒX‚ÌƒNƒŠƒA
+		// ãƒªã‚½ãƒ¼ã‚¹ã®ã‚¯ãƒªã‚¢
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{
 			g_RenderTargetBuffer.at(i).Reset();
 			g_DepthStencilBuffer.at(i).Reset();
 		}
 
-		// ƒXƒƒbƒvƒ`ƒFƒCƒ“‚ğƒŠƒTƒCƒY
+		// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã‚’ãƒªã‚µã‚¤ã‚º
 		DXGI_SWAP_CHAIN_DESC desc = {};
 		auto hr = s_pSwapChain->GetDesc(&desc);
-		ENSURES(hr, "Swapchainİ’è‚Ì“Ç‚İ‚İ");
+		ENSURES(hr, "Swapchainè¨­å®šã®èª­ã¿è¾¼ã¿");
 		hr = s_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, desc.BufferDesc.Format, desc.Flags);
-		ENSURES(hr, "SwapchainƒŠƒTƒCƒYƒoƒbƒtƒ@");
+		ENSURES(hr, "Swapchainãƒªã‚µã‚¤ã‚ºãƒãƒƒãƒ•ã‚¡");
 
 		Command::MoveToNextFrame();
 
-		// ƒTƒCƒY•ÏX
+		// ã‚µã‚¤ã‚ºå¤‰æ›´
 		g_AppWidth = width;
 		g_AppHeight = height;
 
@@ -149,7 +149,7 @@ namespace Display
 
 	void ToggleFullscreen()
 	{
-		LOGLINE("fullscreenØ‚è‘Ö‚¦");
+		LOGLINE("fullscreenåˆ‡ã‚Šæ›¿ãˆ");
 
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullscreenDesc;
 		s_pSwapChain->GetFullscreenDesc(&fullscreenDesc);
@@ -176,7 +176,7 @@ namespace Display
 			s_pSwapChain->SetFullscreenState(true, nullptr);
 		}
 
-		// ‰ğ‘œ“x‚ğ•ÏX‚·‚é
+		// è§£åƒåº¦ã‚’å¤‰æ›´ã™ã‚‹
 		//OnSizeChanged(WinApp::g_Width, WinApp::g_Height);
 
 		s_IsFullscreen = !s_IsFullscreen;
@@ -190,9 +190,9 @@ namespace Display
 		for(auto i = 0u; i < FRAME_COUNT; ++i)
 		{
 			const auto hr = s_pSwapChain->GetBuffer(i, IID_PPV_ARGS(g_RenderTargetBuffer.at(i).GetAddressOf()));
-			ENSURES(hr, "SwapChain‚ÌBufferæ“¾");
+			ENSURES(hr, "SwapChainã®Bufferå–å¾—");
 
-			// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚Ì¶¬
+			// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã®ç”Ÿæˆ
 			const auto& rtvView = g_RenderTargetBuffer.at(i).GetView();
 			const auto handle = s_RenderTargetHeap.GetNextHandle();
 			Graphics::g_pDevice->CreateRenderTargetView(g_RenderTargetBuffer.at(i).Get(), &rtvView, handle.CPU);

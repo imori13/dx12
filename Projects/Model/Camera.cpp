@@ -17,13 +17,13 @@ void Camera::Update()
 	MouseRotate(mouseVelocity);
 	MouseMove(mouseVelocity);
 
-	// •âŠ®
+	// è£œå®Œ
 	const float rate = 0.1f * Timer::g_FrameTime * 60.0f;
 	m_Position = m_Position.lerp(m_DestPosition, rate);
 	m_Longitude = Math::Lerp(m_Longitude, m_DestLongitude, rate);
 	m_Latitude = Math::Lerp(m_Latitude, m_DestLatitude, rate);
 
-	// ˆÜ“x/Œo“x‚ğ‹‚ß‚é
+	// ç·¯åº¦/çµŒåº¦ã‚’æ±‚ã‚ã‚‹
 	m_Rotate.x() = cos(m_Longitude) * cos(m_Latitude);
 	m_Rotate.y() = sin(m_Latitude);
 	m_Rotate.z() = sin(m_Longitude) * cos(m_Latitude);
@@ -57,12 +57,12 @@ void Camera::MouseMove(const Vector2& mouseVelocity)
 	if(Input::IsMouseHold(Mouse::Right))
 	{
 		constexpr float speedXY = 0.05f;
-		// ‘OŒã
+		// å‰å¾Œ
 		if(mouseVelocity.y() != 0)
 		{
 			m_DestPosition += foward * -mouseVelocity.y() * speedXY;
 		}
-		// ¶‰E
+		// å·¦å³
 		if(mouseVelocity.x() != 0)
 		{
 			m_DestPosition += right * mouseVelocity.x() * speedXY;

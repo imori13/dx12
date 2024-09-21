@@ -13,12 +13,12 @@ Pipeline PipelineState::Create()
 
 	const auto blob = ShaderState.RootSignature.GetBytecode();
 	auto hr = Graphics::g_pDevice->CreateRootSignature(0, blob.pShaderBytecode, blob.BytecodeLength, IID_PPV_ARGS(&pipeline.RootSignature));
-	ENSURES(hr, "RootSignature¶¬");
+	ENSURES(hr, "RootSignatureç”Ÿæˆ");
 
 	auto state = GetState();
 	state.pRootSignature = pipeline.RootSignature.Get();
 	hr = Graphics::g_pDevice->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&pipeline.PipelineState));
-	ENSURES(hr, "PipelineStateObject¶¬");
+	ENSURES(hr, "PipelineStateObjectç”Ÿæˆ");
 
 	return pipeline;
 }

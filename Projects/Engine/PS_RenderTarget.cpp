@@ -41,7 +41,7 @@ void PS_RenderTarget::Default() noexcept
 		SetRtvBlend(i, RTV_Blend::None);
 	}
 
-	// ƒuƒŒƒ“ƒhƒXƒe[ƒg‚Ìİ’è
+	// ãƒ–ãƒ¬ãƒ³ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
 	m_BlendDesc.AlphaToCoverageEnable = FALSE;
 	m_BlendDesc.IndependentBlendEnable = FALSE;
 

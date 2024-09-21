@@ -45,7 +45,7 @@ namespace AppGui
 			ImGui::Text("Second : %.1lf", Timer::g_ElapsedTime);
 			ImGui::Text("FPS    : %.1f (deltaT:%.2fms)", 1.f / DataAverage::Get(L"FPS"), gsl::narrow_cast<float>(DataAverage::Get(L"FPS") * 1000.f));
 
-			ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"XVŠÔ"), 0.0 + update + render + present + gpuWait);
+			ImGui::Text("Draw   : %.2fms %.2fms", DataAverage::Get(L"æ›´æ–°æ™‚é–“"), 0.0 + update + render + present + gpuWait);
 			{
 				ImGui::Indent();
 				ImGui::Text("Update  : %.2fms", update);

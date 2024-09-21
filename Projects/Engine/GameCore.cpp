@@ -37,7 +37,7 @@ namespace GameCore
 		Display::Initialize();
 		game.Startup();
 
-		LOGLINE("‰Šú‰»ŠÔ-> %.2fms", TimeStamp::End());
+		LOGLINE("åˆæœŸåŒ–æ™‚é–“-> %.2fms", TimeStamp::End());
 	}
 
 	bool UpdateApplication(IGameApp& game)
@@ -51,7 +51,8 @@ namespace GameCore
 
 		game.UpdateGUI();
 
-		// XVˆ—
+
+		// æ›´æ–°å‡¦ç†
 		{
 			TimeStamp::Begin();
 
@@ -60,16 +61,22 @@ namespace GameCore
 			DataAverage::Set(L"Update", TimeStamp::End(), Average::VeryLow);
 		}
 
-		// •`‰æˆ—
+		// æç”»å‡¦ç†
 		{
 			TimeStamp::Begin();
 
+			// Command Start
+			Command::BeginMain();
+
 			game.RenderScene();
+
+			// Command End
+			Command::EndMain();
 
 			DataAverage::Set(L"Render", TimeStamp::End(), Average::VeryLow);
 		}
 
-		// ‰æ–Ê•\¦
+		// ç”»é¢è¡¨ç¤º
 		{
 			TimeStamp::Begin();
 
@@ -78,7 +85,7 @@ namespace GameCore
 			DataAverage::Set(L"Present", TimeStamp::End(),Average::VeryLow);
 		}
 
-		// GPU‘Ò‹@
+		// GPUå¾…æ©Ÿ
 		{
 			TimeStamp::Begin();
 
@@ -88,7 +95,7 @@ namespace GameCore
 			DataAverage::Set(L"GPUwait", TimeStamp::End(), Average::VeryLow);
 		}
 
-		DataAverage::Set(L"XVŠÔ", TimeStamp::End(), Average::None);
+		DataAverage::Set(L"æ›´æ–°æ™‚é–“", TimeStamp::End(), Average::None);
 
 		return !game.IsDone();
 	}
@@ -110,39 +117,39 @@ namespace GameCore
 
 	int RunApplication(IGameApp& game, HINSTANCE hInstance, uint32_t width, uint32_t height)
 	{
-		// ƒƒ‚ƒŠƒŠ[ƒNƒ`ƒFƒbƒN
+		// ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯
 #if defined(DEBUG) || defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		//_CrtSetBreakAlloc(13712);
 #endif
 
-		LOGLINE("¡¡¡ ‰Šú‰» ŠJn ¡¡¡");
+		LOGLINE("â– â– â–  åˆæœŸåŒ– é–‹å§‹ â– â– â– ");
 
-		// ƒEƒBƒ“ƒhƒE‰Šú‰»
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åˆæœŸåŒ–
 		WinApp::InitWnd(hInstance, width, height);
 
-		// ƒAƒvƒŠ‰Šú‰»
+		// ã‚¢ãƒ—ãƒªåˆæœŸåŒ–
 		InitializeApplication(game);
 
-		LOGLINE("¡¡¡ ‰Šú‰» Š®—¹ ¡¡¡");
+		LOGLINE("â– â– â–  åˆæœŸåŒ– å®Œäº† â– â– â– ");
 
 		do
 		{
-			// ƒEƒBƒ“ƒhƒEXV
+			// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ›´æ–°
 			const auto flag = WinApp::Update();
 
-			// ƒEƒBƒ“ƒhƒE‚ªfalse‚ÅI—¹
+			// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒfalseã§çµ‚äº†
 			if(flag) { break; }
 
-			// ƒAƒvƒŠ‚ÌXV
+			// ã‚¢ãƒ—ãƒªã®æ›´æ–°
 		} while(UpdateApplication(game));
 		
-		LOGLINE("¡¡¡ I—¹ˆ— ŠJn ¡¡¡");
-		// ƒAƒvƒŠI—¹
+		LOGLINE("â– â– â–  çµ‚äº†å‡¦ç† é–‹å§‹ â– â– â– ");
+		// ã‚¢ãƒ—ãƒªçµ‚äº†
 		TerminateApplication(game);
-		// ƒEƒBƒ“ƒhƒEI—¹
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦çµ‚äº†
 		WinApp::TermWnd();
-		LOGLINE("¡¡¡ I—¹ˆ— Š®—¹ ¡¡¡");
+		LOGLINE("â– â– â–  çµ‚äº†å‡¦ç† å®Œäº† â– â– â– ");
 
 		return 0;
 	}

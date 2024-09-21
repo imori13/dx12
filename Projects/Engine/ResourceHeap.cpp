@@ -7,24 +7,24 @@ void ResourceHeap::Create(uint32_t descriptorCount, D3D12_DESCRIPTOR_HEAP_TYPE t
 {
 	m_DescriptorCount = descriptorCount;
 
-	// ƒq[ƒv‚ÌÝ’è
+	// ãƒ’ãƒ¼ãƒ—ã®è¨­å®š
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 	heapDesc.NumDescriptors = descriptorCount;
 	heapDesc.Type = type;
 	heapDesc.Flags = flag;
 	heapDesc.NodeMask = 0;
 
-	// ƒq[ƒv¶¬
+	// ãƒ’ãƒ¼ãƒ—ç”Ÿæˆ
 	const auto hr = Graphics::g_pDevice->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(m_pHeap.GetAddressOf()));
-	ENSURES(hr, "PixelHeap¶¬");
+	ENSURES(hr, "PixelHeapç”Ÿæˆ");
 
-	// ƒnƒ“ƒhƒ‹Ý’è
+	// ãƒãƒ³ãƒ‰ãƒ«è¨­å®š
 	m_Handle.CPU = m_pHeap->GetCPUDescriptorHandleForHeapStart();
 	if(flag == D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE)
 	{ m_Handle.GPU = m_pHeap->GetGPUDescriptorHandleForHeapStart(); }
 
-	// ƒCƒ“ƒNƒŠƒƒ“ƒgƒTƒCƒYŽæ“¾
+	// ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã‚µã‚¤ã‚ºå–å¾—
 	m_IncrementSize = Graphics::g_pDevice->GetDescriptorHandleIncrementSize(type);
 }

@@ -5,7 +5,7 @@ HRESULT CommandList::Create(uint32_t frameCount)
 {
 	HRESULT hr{};
 
-	// ƒRƒ}ƒ“ƒhƒAƒƒP[ƒ^‚Ì¶¬
+	// ã‚³ãƒžãƒ³ãƒ‰ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ç”Ÿæˆ
 	{
 		m_pCommandAllocators.resize(frameCount);
 
@@ -19,7 +19,7 @@ HRESULT CommandList::Create(uint32_t frameCount)
 		}
 	}
 
-	// ƒRƒ}ƒ“ƒhƒŠƒXƒg‚Ì¶¬
+	// ã‚³ãƒžãƒ³ãƒ‰ãƒªã‚¹ãƒˆã®ç”Ÿæˆ
 	{
 		hr = Graphics::g_pDevice->CreateCommandList(
 			0,

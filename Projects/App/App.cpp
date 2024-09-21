@@ -3,6 +3,7 @@
 #include "Command.h"
 #include "App_ImGui.h"
 #include "ResourceManager.h"
+#include "TranslationBarrirUtil.h"
 #include "Renderer.h"
 #include "Vector3.h"
 #include "Vector2.h"
@@ -102,7 +103,7 @@ void App::Startup(void)
 
 	camera.Create(90, 0.01f, 1000.0f);
 
-	constexpr int64_t count = 100;
+	constexpr int64_t count = 1000;
 	constexpr int32_t range = 100;
 	constexpr int32_t min = -range;
 	constexpr int32_t max = +range;
@@ -163,6 +164,25 @@ void App::RenderScene(void)
 {
 	const auto& cmdList = Renderer::Begin(camera);
 
+	{
+		// リソースバリア
+		const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		cmdList->ResourceBarrier(1, &barrier);
+
+		// レンダーターゲットの設定
+		const D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+		const D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
+		cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+
+		// クリア
+		const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
+		cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
+		cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+		cmdList->RSSetViewports(1, &Display::g_Viewport);
+		cmdList->RSSetScissorRects(1, &Display::g_Scissor);
+	}
+
 	std::vector<Matrix4x4> matrix;
 	matrix.resize(renderDataVector.size());
 
@@ -176,8 +196,8 @@ void App::RenderScene(void)
 			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
+		Renderer::Draw(L"Cube", matrix.at(i));
 	}
-	Renderer::Draw(L"Cube", matrix);
 
 	matrix.resize(renderDataVector2.size());
 #pragma omp parallel for
@@ -190,23 +210,23 @@ void App::RenderScene(void)
 			.rotateAxis(Vector3::up(), Timer::g_ElapsedTime * data.rotationSpeed * 0.1f)
 			.rotation(data.rotation)
 			.translation(data.position);
+		Renderer::Draw(L"Cube2", matrix.at(i));
 	}
 
 	// draw = space key
-	if(Input::IsKeyHold(Keys::Space))
-	{
-		Renderer::Draw(L"Cube", matrix);
-	}
+	//if(Input::IsKeyHold(Keys::Space))
+	//{
+	//	Renderer::Draw(L"Cube", matrix);
+	//}
 	//Renderer::Draw(cmdList, L"Cube2", matrix);
 
-	std::vector<Matrix4x4> armaredMaidenMatrix;
-	armaredMaidenMatrix.resize(1);
-	armaredMaidenMatrix.at(0) =
-		Matrix4x4::identity()
-		.scale(Vector3::one())
-		.rotation(Vector3::zero())
-		.translation(Vector3(0, -5, 5));
-	Renderer::Draw(L"ArmoredMaiden", armaredMaidenMatrix);
+	//Matrix4x4 armaredMaidenMatrix;
+	//armaredMaidenMatrix =
+	//	Matrix4x4::identity()
+	//	.scale(Vector3::one())
+	//	.rotation(Vector3::zero())
+	//	.translation(Vector3(0, -5, 5));
+	//Renderer::Draw(L"ArmoredMaiden", armaredMaidenMatrix);
 
 	//constexpr uint32_t g36Count = 1;
 	//constexpr float g36half = g36Count / 2.0f;
@@ -233,15 +253,21 @@ void App::RenderScene(void)
 
 	//Renderer::Draw(cmdList, L"umaru", matrix);
 
-	Renderer::SendCommand(cmdList);
+	Renderer::End(cmdList);
 
+	const auto& cmdList2 = Renderer::Begin(camera);
 	{
 		TimeStamp::Stop();
-		App_ImGui::Render(cmdList);
+		App_ImGui::Render(cmdList2);
 		TimeStamp::Resume();
 	}
+	Renderer::End(cmdList2);
 
-	Renderer::End(cmdList);
+	{
+		// リソースバリア
+		const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		cmdList->ResourceBarrier(1, &barrier);
+	}
 }
 
 void App::RenderGUI(void)

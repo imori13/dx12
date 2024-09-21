@@ -5,7 +5,7 @@
 
 void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT format, float depthValue, uint8_t stencilValue)
 {
-	// ƒq[ƒvİ’è
+	// ãƒ’ãƒ¼ãƒ—è¨­å®š
 	D3D12_HEAP_PROPERTIES prop = {};
 	prop.Type = D3D12_HEAP_TYPE_DEFAULT;
 	prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -13,7 +13,7 @@ void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT for
 	prop.CreationNodeMask = 1;
 	prop.VisibleNodeMask = 1;
 
-	// ƒŠƒ\[ƒXİ’è
+	// ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 	D3D12_RESOURCE_DESC resDesc = {};
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	resDesc.Alignment = 0;
@@ -27,13 +27,13 @@ void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT for
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	resDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
-	// ƒŠƒ\[ƒX‚ğ¶¬‚·‚éÛ‚Ì[“xƒXƒeƒ“ƒVƒ‹ƒoƒbƒtƒ@‚ÌƒNƒŠƒA’l
+	// ãƒªã‚½ãƒ¼ã‚¹ã‚’ç”Ÿæˆã™ã‚‹éš›ã®æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒãƒƒãƒ•ã‚¡ã®ã‚¯ãƒªã‚¢å€¤
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Format = format;
 	clearValue.DepthStencil.Depth = depthValue;
 	clearValue.DepthStencil.Stencil = stencilValue;
 
-	// [“xƒoƒbƒtƒ@‚Ì¶¬
+	// æ·±åº¦ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	const auto hr = Graphics::g_pDevice->CreateCommittedResource(
 		&prop,
 		D3D12_HEAP_FLAG_NONE,
@@ -42,5 +42,5 @@ void DepthStencilBuffer::Create(uint32_t width, uint32_t height, DXGI_FORMAT for
 		&clearValue,
 		IID_PPV_ARGS(m_pBuffer.GetAddressOf()));
 
-	ENSURES(hr, "DepthBuffer¶¬");
+	ENSURES(hr, "DepthBufferç”Ÿæˆ");
 }

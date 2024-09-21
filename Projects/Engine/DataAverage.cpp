@@ -14,13 +14,13 @@ namespace
 	std::map<std::wstring, Value> averageList;
 }
 
-// ’PƒˆÚ“®•½‹Ï
+// å˜ç´”ç§»å‹•å¹³å‡
 void DataAverage::Set(const std::wstring_view name, const float value, const Average limit)
 {
 	auto& pair = averageList[name.data()];
 	pair.Sum += pair.ValueList.emplace_back(value);
 
-	// ˆÚ“®•½‹Ï‚Ì—v‘f”‚ð"ŽžŠÔ’PˆÊ"‚ÅŠÇ—‚·‚é
+	// ç§»å‹•å¹³å‡ã®è¦ç´ æ•°ã‚’"æ™‚é–“å˜ä½"ã§ç®¡ç†ã™ã‚‹
 	while(pair.ValueList.size() * (Timer::g_FrameTime * 60) >= static_cast<uint32_t>(limit))
 	{
 		pair.Sum -= pair.ValueList.front();
