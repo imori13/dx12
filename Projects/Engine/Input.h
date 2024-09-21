@@ -93,16 +93,16 @@ enum class Keys
 	Pause = DIK_PAUSE,
 	Menu = DIK_APPS,
 
-	// “ú–{ŒêƒL[ƒ{[ƒh
+	// æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 	At = DIK_AT,					// "@"
 	CirCumflex = DIK_CIRCUMFLEX,	// "^"
-	Yen = DIK_YEN,					// ""
-	Kana = DIK_KANA,				// "‚Ð‚ç‚ª‚È/ƒJƒ^ƒJƒi"
-	Kanji = DIK_KANJI,				// "”¼Šp/‘SŠp|Š¿Žš"
-	Convert = DIK_CONVERT,			// "•ÏŠ·"
-	NoConvert = DIK_NOCONVERT,		// "–³•ÏŠ·"
+	Yen = DIK_YEN,					// "ï¿¥"
+	Kana = DIK_KANA,				// "ã²ã‚‰ãŒãª/ã‚«ã‚¿ã‚«ãƒŠ"
+	Kanji = DIK_KANJI,				// "åŠè§’/å…¨è§’|æ¼¢å­—"
+	Convert = DIK_CONVERT,			// "å¤‰æ›"
+	NoConvert = DIK_NOCONVERT,		// "ç„¡å¤‰æ›"
 
-	// USƒL[ƒ{[ƒh
+	// USã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 	Apostrophe = DIK_APOSTROPHE,	// "'"
 	Equals = DIK_EQUALS,			// "="
 	Grave = DIK_GRAVE,				// "`"

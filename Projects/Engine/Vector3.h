@@ -31,7 +31,7 @@ struct Vector3
 	bool operator==(const Vector3& vector) const;
 	bool operator!=(const Vector3& vector) const;
 
-	// ê≥ãKâª
+	// Ê≠£Ë¶èÂåñ
 	void Normalize();
 
 	const float& x() const;

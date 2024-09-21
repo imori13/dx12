@@ -16,11 +16,11 @@ namespace Display
 	extern D3D12_VIEWPORT g_Viewport;
 	extern D3D12_RECT g_Scissor;
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize(void);
-	// I—¹
+	// çµ‚äº†
 	void Terminate(void) noexcept;
-	// •\¦ˆ—
+	// è¡¨ç¤ºå‡¦ç†
 	void Present(uint32_t interval);
 
 	void UpdateNextFrame();

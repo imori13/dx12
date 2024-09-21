@@ -23,7 +23,7 @@ public:
 
 		m_ComponentList.push_back(buff);
 
-		// e‚ğw’è
+		// è¦ªã‚’æŒ‡å®š
 		buff->Parent = this;
 		buff->Start();
 
@@ -38,12 +38,12 @@ public:
 
 			if(buff != nullptr)
 			{
-				// GetComponent ¬Œ÷
+				// GetComponent æˆåŠŸ
 				return buffer;
 			}
 		}
 
-		// GetComponent ¸”s
+		// GetComponent å¤±æ•—
 		return nullptr;
 	}
 

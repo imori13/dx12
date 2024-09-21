@@ -10,24 +10,24 @@ namespace Graphics
 	{
 		HRESULT hr{};
 
-		// ƒfƒoƒbƒOƒŒƒCƒ„[‚Ì—LŒø‰»
+		// ãƒ‡ãƒãƒƒã‚°ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æœ‰åŠ¹åŒ–
 #if defined(DEBUG) || defined(_DEBUG)
 		{
 			Microsoft::WRL::ComPtr<ID3D12Debug> debug = nullptr;
 			hr = D3D12GetDebugInterface(IID_PPV_ARGS(debug.GetAddressOf()));
 
-			// ƒfƒoƒbƒOƒŒƒCƒ„[‚ğ—LŒø‰»
-			ENSURES(hr, "DebugLayer—LŒø‰»");
+			// ãƒ‡ãƒãƒƒã‚°ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æœ‰åŠ¹åŒ–
+			ENSURES(hr, "DebugLayeræœ‰åŠ¹åŒ–");
 
 			debug->EnableDebugLayer();
 		}
 #endif
-		// ƒfƒoƒCƒX‚Ì¶¬
+		// ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 		hr = D3D12CreateDevice(
 			nullptr,
 			D3D_FEATURE_LEVEL_11_0,
 			IID_PPV_ARGS(g_pDevice.GetAddressOf()));
-		ENSURES(hr, "Device¶¬");
+		ENSURES(hr, "Deviceç”Ÿæˆ");
 	}
 
 	void Terminate() noexcept

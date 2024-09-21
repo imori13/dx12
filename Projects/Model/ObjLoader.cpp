@@ -50,35 +50,35 @@ namespace ObjLoader
 		if(path.Extension != L".obj")
 		{ return false; }
 
-		// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 		FileInput file;
 		file.Open(path.AbsolutePath);
 
-		// ƒ[ƒh—p
+		// ãƒ­ãƒ¼ãƒ‰ç”¨
 		LoadMesh s_TempMesh;
 
 		while(!file.EndOfFile())
 		{
-			// 1s“Ç‚İ‚Ş
+			// 1è¡Œèª­ã¿è¾¼ã‚€
 			std::wstring line = file.ReadLine();
 
-			// ƒRƒƒ“ƒg‚Ìs‚ğ–³‹
+			// ã‚³ãƒ¡ãƒ³ãƒˆã®è¡Œã‚’ç„¡è¦–
 			if(line.empty() || line.front() == L'#')
 			{ continue; }
 
-			// ssplit
+			// è¡Œsplit
 			std::deque<std::wstring> splitLine;
 			boost::algorithm::split(splitLine, line, boost::is_space(), boost::token_compress_on);
 
-			// ƒwƒbƒ_[
+			// ãƒ˜ãƒƒãƒ€ãƒ¼
 			std::wstring header = splitLine.front();
-			// æ“ª‚ğœ‹
+			// å…ˆé ­ã‚’é™¤å»
 			splitLine.pop_front();
-			// ––”ö‚É""‚ª‚ ‚ê‚Îpop
+			// æœ«å°¾ã«""ãŒã‚ã‚Œã°pop
 			if(splitLine.back() == L"")
 			{ splitLine.pop_back(); }
 
-			// ƒ}ƒeƒŠƒAƒ‹
+			// ãƒãƒ†ãƒªã‚¢ãƒ«
 			if(header == L"mtllib")
 			{
 				s_TempMesh.MaterialName = splitLine.front();
@@ -99,7 +99,7 @@ namespace ObjLoader
 			{
 				DirectX::XMFLOAT2 texcoord;
 				texcoord.x = std::stof(splitLine.at(0));
-				texcoord.y = 1 - std::stof(splitLine.at(1));	// UV‚ÌV”½“]
+				texcoord.y = 1 - std::stof(splitLine.at(1));	// UVã®Våè»¢
 				s_TempMesh.Texcoord.emplace_back(texcoord);
 				continue;
 			}
@@ -116,10 +116,10 @@ namespace ObjLoader
 
 			if(header == L"f")
 			{
-				// 4’¸“_ˆÈã‚È‚ç•¡”‚ÌFace‚ğì‚é
+				// 4é ‚ç‚¹ä»¥ä¸Šãªã‚‰è¤‡æ•°ã®Faceã‚’ä½œã‚‹
 				for(auto faceCount = 0u; faceCount <= splitLine.size() - VERTEX_NUM; ++faceCount)
 				{
-					// Face1ŒÂ•ª
+					// Face1å€‹åˆ†
 					FaceIndex face{};
 					for(auto i = 0u; i < VERTEX_NUM; ++i)
 					{
@@ -129,12 +129,12 @@ namespace ObjLoader
 
 						constexpr uint32_t OFFSET = 1;
 
-						// positionƒCƒ“ƒfƒbƒNƒX
+						// positionã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 						face.PositionIndex.emplace_back(std::stoul(faceIndex.at(0)) - OFFSET);
-						// texcoordƒCƒ“ƒfƒbƒNƒX
+						// texcoordã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 						if(faceIndex.at(1) != L"")
 							face.TexcoordIndex.emplace_back(std::stoul(faceIndex.at(1)) - OFFSET);
-						// normalƒCƒ“ƒfƒbƒNƒX
+						// normalã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 						face.NormalIndex.emplace_back(std::stoul(faceIndex.at(2)) - OFFSET);
 					}
 					s_TempMesh.Faces.emplace_back(face);
@@ -145,10 +145,10 @@ namespace ObjLoader
 
 		file.Close();
 
-		// QÆ
+		// å‚ç…§
 		auto& modelMesh = vec.emplace_back();
 
-		// ƒ}ƒeƒŠƒAƒ‹–¼
+		// ãƒãƒ†ãƒªã‚¢ãƒ«å
 		const auto& mesh = s_TempMesh;
 		//modelMesh.MaterialName = mesh.MaterialName;
 
@@ -158,7 +158,7 @@ namespace ObjLoader
 			const auto meshFace = mesh.Faces.at(faceIndex);
 			for(auto vertexNum = 0u; vertexNum < VERTEX_NUM; ++vertexNum)
 			{
-				// ’¸“_‚Ì“Ç‚İ‚İ
+				// é ‚ç‚¹ã®èª­ã¿è¾¼ã¿
 				{
 					ModelMeshVertex modelMeshVertex;
 					modelMeshVertex.Position = mesh.Position.at(meshFace.PositionIndex.at(vertexNum));
@@ -172,7 +172,7 @@ namespace ObjLoader
 					modelMesh.Vertices.emplace_back(modelMeshVertex);
 				}
 
-				// ƒCƒ“ƒfƒbƒNƒX‚Ìİ’è
+				// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¨­å®š
 				{
 					modelMesh.Indices.emplace_back(indices);
 					++indices;
@@ -193,36 +193,36 @@ namespace ObjLoader
 		if(path.Extension != L".mtl")
 		{ return false; }
 
-		// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 		FileInput file;
 		file.Open(path.AbsolutePath);
 
-		// ƒ[ƒh—p
+		// ãƒ­ãƒ¼ãƒ‰ç”¨
 		LoadMesh s_TempMesh;
 
 		auto& material = vec.emplace_back();
 
 		while(!file.EndOfFile())
 		{
-			// 1s“Ç‚İ‚Ş
+			// 1è¡Œèª­ã¿è¾¼ã‚€
 			std::wstring line = file.ReadLine();
 
-			// ƒRƒƒ“ƒg‚Ìs‚ğ–³‹
+			// ã‚³ãƒ¡ãƒ³ãƒˆã®è¡Œã‚’ç„¡è¦–
 			if(line.empty() || line.front() == L'#')
 			{ continue; }
 
-			// ssplit
+			// è¡Œsplit
 			std::deque<std::wstring> splitLine;
 			boost::algorithm::split(splitLine, line, boost::is_space(), boost::token_compress_on);
 
-			// æ“ª‚ÉƒXƒy[ƒX‚ª‚ ‚éê‡
+			// å…ˆé ­ã«ã‚¹ãƒšãƒ¼ã‚¹ãŒã‚ã‚‹å ´åˆ
 			if(splitLine.front() == L"")
 			{ splitLine.pop_front(); }
-			// ƒwƒbƒ_[
+			// ãƒ˜ãƒƒãƒ€ãƒ¼
 			std::wstring header = splitLine.front();
-			// æ“ª‚ğœ‹
+			// å…ˆé ­ã‚’é™¤å»
 			splitLine.pop_front();
-			// ––”ö‚É""‚ª‚ ‚ê‚Îpop
+			// æœ«å°¾ã«""ãŒã‚ã‚Œã°pop
 			if(splitLine.back() == L"")
 			{ splitLine.pop_back(); }
 

@@ -24,43 +24,43 @@ namespace Command
 	{
 		HRESULT hr{};
 
-		// ƒRƒ}ƒ“ƒhƒLƒ…[‚Ì¶¬
+		// ã‚³ãƒãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¼ã®ç”Ÿæˆ
 		{
-			// ƒRƒ}ƒ“ƒhƒLƒ…[‚Ìİ’è
+			// ã‚³ãƒãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¼ã®è¨­å®š
 			D3D12_COMMAND_QUEUE_DESC desc = {};
 			desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 			desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 			desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 			desc.NodeMask = 0;
 
-			// ƒRƒ}ƒ“ƒhƒLƒ…[‚Ì¶¬
+			// ã‚³ãƒãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¼ã®ç”Ÿæˆ
 			hr = Graphics::g_pDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(s_pCmdQueue.GetAddressOf()));
-			ENSURES(hr, "CommandQueue¶¬");
+			ENSURES(hr, "CommandQueueç”Ÿæˆ");
 		}
 
 		hr = s_MainCmdList.Create(FRAME_COUNT);
-		ENSURES(hr, "MainCmdList¶¬");
+		ENSURES(hr, "MainCmdListç”Ÿæˆ");
 
-		// ƒXƒŒƒbƒh•ªŠm•Û
+		// ã‚¹ãƒ¬ãƒƒãƒ‰åˆ†ç¢ºä¿
 		s_SubCmdList.resize(omp_get_max_threads());
 		for(auto i = 0; i < s_SubCmdList.size(); ++i)
 		{
 			hr = s_SubCmdList.at(i).Create(FRAME_COUNT);
-			ENSURES(hr, "SubCmdList¶¬ %d", i);
+			ENSURES(hr, "SubCmdListç”Ÿæˆ %d", i);
 		}
 
-		// ƒtƒFƒ“ƒX‚Ì¶¬
+		// ãƒ•ã‚§ãƒ³ã‚¹ã®ç”Ÿæˆ
 		{
-			// ƒtƒFƒ“ƒX‚Ì¶¬
+			// ãƒ•ã‚§ãƒ³ã‚¹ã®ç”Ÿæˆ
 			hr = Graphics::g_pDevice->CreateFence(
 				static_cast<uint64_t>(0),
 				D3D12_FENCE_FLAG_NONE,
 				IID_PPV_ARGS(s_pFence.GetAddressOf()));
-			ENSURES(hr, "Fence¶¬");
+			ENSURES(hr, "Fenceç”Ÿæˆ");
 
-			// ƒtƒFƒ“ƒXƒCƒxƒ“ƒg‚Ì¶¬
+			// ãƒ•ã‚§ãƒ³ã‚¹ã‚¤ãƒ™ãƒ³ãƒˆã®ç”Ÿæˆ
 			s_FenceEventHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-			ENSURES(s_FenceEventHandle != nullptr, "FenceEvent¶¬");
+			ENSURES(s_FenceEventHandle != nullptr, "FenceEventç”Ÿæˆ");
 		}
 	}
 
@@ -89,7 +89,7 @@ namespace Command
 
 	gsl::not_null<ID3D12GraphicsCommandList*> BeginMain()
 	{
-		// ƒRƒ}ƒ“ƒh‚Ì‹L˜^‚ğŠJn
+		// ã‚³ãƒãƒ³ãƒ‰ã®è¨˜éŒ²ã‚’é–‹å§‹
 		const auto hr = s_MainCmdList.Reset(Display::g_FrameIndex);
 		ENSURES(hr);
 
@@ -139,15 +139,15 @@ namespace Command
 
 	void MoveToNextFrame()
 	{
-		// Fence‚É’l‚ğ‘—‚é
+		// Fenceã«å€¤ã‚’é€ã‚‹
 		const auto currentFenceValue = s_NextFenceValue.at(Display::g_FrameIndex);
 		auto hr = s_pCmdQueue->Signal(s_pFence.Get(), currentFenceValue);
 		ENSURES(hr);
 
-		// Swapchain‚Ìƒoƒbƒtƒ@XV
+		// Swapchainã®ãƒãƒƒãƒ•ã‚¡æ›´æ–°
 		Display::UpdateNextFrame();
 
-		// Ÿ‚Ì‘‚«‚İæƒoƒbƒtƒ@‚ª‚Ü‚¾GPU‚Åg—p‚³‚ê‚Ä‚¢‚½‚ç‘Ò‚Â
+		// æ¬¡ã®æ›¸ãè¾¼ã¿å…ˆãƒãƒƒãƒ•ã‚¡ãŒã¾ã GPUã§ä½¿ç”¨ã•ã‚Œã¦ã„ãŸã‚‰å¾…ã¤
 		if(s_pFence->GetCompletedValue() < s_NextFenceValue.at(Display::g_FrameIndex))
 		{
 			hr = s_pFence->SetEventOnCompletion(s_NextFenceValue.at(Display::g_FrameIndex), s_FenceEventHandle);
@@ -155,22 +155,22 @@ namespace Command
 			ENSURES(hr);
 		}
 
-		// Fence’l‚ğXV‚µ‚ÄI—¹
+		// Fenceå€¤ã‚’æ›´æ–°ã—ã¦çµ‚äº†
 		s_NextFenceValue.at(Display::g_FrameIndex) = currentFenceValue + 1;
 	}
 
 	void WaitForGpu()
 	{
-		// Fence‚É’l‚ğ‘—‚é
+		// Fenceã«å€¤ã‚’é€ã‚‹
 		auto hr = s_pCmdQueue->Signal(s_pFence.Get(), s_NextFenceValue.at(Display::g_FrameIndex));
 		ENSURES(hr);
 
-		// Fence‚ªXV‚³‚ê‚é‚Ü‚Å‘Ò‹@
+		// FenceãŒæ›´æ–°ã•ã‚Œã‚‹ã¾ã§å¾…æ©Ÿ
 		hr = s_pFence->SetEventOnCompletion(s_NextFenceValue.at(Display::g_FrameIndex), s_FenceEventHandle);
 		WaitForSingleObjectEx(s_FenceEventHandle, INFINITE, FALSE);
 		ENSURES(hr);
 
-		// Fence’l‚ğXV‚µ‚ÄI—¹
+		// Fenceå€¤ã‚’æ›´æ–°ã—ã¦çµ‚äº†
 		s_NextFenceValue.at(Display::g_FrameIndex)++;
 	}
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle()

@@ -23,7 +23,7 @@ namespace WinApp
 		g_Height = height;
 		s_windowName = L"iMoriEngine";
 
-		// ƒEƒBƒ“ƒhƒE‚Ìİ’è
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¨­å®š
 		WNDCLASSEXW windowClass = { 0 };
 		windowClass.cbSize = sizeof(WNDCLASSEXW);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -32,30 +32,30 @@ namespace WinApp
 		windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		windowClass.lpszClassName = s_windowName.c_str();
 
-		// ƒEƒBƒ“ƒhƒE‚Ì“o˜^
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç™»éŒ²
 		bool flag = RegisterClassExW(&windowClass);
-		ENSURES(flag, "Window“o˜^");
+		ENSURES(flag, "Windowç™»éŒ²");
 
-		// ƒEƒBƒ“ƒhƒEƒTƒCƒY‚ğ’²®
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã‚’èª¿æ•´
 		RECT rc = { 0, 0, gsl::narrow<LONG>(g_Width), gsl::narrow<LONG>(g_Height) };
 		flag = AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-		ENSURES(flag, "WindowRect’²®");
+		ENSURES(flag, "WindowRectèª¿æ•´");
 
-		// ƒEƒBƒ“ƒhƒE‚ğ¶¬
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç”Ÿæˆ
 		g_hWnd = CreateWindowW(s_windowName.c_str(), s_windowName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 							   rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
-		ENSURES(g_hWnd != nullptr, "Window¶¬");
+		ENSURES(g_hWnd != nullptr, "Windowç”Ÿæˆ");
 
-		// ƒEƒBƒ“ƒhƒE‚ğ•\¦
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤º
 		constexpr int shorParam = SW_SHOW;
 		flag = ShowWindow(gsl::make_not_null(g_hWnd), shorParam);
-		ENSURES(flag == false, "Window•\¦");
+		ENSURES(flag == false, "Windowè¡¨ç¤º");
 
-		// ƒEƒBƒ“ƒhƒE‚ğXV
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æ›´æ–°
 		flag = UpdateWindow(gsl::make_not_null(g_hWnd));
-		ENSURES(flag, "WindowXV");
+		ENSURES(flag, "Windowæ›´æ–°");
 
-		// ƒEƒBƒ“ƒhƒE‚ÉƒtƒH[ƒJƒX‚ğİ’è
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’è¨­å®š
 		SetFocus(g_hWnd);
 	}
 
@@ -73,7 +73,7 @@ namespace WinApp
 
 	void TermWnd() noexcept
 	{
-		// ƒEƒBƒ“ƒhƒE‚Ì“o˜^‚ğ‰ğœ
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç™»éŒ²ã‚’è§£é™¤
 		if(g_hInst != nullptr)
 		{ UnregisterClassW(s_windowName.c_str(), g_hInst); }
 

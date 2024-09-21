@@ -29,7 +29,7 @@ void Renderer::Load(std::wstring_view assetName, std::wstring_view modelName, st
 	}
 }
 
-// position‚Ìƒƒ‚ƒŠ‚ğQÆ‚³‚¹‚é
+// positionã®ãƒ¡ãƒ¢ãƒªã‚’å‚ç…§ã•ã›ã‚‹
 void Add(GameObject& gameObject)
 {
 	//gameObject.transform = &instanceBuffer.at(0);

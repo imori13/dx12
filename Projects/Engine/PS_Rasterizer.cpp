@@ -4,15 +4,15 @@ void PS_Rasterizer::Default() noexcept
 {
 	SetSolidMode(true);
 	SetCulling(true);
-	m_RasterizerDesc.FrontCounterClockwise = FALSE;			// Œv‰ñ‚è’¸“_‚ğ‘O–Ê‚Æ‚·‚é
-	m_RasterizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;	// ƒsƒNƒZƒ‹[“x’²®B‘½•ªZƒ\[ƒg—p
+	m_RasterizerDesc.FrontCounterClockwise = FALSE;			// æ™‚è¨ˆå›ã‚Šé ‚ç‚¹ã‚’å‰é¢ã¨ã™ã‚‹
+	m_RasterizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;	// ãƒ”ã‚¯ã‚»ãƒ«æ·±åº¦èª¿æ•´ã€‚å¤šåˆ†Zã‚½ãƒ¼ãƒˆç”¨
 	m_RasterizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
 	m_RasterizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-	m_RasterizerDesc.DepthClipEnable = FALSE;			// ‹——£‚ÉŠî‚Ã‚­ƒNƒŠƒbƒsƒ“ƒO
-	m_RasterizerDesc.MultisampleEnable = FALSE;		// ƒ}ƒ‹ƒ`ƒTƒ“ƒvƒŠƒ“ƒOon/off
-	m_RasterizerDesc.AntialiasedLineEnable = FALSE;	// ƒAƒ“ƒ`ƒGƒCƒŠƒAƒVƒ“ƒOon/off
+	m_RasterizerDesc.DepthClipEnable = FALSE;			// è·é›¢ã«åŸºã¥ãã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°
+	m_RasterizerDesc.MultisampleEnable = FALSE;		// ãƒãƒ«ãƒã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°on/off
+	m_RasterizerDesc.AntialiasedLineEnable = FALSE;	// ã‚¢ãƒ³ãƒã‚¨ã‚¤ãƒªã‚¢ã‚·ãƒ³ã‚°on/off
 	m_RasterizerDesc.ForcedSampleCount = 0;
-	m_RasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;	// ƒ‰ƒXƒ^ƒ‰ƒCƒU‚Ì“h”ÍˆÍL‚°‚é
+	m_RasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;	// ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã®å¡—ç¯„å›²åºƒã’ã‚‹
 
 	m_SampleDesc.Count = 1;
 	m_SampleDesc.Quality = 0;

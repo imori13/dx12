@@ -14,7 +14,7 @@ namespace File
 	const Path LoadPath(std::wstring_view name)
 	{
 		const bool flag = Exists(name);
-		ENSURES(flag, L"ƒtƒ@ƒCƒ‹ŒŸõ [ %s ]", name.data());
+		ENSURES(flag, L"ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢ [ %s ]", name.data());
 
 		boost::filesystem::wpath boostPath = name.data();
 
@@ -26,7 +26,7 @@ namespace File
 
 		std::vector<std::wstring> splitLine;
 		boost::algorithm::split(splitLine, name, boost::is_any_of("/"), boost::token_compress_on);
-		splitLine.pop_back();	// ƒtƒ@ƒCƒ‹–¼‚ğpopback‚µ‚ÄƒfƒBƒŒƒNƒgƒŠ‚ğæ“¾‚·‚é
+		splitLine.pop_back();	// ãƒ•ã‚¡ã‚¤ãƒ«åã‚’popbackã—ã¦ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å–å¾—ã™ã‚‹
 
 		std::wstring parentpath = L"";
 		for(const auto& split : splitLine)

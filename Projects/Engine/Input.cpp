@@ -14,12 +14,12 @@ namespace
 {
 	IDirectInput8* s_InputInterface;
 
-	// ƒL[ƒ{[ƒh—p
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ç”¨
 	IDirectInputDevice8* s_KeyboardDevice;
 	std::array<BYTE, 256> currentKey;
 	std::array<BYTE, 256> prevKey;
 
-	// ƒ}ƒEƒX—p
+	// ãƒã‚¦ã‚¹ç”¨
 	IDirectInputDevice8* s_MouseDevice;
 	Vector2 s_MousePosition;
 	Vector2 s_MouseVelocity;
@@ -32,14 +32,14 @@ namespace
 {
 	constexpr inline void DebugHRESULT(HRESULT hr) noexcept
 	{
-		// –â‘è‚È‚µ(’â~‚µ‚È‚¢) : ƒEƒBƒ“ƒhƒE‚ª— –Ê(ƒfƒoƒCƒXó‘Ô‚Íæ“¾‚³‚ê‚È‚¢)
+		// å•é¡Œãªã—(åœæ­¢ã—ãªã„) : ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè£é¢(ãƒ‡ãƒã‚¤ã‚¹çŠ¶æ…‹ã¯å–å¾—ã•ã‚Œãªã„)
 		if(FAILED(hr))
-			LOGLINE("WARNING : Input.cpp DebugHRESULT(hr) ‰æ–Ê–¢ŒŸo");
+			LOGLINE("WARNING : Input.cpp DebugHRESULT(hr) ç”»é¢æœªæ¤œå‡º");
 	}
 
 	void UpdateKeyboard() noexcept
 	{
-		// ƒL[ƒ{[ƒhó‘Ôæ“¾
+		// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰çŠ¶æ…‹å–å¾—
 		{
 			prevKey = currentKey;
 
@@ -53,7 +53,7 @@ namespace
 	}
 	void UpdateMouse()
 	{
-		// ƒ}ƒEƒXó‘Ôæ“¾
+		// ãƒã‚¦ã‚¹çŠ¶æ…‹å–å¾—
 		{
 			prevMouse = currentMouse;
 			auto hr = s_MouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), &currentMouse);
@@ -65,7 +65,7 @@ namespace
 			}
 		}
 
-		// ƒ}ƒEƒXÀ•Wæ“¾
+		// ãƒã‚¦ã‚¹åº§æ¨™å–å¾—
 		{
 			POINT p;
 			GetCursorPos(&p);
@@ -73,7 +73,7 @@ namespace
 			s_MousePosition = Vector2(static_cast<float>(p.x), static_cast<float>(p.y));
 		}
 
-		// ƒ}ƒEƒXˆÚ“®—Êæ“¾
+		// ãƒã‚¦ã‚¹ç§»å‹•é‡å–å¾—
 		{
 			constexpr float Normalize = 1.0f / 120.0f;
 			s_MouseVelocity = Vector2(static_cast<float>(currentMouse.lX), static_cast<float>(currentMouse.lY));
@@ -102,7 +102,7 @@ namespace Input
 			reinterpret_cast<LPVOID*>(&s_InputInterface), nullptr);
 		ENSURES(hr);
 
-		// ƒL[ƒ{[ƒh
+		// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 		{
 			hr = s_InputInterface->CreateDevice(GUID_SysKeyboard, &s_KeyboardDevice, nullptr);
 			ENSURES(hr);
@@ -117,7 +117,7 @@ namespace Input
 			DebugHRESULT(hr);
 		}
 
-		// ƒ}ƒEƒX
+		// ãƒã‚¦ã‚¹
 		{
 			hr = s_InputInterface->CreateDevice(GUID_SysMouse, &s_MouseDevice, nullptr);
 			ENSURES(hr);
@@ -144,7 +144,7 @@ namespace Input
 		HRESULT hr = {};
 		uint64_t counter = 0;
 
-		// ƒL[ƒ{[ƒh‚Ì”jŠü
+		// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ç ´æ£„
 		{
 			hr = s_KeyboardDevice->Unacquire();
 			ENSURES(hr);
@@ -153,7 +153,7 @@ namespace Input
 			ENSURES(counter == 0);
 		}
 
-		// ƒ}ƒEƒX‚Ì”jŠü
+		// ãƒã‚¦ã‚¹ã®ç ´æ£„
 		{
 			hr = s_MouseDevice->Unacquire();
 			ENSURES(hr);
@@ -162,11 +162,11 @@ namespace Input
 			ENSURES(counter == 0);
 		}
 
-		// ƒCƒ“ƒ^[ƒtƒF[ƒX‚Ì”jŠü
+		// ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã®ç ´æ£„
 		counter = s_InputInterface->Release();
 		ENSURES(counter == 0);
 
-		LOGLINE("InputDevice”jŠü");
+		LOGLINE("InputDeviceç ´æ£„");
 	}
 
 	bool IsKeyHold(Keys keycode) noexcept

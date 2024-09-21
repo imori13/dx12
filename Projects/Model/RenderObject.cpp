@@ -58,7 +58,7 @@ public:
 
 	void Create(const ModelMesh& mesh, const ModelMaterial& material, const Texture& texture, int32_t objectCount)
 	{
-		// ƒq[ƒv¶¬
+		// ãƒ’ãƒ¼ãƒ—ç”Ÿæˆ
 		{
 			constexpr uint32_t cameraCount = 1;
 			constexpr uint32_t lightCount = 1;
@@ -91,7 +91,7 @@ public:
 		m_MaterialBuffer.data().Specular = (Vector3::one() * 0.0f).xmfloat3();
 		m_MaterialBuffer.data().Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		// Textureƒrƒ…[İ’è
+		// Textureãƒ“ãƒ¥ãƒ¼è¨­å®š
 		{
 			const auto handle = m_ResourceHeap.GetNextHandle();
 			m_TextureGpuHandle = handle.GPU;

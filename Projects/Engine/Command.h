@@ -3,19 +3,19 @@
 
 namespace Command
 {
-	// ¶¬ˆ—
+	// ç”Ÿæˆå‡¦ç†
 	void Initialize();
 
-	// •`‰æŠJn
+	// æç”»é–‹å§‹
 	gsl::not_null<ID3D12GraphicsCommandList*> BeginMain();
 	std::vector<CommandList> BeginSub();
-	// •`‰æI—¹
+	// æç”»çµ‚äº†
 	void EndMain();
 	void EndSub();
 
-	// Ÿ‚ÌƒtƒŒ[ƒ€‚ÉˆÚ“®‚·‚é
+	// æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«ç§»å‹•ã™ã‚‹
 	void MoveToNextFrame();
-	// GPU‘Ò‹@
+	// GPUå¾…æ©Ÿ
 	void WaitForGpu();
 
 	const gsl::not_null<ID3D12GraphicsCommandList*> CreateBandle();

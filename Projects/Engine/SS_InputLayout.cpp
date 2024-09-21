@@ -21,7 +21,7 @@ void SS_InputLayout::AddElement(uint8_t inputSlot, SI_Semantic semanticName, uin
 	desc.Format = static_cast<DXGI_FORMAT>(dataFormat);
 	desc.InputSlotClass = (is_instance) ? (D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA) : (D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA);
 	desc.InstanceDataStepRate = (is_instance) ? (1) : (0);
-	desc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;	// Še—v‘f‚ª˜A‘±‚·‚éê‡‚Ìelement’²®
+	desc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;	// å„è¦ç´ ãŒé€£ç¶šã™ã‚‹å ´åˆã®elementèª¿æ•´
 
 	m_InputElements.emplace_back(desc);
 }

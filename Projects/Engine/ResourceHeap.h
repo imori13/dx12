@@ -19,7 +19,7 @@ public:
 		, m_Handle{}
 	{}
 
-	// ¶¬
+	// ç”Ÿæˆ
 	void Create(uint32_t bufferCount, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flag);
 
 	gsl::not_null<ID3D12DescriptorHeap*> Get() { return m_pHeap.Get(); }

@@ -165,16 +165,16 @@ void App::RenderScene(void)
 	const auto& cmdList = Renderer::Begin(camera);
 
 	{
-		// ƒŠƒ\[ƒXƒoƒŠƒA
+		// ãƒªã‚½ãƒ¼ã‚¹ãƒãƒªã‚¢
 		const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		cmdList->ResourceBarrier(1, &barrier);
 
-		// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ÌÝ’è
+		// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®è¨­å®š
 		const D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).GetCpuHandle();
 		const D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = Display::g_DepthStencilBuffer.at(Display::g_FrameIndex).GetCpuHandle();
 		cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
-		// ƒNƒŠƒA
+		// ã‚¯ãƒªã‚¢
 		const float clearColor[4] = { 0.05f,0.05f,0.05f,1.0f };
 		cmdList->ClearRenderTargetView(rtvHandle, gsl::make_span(clearColor).data(), 0, nullptr);
 		cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -264,7 +264,7 @@ void App::RenderScene(void)
 	Renderer::End(cmdList2);
 
 	{
-		// ƒŠƒ\[ƒXƒoƒŠƒA
+		// ãƒªã‚½ãƒ¼ã‚¹ãƒãƒªã‚¢
 		const auto barrier = GetTranslationBarrier(Display::g_RenderTargetBuffer.at(Display::g_FrameIndex).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 		cmdList->ResourceBarrier(1, &barrier);
 	}

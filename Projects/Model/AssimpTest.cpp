@@ -17,7 +17,7 @@ namespace
 
 namespace AssimpTest
 {
-	// •¶šƒR[ƒh•ÏŠ·
+	// æ–‡å­—ã‚³ãƒ¼ãƒ‰å¤‰æ›
 	std::string ToString(std::wstring_view value)
 	{
 		const auto length = WideCharToMultiByte(CP_ACP, 0u, value.data(), -1, nullptr, 0, nullptr, nullptr);
@@ -38,19 +38,19 @@ namespace AssimpTest
 		return result;
 	}
 
-	// ƒƒbƒVƒ…•ÏŠ·
+	// ãƒ¡ãƒƒã‚·ãƒ¥å¤‰æ›
 	void ParseMesh(ModelMesh* destMesh, const aiMesh& pSourceMesh)
 	{
-		// ƒ}ƒeƒŠƒAƒ‹”Ô†
+		// ãƒãƒ†ãƒªã‚¢ãƒ«ç•ªå·
 		destMesh->MaterialId = pSourceMesh.mMaterialIndex;
 
 		aiVector3D zero3D(0.0f, 0.0f, 0.0f);
 
-		// ƒƒ‚ƒŠŠm•Û
+		// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 		destMesh->Vertices.resize(pSourceMesh.mNumVertices);
 		destMesh->Indices.resize(static_cast<uint64_t>(pSourceMesh.mNumFaces) * VERTEX_COUNT);
 
-		// ’¸“_‚ğŠi”[
+		// é ‚ç‚¹ã‚’æ ¼ç´
 		const auto& vertexSpan = gsl::make_span(pSourceMesh.mVertices, pSourceMesh.mNumVertices);
 		const auto& normalSpan = gsl::make_span(pSourceMesh.mNormals, pSourceMesh.mNumVertices);
 		const auto& texcoordSpan = gsl::make_span(pSourceMesh.mTextureCoords[0], pSourceMesh.mNumVertices);
@@ -71,7 +71,7 @@ namespace AssimpTest
 			};
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒX‚ğŠi”[
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ ¼ç´
 		const auto& faces = gsl::make_span(pSourceMesh.mFaces, pSourceMesh.mNumFaces);
 		for(uint64_t i = 0u; i < faces.size(); ++i)
 		{
@@ -83,10 +83,10 @@ namespace AssimpTest
 		}
 	}
 
-	// ƒ}ƒeƒŠƒAƒ‹•ÏŠ·
+	// ãƒãƒ†ãƒªã‚¢ãƒ«å¤‰æ›
 	void ParseMaterial(ModelMaterial* destMaterial, const aiMaterial& pSourceMaterial)
 	{
-		// ƒeƒNƒXƒ`ƒƒ–¼
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£å
 		{
 			aiString textureName;
 			if(pSourceMaterial.Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), textureName) == AI_SUCCESS)
@@ -95,7 +95,7 @@ namespace AssimpTest
 			}
 		}
 
-		// ŠÂ‹«”½Ë¬•ª
+		// ç’°å¢ƒåå°„æˆåˆ†
 		{
 			aiColor3D color(0.0f, 0.0f, 0.0f);
 
@@ -107,7 +107,7 @@ namespace AssimpTest
 			}
 		}
 
-		// ŠgU”½Ë¬•ª
+		// æ‹¡æ•£åå°„æˆåˆ†
 		{
 			aiColor3D color(0.0f, 0.0f, 0.0f);
 
@@ -119,7 +119,7 @@ namespace AssimpTest
 			}
 		}
 
-		// ‹¾–Ê”½Ë¬•ª
+		// é¡é¢åå°„æˆåˆ†
 		{
 			aiColor3D color(0.0f, 0.0f, 0.0f);
 
@@ -131,7 +131,7 @@ namespace AssimpTest
 			}
 		}
 
-		// ‹¾–Ê”½Ë‹­“x
+		// é¡é¢åå°„å¼·åº¦
 		{
 			auto shininess = 0.0f;
 			if(pSourceMaterial.Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
@@ -149,40 +149,40 @@ namespace AssimpTest
 		Assimp::Importer importer;
 		uint32_t flag = 0u;
 		flag |= aiProcess_ConvertToLeftHanded;
-		flag |= aiProcess_Triangulate;			// OŠp’¸“_
-		flag |= aiProcess_FlipUVs;				// UVã‰º”½“]
-		//flag |= aiProcess_PreTransformVertices;	// ƒm[ƒhƒOƒ‰ƒt‚È‚µ‚Å’²®
-		flag |= aiProcess_CalcTangentSpace;		// ƒ^ƒ“ƒWƒFƒ“ƒgŒvZ
-		//flag |= aiProcess_GenSmoothNormals;		// –@ü‚ğƒXƒ€[ƒY
+		flag |= aiProcess_Triangulate;			// ä¸‰è§’é ‚ç‚¹
+		flag |= aiProcess_FlipUVs;				// UVä¸Šä¸‹åè»¢
+		//flag |= aiProcess_PreTransformVertices;	// ãƒãƒ¼ãƒ‰ã‚°ãƒ©ãƒ•ãªã—ã§èª¿æ•´
+		flag |= aiProcess_CalcTangentSpace;		// ã‚¿ãƒ³ã‚¸ã‚§ãƒ³ãƒˆè¨ˆç®—
+		//flag |= aiProcess_GenSmoothNormals;		// æ³•ç·šã‚’ã‚¹ãƒ ãƒ¼ã‚º
 		//flag |= aiProcess_GenUVCoords;
-		//flag |= aiProcess_RemoveRedundantMaterials;	// ç’·‚Èƒ}ƒeƒŠƒAƒ‹‚ğíœ
-		//flag |= aiProcess_OptimizeMeshes;		// ƒƒbƒVƒ…”‚ğÅ“K‰»
+		//flag |= aiProcess_RemoveRedundantMaterials;	// å†—é•·ãªãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å‰Šé™¤
+		//flag |= aiProcess_OptimizeMeshes;		// ãƒ¡ãƒƒã‚·ãƒ¥æ•°ã‚’æœ€é©åŒ–
 
-		// ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 		const aiScene& pScene = *importer.ReadFile(path.data(), flag);
 
 		const auto meshSpan = gsl::make_span(pScene.mMeshes, pScene.mNumMeshes);
 		const auto materialSpan = gsl::make_span(pScene.mMaterials, pScene.mNumMaterials);
 
-		// ƒƒ‚ƒŠŠm•Û
+		// ãƒ¡ãƒ¢ãƒªç¢ºä¿
 		model->ModelMeshes.clear();
 		model->ModelMeshes.resize(meshSpan.size());
 		model->ModelMaterials.clear();
 		model->ModelMaterials.resize(materialSpan.size());
 
-		// ƒƒbƒVƒ…ƒf[ƒ^‚ğ•ÏŠ·
+		// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ›
 		for(auto i = 0u; i < model->ModelMeshes.size(); ++i)
 		{
 			ParseMesh(&model->ModelMeshes.at(i), *meshSpan[i]);
 		}
 
-		// ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^‚ğ•ÏŠ·
+		// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ›
 		for(auto i = 0u; i < model->ModelMaterials.size(); ++i)
 		{
 			ParseMaterial(&model->ModelMaterials.at(i), *materialSpan[i]);
 		}
 
-		// ³íI—¹
+		// æ­£å¸¸çµ‚äº†
 		return true;
 	}
 }

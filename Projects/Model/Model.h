@@ -3,7 +3,7 @@
 #pragma warning (push)
 #pragma warning (disable : 4324)
 
-struct ModelMeshVertex	// ƒƒbƒVƒ…—p’¸“_
+struct ModelMeshVertex	// ãƒ¡ãƒƒã‚·ãƒ¥ç”¨é ‚ç‚¹
 {
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT3 Normal;
@@ -11,14 +11,14 @@ struct ModelMeshVertex	// ƒƒbƒVƒ…—p’¸“_
 	DirectX::XMFLOAT3 Tangent;
 };
 
-struct ModelMesh	// ƒ‚ƒfƒ‹—pƒƒbƒVƒ…
+struct ModelMesh	// ãƒ¢ãƒ‡ãƒ«ç”¨ãƒ¡ãƒƒã‚·ãƒ¥
 {
 	std::vector<ModelMeshVertex> Vertices;
 	std::vector<uint32_t> Indices;
 	uint32_t MaterialId = 0;
 };
 
-struct alignas(256) ModelMaterial	// ƒ‚ƒfƒ‹—pƒ}ƒeƒŠƒAƒ‹
+struct alignas(256) ModelMaterial	// ãƒ¢ãƒ‡ãƒ«ç”¨ãƒžãƒ†ãƒªã‚¢ãƒ«
 {
 	DirectX::XMFLOAT4 Color = { 1.0f,1.0f,1.0f,1.0f };
 	DirectX::XMFLOAT3 Ambient = { 0.25f,0.25f,0.25f };
@@ -31,7 +31,7 @@ struct alignas(256) ModelMaterial	// ƒ‚ƒfƒ‹—pƒ}ƒeƒŠƒAƒ‹
 	std::wstring DiffuseMap;
 };
 
-struct Model	// ƒ‚ƒfƒ‹
+struct Model	// ãƒ¢ãƒ‡ãƒ«
 {
 	std::vector<ModelMesh> ModelMeshes;
 	std::vector<ModelMaterial> ModelMaterials;

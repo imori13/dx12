@@ -4,7 +4,7 @@
 
 namespace
 {
-	// HeapÝ’è
+	// Heapè¨­å®š
 	constexpr inline D3D12_HEAP_PROPERTIES GetDefaultHeapProp() noexcept
 	{
 		D3D12_HEAP_PROPERTIES HeapProps = {};
@@ -17,7 +17,7 @@ namespace
 		return HeapProps;
 	}
 
-	// ReousrceDescÝ’è
+	// ReousrceDescè¨­å®š
 	constexpr inline D3D12_RESOURCE_DESC GetDefaultResourceDesc(uint64_t bufferSize) noexcept
 	{
 		D3D12_RESOURCE_DESC ResourceDesc = {};
@@ -84,7 +84,7 @@ protected:
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&m_pResource));
-		ENSURES(hr, "Buffer¶¬");
+		ENSURES(hr, "Bufferç”Ÿæˆ");
 		// set address
 		m_GpuAddress = m_pResource->GetGPUVirtualAddress();
 

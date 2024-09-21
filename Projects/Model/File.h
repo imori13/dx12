@@ -2,11 +2,11 @@
 
 struct Path
 {
-	std::wstring AbsolutePath;	// â‘ÎƒpƒX
-	std::wstring RelativePath;	// ‘Š‘ÎƒpƒX
+	std::wstring AbsolutePath;	// çµ¶å¯¾ãƒ‘ã‚¹
+	std::wstring RelativePath;	// ç›¸å¯¾ãƒ‘ã‚¹
 	std::wstring ParentPath;
-	std::wstring FileName;		// ƒtƒ@ƒCƒ‹ƒpƒX
-	std::wstring Extension;		// Šg’£q
+	std::wstring FileName;		// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
+	std::wstring Extension;		// æ‹¡å¼µå­
 };
 
 namespace File
